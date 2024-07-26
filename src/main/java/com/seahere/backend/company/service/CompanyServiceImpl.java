@@ -1,6 +1,7 @@
 package com.seahere.backend.company.service;
 
 import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.company.request.CompanyCreateReq;
 import com.seahere.backend.company.response.CompanyResponse;
@@ -17,7 +18,7 @@ public class CompanyServiceImpl implements CompanyService{
     private final CompanyRepository companyRepository;
     @Override
     public CompanyResponse getCompanyById(Long id) {
-        CompanyEntity company = companyRepository.findById(id).orElseThrow(RuntimeException::new);
+        CompanyEntity company = companyRepository.findById(id).orElseThrow(CompanyNotFound::new);
 
         return CompanyResponse.from(company);
     }
@@ -25,7 +26,7 @@ public class CompanyServiceImpl implements CompanyService{
     @Override
     public CompanyResponse getCompanyByRegNumber(String registrationNumber) {
         CompanyEntity company = companyRepository.findByRegistrationNumber(registrationNumber)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(CompanyNotFound::new);
 
         return CompanyResponse.from(company);
     }
@@ -51,7 +52,7 @@ public class CompanyServiceImpl implements CompanyService{
     @Override
     public CompanyResponse editProfileImage(Long id, String profileImage) {
         CompanyEntity company = companyRepository.findById(id)
-                .orElseThrow(RuntimeException::new);
+                .orElseThrow(CompanyNotFound::new);
 
         company.editProfileImage(profileImage);
         return CompanyResponse.from(company);
