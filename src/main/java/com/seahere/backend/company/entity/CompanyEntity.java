@@ -40,4 +40,8 @@ public class CompanyEntity {
                 .address(companyCreateReq.getAddress())
                 .build();
     }
+
+    public void editProfileImage(String profileImage){
+        this.profileImage = profileImage;
+    }
 }
