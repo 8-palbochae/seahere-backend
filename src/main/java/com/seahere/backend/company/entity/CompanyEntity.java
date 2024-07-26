@@ -1,6 +1,7 @@
 package com.seahere.backend.company.entity;
 
 import com.seahere.backend.common.entity.Address;
+import com.seahere.backend.company.request.CompanyCreateReq;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,5 +31,13 @@ public class CompanyEntity {
         this.companyName = companyName;
         this.address = address;
         this.profileImage = profileImage;
+    }
+
+    public static CompanyEntity from(CompanyCreateReq companyCreateReq){
+        return CompanyEntity.builder()
+                .registrationNumber(companyCreateReq.getRegistrationNumber())
+                .companyName(companyCreateReq.getCompanyName())
+                .address(companyCreateReq.getAddress())
+                .build();
     }
 }
