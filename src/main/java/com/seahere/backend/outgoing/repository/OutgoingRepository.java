@@ -1,9 +1,13 @@
 package com.seahere.backend.outgoing.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,11 +21,22 @@ public class OutgoingRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<OutgoingEntity> findByOutgoingStateIsPending(Long companyId){
-        return queryFactory.selectFrom(outgoingEntity)
+    public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable) {
+        List<OutgoingEntity> results = queryFactory.selectFrom(outgoingEntity)
                 .leftJoin(outgoingEntity.outgoingDetails, outgoingDetailEntity)
                 .fetchJoin()
-                .where(outgoingEntity.outgoingState.eq(OutgoingState.pending),outgoingEntity.companyId.eq(companyId))
+                .where(outgoingStateIsPending(companyId))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
                 .fetch();
+        boolean hasNext = results.size() > pageable.getPageSize();
+        if(hasNext){
+            results.remove(results.size() - 1);
+        }
+        return new SliceImpl<>(results,pageable, hasNext);
+    }
+    private BooleanExpression outgoingStateIsPending(Long companyId) {
+        return outgoingEntity.outgoingState.eq(OutgoingState.pending)
+                .and(outgoingEntity.companyId.eq(companyId));
     }
 }
