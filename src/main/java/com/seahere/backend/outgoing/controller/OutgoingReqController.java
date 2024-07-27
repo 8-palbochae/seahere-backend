@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 public class OutgoingReqController {
     List<OutgoingReqMockDto> mockList;
     List<OutgoingReqMockDetailsDto> mockDetailList;
-
     @PostConstruct
     void init() {
         log.info("Initializing mock data...");
@@ -65,6 +64,7 @@ public class OutgoingReqController {
         if(isStateToReject(state.get("state"))){
             item.setOutgoingStateToReject();
         }
+        log.info("item = {}",item);
         return ResponseEntity.ok(item);
     }
 
