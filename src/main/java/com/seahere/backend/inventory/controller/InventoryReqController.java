@@ -1,9 +1,8 @@
 package com.seahere.backend.inventory.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.seahere.backend.common.exception.SeaHereException;
-import com.seahere.backend.common.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import com.seahere.backend.inventory.service.InventoryService;
@@ -12,7 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class InventoryController {
+@Slf4j
+@RequestMapping("/inventories")
+public class InventoryReqController {
     InventoryService inventoryService;
 
     @GetMapping("/inventories")
