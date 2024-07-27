@@ -42,7 +42,7 @@ public class OutgoingReqController {
 
     @GetMapping("/outgoings")
     public ResponseEntity<List> outgoingReqList(@RequestParam(value = "search" ,defaultValue = "") String search,
-                                                @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                 @RequestParam("endDate")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
         ArrayList<OutgoingReqMockDto> list = mockList.stream().filter(item -> item.getCustomerName().contains(search))
                 .filter(item -> item.getState().equals(OutgoingState.pending))
@@ -55,7 +55,8 @@ public class OutgoingReqController {
     }
 
     @PatchMapping("/outgoings/{outgoingId}")
-    public void outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody Map<String,OutgoingState> state){
+    public ResponseEntity<OutgoingReqMockDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody Map<String,OutgoingState> state){
+        log.info("outgoingId = {} state = {}",outgoingId,state.get("state"));
         int index = (int) (outgoingId -1);
         OutgoingReqMockDto item = mockList.get(index);
         if(isStateToReady(state.get("state"))){
@@ -64,7 +65,7 @@ public class OutgoingReqController {
         if(isStateToReject(state.get("state"))){
             item.setOutgoingStateToReject();
         }
-
+        return ResponseEntity.ok(item);
     }
 
     private boolean isStateToReady(OutgoingState state){
