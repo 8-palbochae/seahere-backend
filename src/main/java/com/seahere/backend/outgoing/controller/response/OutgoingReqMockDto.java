@@ -14,15 +14,22 @@ public class OutgoingReqMockDto {
     private OutgoingState state;
     private String status;
     private LocalDate outgoingDate;
+    private boolean partialOutgoing;
 
-    public OutgoingReqMockDto(Long outgoingId, String customerName, String title, OutgoingState state) {
+    public OutgoingReqMockDto(Long outgoingId, String customerName, String title, OutgoingState state, boolean partialOutgoing) {
         this.outgoingId = outgoingId;
         this.customerName = customerName;
         this.status = state.printState();
         this.title = title;
         this.state = state;
+        this.partialOutgoing = partialOutgoing;
         this.outgoingDate = LocalDate.now();
     }
+
+    public OutgoingReqMockDto (Long outgoingId, String customerName, String title, OutgoingState state){
+        this(outgoingId,customerName,title,state,false);
+    }
+
 
     public void setOutgoingStateToReady(){
         this.state = OutgoingState.ready;
