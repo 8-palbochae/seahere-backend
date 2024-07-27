@@ -2,8 +2,14 @@ package com.seahere.backend.outgoing.controller;
 
 import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDetailsDto;
 import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDto;
+import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
+import com.seahere.backend.outgoing.service.OutgoingService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,8 +24,12 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequestMapping("/outgoings")
+@RequiredArgsConstructor
 public class OutgoingReqController {
     private final static String STATE = "state";
+
+    private final OutgoingService outgoingService;
+
     List<OutgoingReqMockDto> mockList;
     List<OutgoingReqMockDetailsDto> mockDetailList;
     @PostConstruct
@@ -89,4 +99,11 @@ public class OutgoingReqController {
         int index = (int) (detailId -1);
         mockDetailList.remove(index);
     }
+
+/*    @GetMapping("/test")
+    public ResponseEntity<Slice<OutgoingEntity>> test(@RequestParam("size")int size, @RequestParam("page")int page,
+                                                      @RequestParam()){
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "outgoingId"));
+        return ResponseEntity.ok(result);
+    }*/
 }

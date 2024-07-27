@@ -10,6 +10,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.seahere.backend.outgoing.entity.QOutgoingDetailEntity.outgoingDetailEntity;
@@ -21,11 +22,10 @@ public class OutgoingRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable) {
+    public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable, LocalDate startDate, LocalDate endDate, String search) {
         List<OutgoingEntity> results = queryFactory.selectFrom(outgoingEntity)
                 .leftJoin(outgoingEntity.outgoingDetails, outgoingDetailEntity)
-                .fetchJoin()
-                .where(outgoingStateIsPending(companyId))
+                .where(outgoingStateIsPending(companyId,startDate,endDate,search))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
@@ -35,8 +35,12 @@ public class OutgoingRepository {
         }
         return new SliceImpl<>(results,pageable, hasNext);
     }
-    private BooleanExpression outgoingStateIsPending(Long companyId) {
+    private BooleanExpression outgoingStateIsPending(Long companyId,LocalDate startDate, LocalDate endDate, String search) {
         return outgoingEntity.outgoingState.eq(OutgoingState.pending)
-                .and(outgoingEntity.companyId.eq(companyId));
+                .and(outgoingEntity.companyId.eq(companyId))
+                .and(outgoingEntity.outgoingDate.goe(startDate))
+                .and(outgoingEntity.outgoingDate.loe(endDate))
+                .and(outgoingEntity.customerName.contains(search));
     }
+
 }

@@ -9,6 +9,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -16,8 +18,8 @@ public class OutgoingService {
     private final OutgoingJpaRepository outgoingJpaRepository;
     private final OutgoingRepository outgoingRepository;
 
-    public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable){
-        return outgoingRepository.findByOutgoingStateIsPending(companyId,pageable);
+    public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable, LocalDate startDate, LocalDate endDate,String search){
+        return outgoingRepository.findByOutgoingStateIsPending(companyId,pageable, startDate, endDate, search);
     }
 
     public void save(OutgoingEntity outgoingEntity){

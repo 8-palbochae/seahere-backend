@@ -36,7 +36,8 @@ class OutgoingServiceTest {
     @BeforeEach
     void init(){
         OutgoingEntity data1 = OutgoingEntity.builder()
-                .outgoingDate(LocalDate.now())
+                .outgoingDate(LocalDate.of(2024,7,20))
+                .customerName("아리랑")
                 .partialOutgoing(true)
                 .outgoingState(OutgoingState.pending)
                 .companyId(1L)
@@ -44,25 +45,29 @@ class OutgoingServiceTest {
         OutgoingDetailEntity ddata1 = OutgoingDetailEntity.builder().price(BigDecimal.ZERO).outgoing(data1)
                 .quantity(3).build();
         OutgoingEntity data2 = OutgoingEntity.builder()
-                .outgoingDate(LocalDate.now())
+                .outgoingDate(LocalDate.of(2024,7,28))
+                .customerName("스리랑")
                 .partialOutgoing(true)
                 .outgoingState(OutgoingState.ready)
                 .companyId(1L)
                 .build();
         OutgoingEntity data3 = OutgoingEntity.builder()
-                .outgoingDate(LocalDate.now())
+                .outgoingDate(LocalDate.of(2024,7,28))
+                .customerName("스리랑")
                 .partialOutgoing(true)
                 .outgoingState(OutgoingState.pending)
                 .companyId(1L)
                 .build();
         OutgoingEntity data4 = OutgoingEntity.builder()
-                .outgoingDate(LocalDate.now())
+                .outgoingDate(LocalDate.of(2024,7,28))
+                .customerName("스리랑")
                 .partialOutgoing(true)
                 .outgoingState(OutgoingState.pending)
                 .companyId(1L)
                 .build();
         OutgoingEntity data5 = OutgoingEntity.builder()
-                .outgoingDate(LocalDate.now())
+                .outgoingDate(LocalDate.of(2024,7,28))
+                .customerName("스리랑")
                 .partialOutgoing(true)
                 .outgoingState(OutgoingState.ready)
                 .companyId(1L)
@@ -82,18 +87,18 @@ class OutgoingServiceTest {
         //given
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
         //when
-        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(2L, pageRequest);
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(2L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"");
         //then
         assertThat(result.getContent()).isEmpty();
     }
 
     @Test
-    @DisplayName("출고 리스트중 상태가 해당 회사 번호와 출고요청(pending)인 출고 목록을 반환한다.")
+    @DisplayName("출고 리스트중 상태가 해당 회사 번호와 출고요청(pending), 지정날짜 사이의 출고 목록을 반환한다.")
     void findByOutgoingStateIsPendingSlice(){
         //given
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
         //when
-        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest);
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"");
         boolean fetch = emf.getPersistenceUnitUtil().isLoaded(result.getContent().get(0).getOutgoingDetails());
 
         //then
@@ -104,6 +109,23 @@ class OutgoingServiceTest {
                         tuple(1L,OutgoingState.pending,true),
                         tuple(1L,OutgoingState.pending,true),
                         tuple(1L,OutgoingState.pending,true)
+                );
+    }
+    @Test
+    @DisplayName("출고 리스트중 상태가 해당 회사 번호와 출고요청(pending), 지정날짜 사이 그리고 이름이 아리가 포함된 출고 목록을 반환한다.")
+    void findByOutgoingStateIsPendingSliceSearch(){
+        //given
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
+        //when
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"아리");
+        boolean fetch = emf.getPersistenceUnitUtil().isLoaded(result.getContent().get(0).getOutgoingDetails());
+
+        //then
+        assertThat(fetch).isTrue();
+        assertThat(result.getContent()).hasSize(1)
+                .extracting("companyId","outgoingState","partialOutgoing","customerName")
+                .contains(
+                        tuple(1L,OutgoingState.pending,true,"아리랑")
                 );
     }
 }
