@@ -48,8 +48,9 @@ class OutgoingServiceTest {
                 .outgoingState(OutgoingState.pending)
                 .companyId(1L)
                 .build();
-        OutgoingDetailEntity ddata1 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO).outgoing(data1)
+        OutgoingDetailEntity ddata1 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO)
                 .quantity(3).build();
+        data1.addOutgoingDetail(ddata1);
         OutgoingEntity data2 = OutgoingEntity.builder()
                 .outgoingDate(LocalDate.of(2024,7,28))
                 .customerName("스리랑")
@@ -64,6 +65,9 @@ class OutgoingServiceTest {
                 .outgoingState(OutgoingState.pending)
                 .companyId(1L)
                 .build();
+        OutgoingDetailEntity ddata2 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO)
+                .quantity(3).build();
+        data3.addOutgoingDetail(ddata2);
         OutgoingEntity data4 = OutgoingEntity.builder()
                 .outgoingDate(LocalDate.of(2024,7,28))
                 .customerName("스리랑")
@@ -79,11 +83,12 @@ class OutgoingServiceTest {
                 .companyId(1L)
                 .build();
         outgoingService.save(data1);
-        outgoingDetailJpaRepository.save(ddata1);
         outgoingService.save(data2);
         outgoingService.save(data3);
         outgoingService.save(data4);
         outgoingService.save(data5);
+        outgoingDetailJpaRepository.save(ddata1);
+        outgoingDetailJpaRepository.save(ddata2);
         em.flush();
         em.clear();
     }
@@ -141,14 +146,15 @@ class OutgoingServiceTest {
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
         //when
         Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"광어");
-        boolean fetch = emf.getPersistenceUnitUtil().isLoaded(result.getContent().get(0).getOutgoingDetails());
-
         //then
+        assertThat(result.getContent()).hasSize(2);
         assertThat(result.getContent().get(0).getOutgoingDetails().get(0).getProductName()).isEqualTo("광어");
-        assertThat(result.getContent()).hasSize(1)
+        log.info("size = {}",result.getContent().get(0).getOutgoingDetails().size());
+        assertThat(result.getContent()).hasSize(2)
                 .extracting("companyId","outgoingState","partialOutgoing","customerName")
                 .contains(
-                        tuple(1L,OutgoingState.pending,true,"아리랑")
+                        tuple(1L,OutgoingState.pending,true,"아리랑"),
+                        tuple(1L,OutgoingState.pending,true,"스리랑")
                 );
     }
 

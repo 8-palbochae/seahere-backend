@@ -27,4 +27,8 @@ public class OutgoingDetailEntity {
     private BigDecimal price;
 
     private float quantity;
+
+    public void assignOutgoing(OutgoingEntity outgoingEntity){
+        this.outgoing = outgoingEntity;
+    }
 }
