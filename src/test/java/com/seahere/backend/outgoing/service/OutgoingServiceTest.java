@@ -13,8 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.annotation.Commit;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -149,7 +147,6 @@ class OutgoingServiceTest {
         //then
         assertThat(result.getContent()).hasSize(2);
         assertThat(result.getContent().get(0).getOutgoingDetails().get(0).getProductName()).isEqualTo("광어");
-        log.info("size = {}",result.getContent().get(0).getOutgoingDetails().size());
         assertThat(result.getContent()).hasSize(2)
                 .extracting("companyId","outgoingState","partialOutgoing","customerName")
                 .contains(
