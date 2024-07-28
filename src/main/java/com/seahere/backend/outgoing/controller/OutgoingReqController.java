@@ -100,10 +100,15 @@ public class OutgoingReqController {
         mockDetailList.remove(index);
     }
 
-/*    @GetMapping("/test")
-    public ResponseEntity<Slice<OutgoingEntity>> test(@RequestParam("size")int size, @RequestParam("page")int page,
-                                                      @RequestParam()){
+    @GetMapping("/test")
+    public ResponseEntity<Slice<OutgoingEntity>> test(@RequestParam("size")int size,
+                                                      @RequestParam("page")int page,
+                                                      @RequestParam("search")String search,
+                                                      @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                      @RequestParam("endDate")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
+        log.info("size = {} page = {} search = {} startDate = {} endDate = {}",size, page, search, startDate, endDate);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "outgoingId"));
-        return ResponseEntity.ok(result);
-    }*/
+        Slice<OutgoingEntity> results = outgoingService.findByOutgoingStateIsPending(1L, pageRequest, startDate, endDate, search);
+        return ResponseEntity.ok(results);
+    }
 }

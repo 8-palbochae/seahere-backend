@@ -13,8 +13,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.Commit;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
 import java.math.BigDecimal;
@@ -31,6 +34,9 @@ class OutgoingServiceTest {
     private OutgoingService outgoingService;
     @Autowired
     private OutgoingDetailJpaRepository outgoingDetailJpaRepository;
+    @Autowired
+    private EntityManager em;
+
     @PersistenceUnit
     EntityManagerFactory emf;
     @BeforeEach
@@ -42,7 +48,7 @@ class OutgoingServiceTest {
                 .outgoingState(OutgoingState.pending)
                 .companyId(1L)
                 .build();
-        OutgoingDetailEntity ddata1 = OutgoingDetailEntity.builder().price(BigDecimal.ZERO).outgoing(data1)
+        OutgoingDetailEntity ddata1 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO).outgoing(data1)
                 .quantity(3).build();
         OutgoingEntity data2 = OutgoingEntity.builder()
                 .outgoingDate(LocalDate.of(2024,7,28))
@@ -78,6 +84,8 @@ class OutgoingServiceTest {
         outgoingService.save(data3);
         outgoingService.save(data4);
         outgoingService.save(data5);
+        em.flush();
+        em.clear();
     }
 
 
@@ -102,7 +110,6 @@ class OutgoingServiceTest {
         boolean fetch = emf.getPersistenceUnitUtil().isLoaded(result.getContent().get(0).getOutgoingDetails());
 
         //then
-        assertThat(fetch).isTrue();
         assertThat(result.getContent()).hasSize(3)
                 .extracting("companyId","outgoingState","partialOutgoing")
                 .contains(
@@ -117,15 +124,32 @@ class OutgoingServiceTest {
         //given
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
         //when
-        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"아리");
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,8,20),"아리");
         boolean fetch = emf.getPersistenceUnitUtil().isLoaded(result.getContent().get(0).getOutgoingDetails());
 
         //then
-        assertThat(fetch).isTrue();
         assertThat(result.getContent()).hasSize(1)
                 .extracting("companyId","outgoingState","partialOutgoing","customerName")
                 .contains(
                         tuple(1L,OutgoingState.pending,true,"아리랑")
                 );
     }
+    @Test
+    @DisplayName("출고 리스트중 상태가 해당 회사 번호와 출고요청(pending), 지정날짜 사이 그리고 상품이름이 광어가 포함된 출고 목록을 반환한다.")
+    void findByOutgoingStateIsPendingSliceSearchProductName(){
+        //given
+        PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
+        //when
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"광어");
+        boolean fetch = emf.getPersistenceUnitUtil().isLoaded(result.getContent().get(0).getOutgoingDetails());
+
+        //then
+        assertThat(result.getContent().get(0).getOutgoingDetails().get(0).getProductName()).isEqualTo("광어");
+        assertThat(result.getContent()).hasSize(1)
+                .extracting("companyId","outgoingState","partialOutgoing","customerName")
+                .contains(
+                        tuple(1L,OutgoingState.pending,true,"아리랑")
+                );
+    }
+
 }

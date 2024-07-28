@@ -23,7 +23,7 @@ public class OutgoingRepository {
     private final JPAQueryFactory queryFactory;
 
     public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable, LocalDate startDate, LocalDate endDate, String search) {
-        List<OutgoingEntity> results = queryFactory.selectFrom(outgoingEntity)
+        List<OutgoingEntity> results = queryFactory.selectFrom(outgoingEntity).distinct()
                 .leftJoin(outgoingEntity.outgoingDetails, outgoingDetailEntity)
                 .where(outgoingStateIsPending(companyId,startDate,endDate,search))
                 .offset(pageable.getOffset())
@@ -40,7 +40,7 @@ public class OutgoingRepository {
                 .and(outgoingEntity.companyId.eq(companyId))
                 .and(outgoingEntity.outgoingDate.goe(startDate))
                 .and(outgoingEntity.outgoingDate.loe(endDate))
-                .and(outgoingEntity.customerName.contains(search));
+                .and(outgoingEntity.customerName.contains(search).or(outgoingDetailEntity.productName.contains(search)));
     }
 
 }
