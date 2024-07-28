@@ -1,15 +1,21 @@
 package com.seahere.backend.outgoing.controller;
 
+import com.seahere.backend.outgoing.controller.request.OutgoingReqSearchRequest;
+import com.seahere.backend.outgoing.controller.response.OutgoingReqListResponse;
 import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDetailsDto;
 import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDto;
+import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
+import com.seahere.backend.outgoing.service.OutgoingService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,8 +24,12 @@ import java.util.stream.Collectors;
 @RestController
 @Slf4j
 @RequestMapping("/outgoings")
+@RequiredArgsConstructor
 public class OutgoingReqController {
     private final static String STATE = "state";
+
+    private final OutgoingService outgoingService;
+
     List<OutgoingReqMockDto> mockList;
     List<OutgoingReqMockDetailsDto> mockDetailList;
     @PostConstruct
@@ -49,14 +59,15 @@ public class OutgoingReqController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<OutgoingReqMockDto>> outgoingReqList(@RequestParam(value = "search" ,defaultValue = "") String search,
-                                                @RequestParam("startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                @RequestParam("endDate")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
-        ArrayList<OutgoingReqMockDto> list = mockList.stream().filter(item -> item.getCustomerName().contains(search))
-                .filter(item -> item.getState().equals(OutgoingState.pending))
-                .collect(Collectors.toCollection(ArrayList::new));
-        return ResponseEntity.ok(list);
+    public ResponseEntity<OutgoingReqListResponse> outgoingReqList(OutgoingReqSearchRequest request){
+        log.info("size = {} page = {}",request.getSize(),request.getPage());
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Direction.DESC, "outgoingId"));
+        Slice<OutgoingEntity> results = outgoingService.findByOutgoingStateIsPending(1L, pageRequest
+                , request.getStartDate(), request.getEndDate(), request.getSearch());
+        OutgoingReqListResponse outgoingReqListResponse = new OutgoingReqListResponse(results);
+        return ResponseEntity.ok(outgoingReqListResponse);
     }
+
     @GetMapping("/{outgoingId}")
     public ResponseEntity<List<OutgoingReqMockDetailsDto>> outgoingReqDetailList(@PathVariable("outgoingId") Long outgoingId){
         ArrayList<OutgoingReqMockDetailsDto> list = mockDetailList.stream().filter(item -> item.getOutgoingId().equals(outgoingId)).collect(Collectors.toCollection(ArrayList::new));
