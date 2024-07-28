@@ -1,5 +1,5 @@
 INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, partial_outgoing,customer_name) VALUES
-                                                                                                    (1, 1, '2024-07-27', 'pending', true,'아리랑'),
+                                                                                                    (1, 1, '2024-07-27', 'pending', true,'스리랑'),
                                                                                                     (2, 1, '2024-07-28', 'pending', false,'아리랑'),
                                                                                                     (3, 1, '2024-07-29', 'pending', true,'아리랑'),
                                                                                                     (4, 1, '2024-07-30', 'pending', false,'아리랑'),
