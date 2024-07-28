@@ -1,10 +1,13 @@
 package com.seahere.backend.inventory.entity;
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
 @NoArgsConstructor
+@Table(name = "inventory")
+@Getter
 public class InventoryEntity {
     @Id
     @GeneratedValue

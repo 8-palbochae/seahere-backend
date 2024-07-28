@@ -1,6 +1,7 @@
 package com.seahere.backend.inventory.entity;
 
 
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -8,6 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "product")
 @Entity
+@Getter
 public class ProductEntity {
     @Id
     @GeneratedValue

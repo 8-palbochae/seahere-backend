@@ -7,7 +7,8 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class InventoryRespMockDetailDto {
+public class InventoryReqDetailDto {
+    private Long companyId;
     private String name;
     private String country;
     private String category;
