@@ -1,33 +1,28 @@
 package com.seahere.backend.inventory.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import lombok.extern.slf4j.Slf4j;
+import com.seahere.backend.inventory.controller.request.InventoryReqSearchRequest;
+import com.seahere.backend.inventory.controller.response.InventoryRespMockDetailDto;
+import com.seahere.backend.inventory.controller.response.InventoryRespMockDto;
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import lombok.extern.slf4j.Slf4j;
 import com.seahere.backend.inventory.service.InventoryService;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @Slf4j
 @RequestMapping("/inventories")
+@RequiredArgsConstructor
 public class InventoryReqController {
     InventoryService inventoryService;
 
-    @GetMapping("/inventories")
-    public ResponseEntity<List<String>> getMockData() {
-        List<String> mock = new ArrayList<>();
-        mock.add("광어");
-        mock.add("광수");
-        mock.add("이광수");
-        mock.add("광명");
-        mock.add("광자");
-        mock.add("광광");
-        mock.add("새우");
-        mock.add("우럭");
-        mock.add("밀치");
-        return ResponseEntity.ok(mock);
+    @GetMapping
+    public ResponseEntity<List<InventoryReqListResponse>> inventoryReqList(InventoryReqSearchRequest inventoryReqSearchRequest){
+        List<InventoryRespMockDto> resultList = inventoryService.findAllInventoryBySearch();
+        return  ResponseEntity.ok(resultList);
+
     }
 }
