@@ -1,24 +1,26 @@
 package com.seahere.backend.inventory.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @NoArgsConstructor
-@Table(name = "inventory")
+@Table(name = "inventories")
 @Getter
-@Setter
+@AllArgsConstructor
+@Builder
 public class InventoryEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "inventory_id")
     private Long inventoryId;
 
-    @Column(name = "incoming_id")
+    @Column(name = "company_id")
     private Long companyId;
 
     @Column(name = "quantity")
@@ -37,8 +39,8 @@ public class InventoryEntity {
     private String country;
 
     @Column(name = "incoming_date")
-    private Date incomingDate;
+    private LocalDate incomingDate;
 
-    @Column(name = "natural")
-    private String natural;
+    @Column(name = "natural_status")
+    private String naturalStatus;
 }

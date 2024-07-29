@@ -15,16 +15,16 @@ public class InventoryReqDetailDto {
     private int incomingPrice;
     private LocalDate incomingDate;
     private String country;
-    private String natural;
+    private String naturalStatus;
 
-    public InventoryReqDetailDto(Long companyId, String name, String category, long quantity, int incomingPrice, Date incomingDate, String country, String natural) {
+    public InventoryReqDetailDto(Long companyId, String name, String category, long quantity, int incomingPrice, LocalDate incomingDate, String country, String naturalStatus) {
         this.companyId = companyId;
         this.name = name;
         this.category = category;
         this.quantity = (int) quantity;
         this.incomingPrice = incomingPrice;
-        this.incomingDate = incomingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        this.incomingDate = incomingDate;
         this.country = country;
-        this.natural = natural;
+        this.naturalStatus = naturalStatus;
     }
 }
