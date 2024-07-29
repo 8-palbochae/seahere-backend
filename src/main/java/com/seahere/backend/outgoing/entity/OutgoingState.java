@@ -1,7 +1,9 @@
 package com.seahere.backend.outgoing.entity;
 
+import com.seahere.backend.outgoing.exception.InvalidOutgoingStateException;
+
 public enum OutgoingState {
-    pending("출고요청"),ready("출고대기"),complete("출고완료"),reject("출고거절");
+    PENDING("출고요청"), READY("출고대기"), COMPLETE("출고완료"), REJECT("출고거절");
 
     private String text;
 
@@ -11,5 +13,19 @@ public enum OutgoingState {
 
     public String printState(){
         return this.text;
+    }
+
+    public static OutgoingState from(String state) {
+        if (state == null) {
+            throw new InvalidOutgoingStateException();
+        }
+        switch (state.toLowerCase()) {
+            case "ready":
+                return READY;
+            case "reject":
+                return REJECT;
+            default:
+                throw new InvalidOutgoingStateException();
+        }
     }
 }

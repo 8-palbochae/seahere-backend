@@ -32,11 +32,11 @@ public class OutgoingReqMockDto {
 
 
     public void setOutgoingStateToReady(){
-        this.state = OutgoingState.ready;
+        this.state = OutgoingState.READY;
         this.status = state.printState();
     }
     public void setOutgoingStateToReject(){
-        this.state = OutgoingState.reject;
+        this.state = OutgoingState.REJECT;
         this.status = state.printState();
     }
 }

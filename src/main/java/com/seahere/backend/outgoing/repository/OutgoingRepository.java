@@ -37,7 +37,7 @@ public class OutgoingRepository {
         return new SliceImpl<>(results,pageable, hasNext);
     }
     private BooleanExpression outgoingStateIsPending(CompanyEntity company,LocalDate startDate, LocalDate endDate, String search) {
-        return outgoingEntity.outgoingState.eq(OutgoingState.pending)
+        return outgoingEntity.outgoingState.eq(OutgoingState.PENDING)
                 .and(outgoingEntity.company.eq(company))
                 .and(outgoingEntity.outgoingDate.goe(startDate))
                 .and(outgoingEntity.outgoingDate.loe(endDate))

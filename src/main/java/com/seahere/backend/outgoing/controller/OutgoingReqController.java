@@ -1,12 +1,14 @@
 package com.seahere.backend.outgoing.controller;
 
 import com.seahere.backend.outgoing.controller.request.OutgoingReqSearchRequest;
+import com.seahere.backend.outgoing.controller.request.OutgoingStateChangeRequest;
 import com.seahere.backend.outgoing.controller.response.OutgoingReqListResponse;
 import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDetailsDto;
 import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDto;
 import com.seahere.backend.outgoing.dto.OutgoingReqDto;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
+import com.seahere.backend.outgoing.exception.InvalidOutgoingStateException;
 import com.seahere.backend.outgoing.service.OutgoingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,9 +67,11 @@ public class OutgoingReqController {
     }
 
     @PatchMapping("/{outgoingId}")
-    public ResponseEntity<OutgoingReqDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody Map<String,OutgoingState> state){
-        OutgoingReqDto outgoing = outgoingService.changeOutgoingState(outgoingId, state.get(STATE));
+    public ResponseEntity<OutgoingReqDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody OutgoingStateChangeRequest request){
+        OutgoingState state = OutgoingState.from(request.getState());
+        OutgoingReqDto outgoing = outgoingService.changeOutgoingState(outgoingId,state);
         return ResponseEntity.ok(outgoing);
+
     }
     @DeleteMapping("/details/{outgoingDetailId}")
     public void outgoingDetailDelete(@PathVariable("outgoingDetailId")Long detailId){

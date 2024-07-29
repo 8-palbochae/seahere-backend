@@ -56,7 +56,7 @@ class OutgoingServiceTest {
                 .outgoingDate(LocalDate.of(2024,7,20))
                 .customerName("아리랑")
                 .partialOutgoing(true)
-                .outgoingState(OutgoingState.pending)
+                .outgoingState(OutgoingState.PENDING)
                 .company(company)
                 .build();
         OutgoingDetailEntity ddata1 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO)
@@ -66,7 +66,7 @@ class OutgoingServiceTest {
                 .outgoingDate(LocalDate.of(2024,7,28))
                 .customerName("스리랑")
                 .partialOutgoing(true)
-                .outgoingState(OutgoingState.ready)
+                .outgoingState(OutgoingState.READY)
                 .company(company)
                 .build();
         OutgoingEntity data3 = OutgoingEntity.builder()
@@ -74,7 +74,7 @@ class OutgoingServiceTest {
                 .customerName("스리랑")
                 .company(company)
                 .partialOutgoing(true)
-                .outgoingState(OutgoingState.pending)
+                .outgoingState(OutgoingState.PENDING)
                 .build();
         OutgoingDetailEntity ddata2 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO)
                 .quantity(3).build();
@@ -84,14 +84,14 @@ class OutgoingServiceTest {
                 .customerName("스리랑")
                 .company(company)
                 .partialOutgoing(true)
-                .outgoingState(OutgoingState.pending)
+                .outgoingState(OutgoingState.PENDING)
                 .build();
         OutgoingEntity data5 = OutgoingEntity.builder()
                 .outgoingDate(LocalDate.of(2024,7,28))
                 .customerName("스리랑")
                 .company(company)
                 .partialOutgoing(true)
-                .outgoingState(OutgoingState.ready)
+                .outgoingState(OutgoingState.READY)
                 .build();
         outgoingService.save(data1);
         outgoingService.save(data2);
@@ -133,9 +133,9 @@ class OutgoingServiceTest {
         assertThat(result.getContent()).hasSize(3)
                 .extracting("company","outgoingState","partialOutgoing")
                 .contains(
-                        tuple(company,OutgoingState.pending,true),
-                        tuple(company,OutgoingState.pending,true),
-                        tuple(company,OutgoingState.pending,true)
+                        tuple(company,OutgoingState.PENDING,true),
+                        tuple(company,OutgoingState.PENDING,true),
+                        tuple(company,OutgoingState.PENDING,true)
                 );
     }
     @Test
@@ -152,7 +152,7 @@ class OutgoingServiceTest {
         assertThat(result.getContent()).hasSize(1)
                 .extracting("company","outgoingState","partialOutgoing","customerName")
                 .contains(
-                        tuple(company,OutgoingState.pending,true,"아리랑")
+                        tuple(company,OutgoingState.PENDING,true,"아리랑")
                 );
     }
     @Test
@@ -169,8 +169,8 @@ class OutgoingServiceTest {
         assertThat(result.getContent()).hasSize(2)
                 .extracting("company","outgoingState","partialOutgoing","customerName")
                 .contains(
-                        tuple(company,OutgoingState.pending,true,"아리랑"),
-                        tuple(company,OutgoingState.pending,true,"스리랑")
+                        tuple(company,OutgoingState.PENDING,true,"아리랑"),
+                        tuple(company,OutgoingState.PENDING,true,"스리랑")
                 );
     }
 
@@ -180,10 +180,10 @@ class OutgoingServiceTest {
         // given
         OutgoingEntity outgoing = outgoingJpaRepository.findById(data1Id).get();
         // when
-        outgoing.changeState(OutgoingState.ready);
+        outgoing.changeState(OutgoingState.READY);
         OutgoingEntity result = outgoingJpaRepository.findById(data1Id).get();
         // then
-        assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.ready);
+        assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.READY);
     }
 
     @Test
@@ -192,9 +192,9 @@ class OutgoingServiceTest {
         // given
         OutgoingEntity outgoing = outgoingJpaRepository.findById(data1Id).get();
         // when
-        outgoing.changeState(OutgoingState.complete);
+        outgoing.changeState(OutgoingState.COMPLETE);
         OutgoingEntity result = outgoingJpaRepository.findById(data1Id).get();
         // then
-        assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.complete);
+        assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.COMPLETE);
     }
 }
