@@ -20,18 +20,4 @@ public class IncomingDataRequest {
     private final String category;
     private final String country;
 
-    public static IncomingDataRequest from(IncomingMockDto dto) {
-        return IncomingDataRequest.builder().productId(dto.getProductId())
-                        .quantity(dto.getQuantity())
-                        .countryDetail(dto.getCountryDetail())
-                        .incomingPrice(dto.getIncomingPrice())
-                        .memo(dto.getMemo())
-                        .country(dto.getCountry())
-                        .natural(dto.getNatural())
-                        .category(dto.getCategory())
-                        .build();
-
-    }
-
-
 }
