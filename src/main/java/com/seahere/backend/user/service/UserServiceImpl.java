@@ -3,6 +3,7 @@ package com.seahere.backend.user.service;
 import com.seahere.backend.common.entity.Role;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.repository.UserRepository;
+import com.seahere.backend.user.request.BrokerSignupReq;
 import com.seahere.backend.user.request.CustomerSignupReq;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +20,14 @@ public class UserServiceImpl implements UserService{
     @Override
     public Long signupCustomer(CustomerSignupReq customerSignupReq) {
         UserEntity user = customerSignupReq.to();
+        user.passwordEncode(passwordEncoder);
+        userRepository.save(user);
+        return user.getId();
+    }
+
+    @Override
+    public Long signupBroker(BrokerSignupReq brokerSignupReq) {
+        UserEntity user = brokerSignupReq.to();
         user.passwordEncode(passwordEncoder);
         userRepository.save(user);
         return user.getId();
