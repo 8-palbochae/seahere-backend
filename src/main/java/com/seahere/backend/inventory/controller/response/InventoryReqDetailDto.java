@@ -1,20 +1,30 @@
 package com.seahere.backend.inventory.controller.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
-@AllArgsConstructor
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+
 @Getter
-@ToString
 public class InventoryReqDetailDto {
     private Long companyId;
     private String name;
-    private String country;
     private String category;
-    private String natural;
-    private String incomingCompany;
     private int quantity;
     private int incomingPrice;
-    private int incomingDate;
+    private LocalDate incomingDate;
+    private String country;
+    private String natural;
+
+    public InventoryReqDetailDto(Long companyId, String name, String category, long quantity, int incomingPrice, Date incomingDate, String country, String natural) {
+        this.companyId = companyId;
+        this.name = name;
+        this.category = category;
+        this.quantity = (int) quantity;
+        this.incomingPrice = incomingPrice;
+        this.incomingDate = incomingDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        this.country = country;
+        this.natural = natural;
+    }
 }

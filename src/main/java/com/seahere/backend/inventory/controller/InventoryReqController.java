@@ -23,7 +23,7 @@ public class InventoryReqController {
     @GetMapping
     public ResponseEntity<InventoryReqListResponse> inventoryReqList(InventoryReqSearchRequest request) {
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Direction.DESC, "name"));
-        Slice<InventoryReqDto> results = inventoryService.findAllInventoryBySearch(request.getCompanyId(), pageRequest, request.getSearch());
+        Slice<InventoryReqDto> results = inventoryService.getInventoryByCompanyId(request.getCompanyId(), pageRequest, request.getSearch());
         InventoryReqListResponse inventoryReqListResponse = new InventoryReqListResponse(results);
         return ResponseEntity.ok(inventoryReqListResponse);
     }
