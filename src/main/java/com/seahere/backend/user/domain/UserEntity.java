@@ -88,6 +88,9 @@ public class UserEntity {
         this.refreshToken = updateRefreshToken;
     }
 
+    public void updateCompany(CompanyEntity company){
+        this.company = company;
+    }
 
     public void editRole(Role role){
         this.role  = role;
