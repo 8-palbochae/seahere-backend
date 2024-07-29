@@ -4,4 +4,5 @@ import com.seahere.backend.user.request.CustomerSignupReq;
 
 public interface UserService {
     Long signupCustomer(CustomerSignupReq customerSignupReq);
+    Boolean validateEmail(String email);
 }

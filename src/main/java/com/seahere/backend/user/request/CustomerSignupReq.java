@@ -8,13 +8,23 @@ import com.seahere.backend.user.domain.UserStatus;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.NotBlank;
+
 @Getter
 public class CustomerSignupReq {
+    @NotBlank(message = "이메일은 필수 입니다")
     private String email;
+
+    @NotBlank(message = "비밀번호는 필수 입력 입니다.")
     private String password;
+
+    @NotBlank(message = "사용자 이름은 필수 입력 입니다.")
     private String username;
+
     private Address address;
+
     private SocialType socialType;
+
     private String socialId;
 
     @Builder
