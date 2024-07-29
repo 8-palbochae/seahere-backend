@@ -3,7 +3,8 @@ package com.seahere.backend.user.domain;
 import com.seahere.backend.common.entity.Address;
 import com.seahere.backend.common.entity.Role;
 import com.seahere.backend.common.entity.SocialType;
-import com.seahere.backend.user.request.SignupReq;
+import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.user.request.CustomerSignupReq;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +21,10 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id")
+    private CompanyEntity company;
 
     private String username;
 
@@ -39,12 +44,17 @@ public class UserEntity {
     private SocialType socialType;
 
     private String socialId;
+
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
     private String profileImage;
+
     private String refreshToken;
 
     @Builder
-    public UserEntity(Long id, String username, String email, String password, Address address, Boolean leave, Role role, SocialType socialType, String socialId, String profileImage, String refreshToken) {
+    public UserEntity(Long id, CompanyEntity company, String username, String email, String password, Address address, Boolean leave, Role role, SocialType socialType, String socialId, UserStatus status, String profileImage, String refreshToken) {
         this.id = id;
+        this.company = company;
         this.username = username;
         this.email = email;
         this.password = password;
@@ -53,12 +63,21 @@ public class UserEntity {
         this.role = role;
         this.socialType = socialType;
         this.socialId = socialId;
+        this.status = status;
         this.profileImage = profileImage;
         this.refreshToken = refreshToken;
     }
 
-    public void authorizeUser() {
+    public void authorizeCustomer() {
         this.role = Role.CUSTOMER;
+    }
+
+    public void authorizeAdmin() {
+        this.role = Role.ADMIN;
+    }
+
+    public void authorizeEmployee() {
+        this.role = Role.EMPLOYEE;
     }
 
     public void passwordEncode(PasswordEncoder passwordEncoder) {
@@ -69,16 +88,12 @@ public class UserEntity {
         this.refreshToken = updateRefreshToken;
     }
 
-    public static UserEntity from(SignupReq signupReq){
-        return UserEntity.builder()
-                .email(signupReq.getEmail())
-                .password(signupReq.getPassword())
-                .leave(false)
-                .role(Role.CUSTOMER)
-                .socialType(signupReq.getSocialType())
-                .socialId(signupReq.getSocialId())
-                .username(signupReq.getUsername())
-                .address(signupReq.getAddress())
-                .build();
+
+    public void editRole(Role role){
+        this.role  = role;
+    }
+
+    public void editStatus(UserStatus status){
+        this.status = status;
     }
 }
