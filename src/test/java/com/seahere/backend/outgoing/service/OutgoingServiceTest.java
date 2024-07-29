@@ -46,61 +46,61 @@ class OutgoingServiceTest {
     EntityManagerFactory emf;
 
     private Long companyId;
-    private Long data1Id;
+    private Long outgoing1Id;
     @BeforeEach
     void init(){
         CompanyEntity company = CompanyEntity.builder().companyName("A수산").build();
         companyRepository.save(company);
         companyId = company.getId();
-        OutgoingEntity data1 = OutgoingEntity.builder()
+        OutgoingEntity outgoing1 = OutgoingEntity.builder()
                 .outgoingDate(LocalDate.of(2024,7,20))
                 .customerName("아리랑")
                 .partialOutgoing(true)
                 .outgoingState(OutgoingState.PENDING)
                 .company(company)
                 .build();
-        OutgoingDetailEntity ddata1 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO)
+        OutgoingDetailEntity outgoingDetail1 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO)
                 .quantity(3).build();
-        data1.addOutgoingDetail(ddata1);
-        OutgoingEntity data2 = OutgoingEntity.builder()
+        outgoing1.addOutgoingDetail(outgoingDetail1);
+        OutgoingEntity outgoing2 = OutgoingEntity.builder()
                 .outgoingDate(LocalDate.of(2024,7,28))
                 .customerName("스리랑")
                 .partialOutgoing(true)
                 .outgoingState(OutgoingState.READY)
                 .company(company)
                 .build();
-        OutgoingEntity data3 = OutgoingEntity.builder()
+        OutgoingEntity outgoing3 = OutgoingEntity.builder()
                 .outgoingDate(LocalDate.of(2024,7,28))
                 .customerName("스리랑")
                 .company(company)
                 .partialOutgoing(true)
                 .outgoingState(OutgoingState.PENDING)
                 .build();
-        OutgoingDetailEntity ddata2 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO)
+        OutgoingDetailEntity outgoingDetail2 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO)
                 .quantity(3).build();
-        data3.addOutgoingDetail(ddata2);
-        OutgoingEntity data4 = OutgoingEntity.builder()
+        outgoing3.addOutgoingDetail(outgoingDetail2);
+        OutgoingEntity outgoing4 = OutgoingEntity.builder()
                 .outgoingDate(LocalDate.of(2024,7,28))
                 .customerName("스리랑")
                 .company(company)
                 .partialOutgoing(true)
                 .outgoingState(OutgoingState.PENDING)
                 .build();
-        OutgoingEntity data5 = OutgoingEntity.builder()
+        OutgoingEntity outgoing5 = OutgoingEntity.builder()
                 .outgoingDate(LocalDate.of(2024,7,28))
                 .customerName("스리랑")
                 .company(company)
                 .partialOutgoing(true)
                 .outgoingState(OutgoingState.READY)
                 .build();
-        outgoingService.save(data1);
-        outgoingService.save(data2);
-        outgoingService.save(data3);
-        outgoingService.save(data4);
-        outgoingService.save(data5);
-        outgoingDetailJpaRepository.save(ddata1);
-        outgoingDetailJpaRepository.save(ddata2);
-        data1Id = data1.getOutgoingId();
+        outgoingJpaRepository.save(outgoing1);
+        outgoingJpaRepository.save(outgoing2);
+        outgoingJpaRepository.save(outgoing3);
+        outgoingJpaRepository.save(outgoing4);
+        outgoingJpaRepository.save(outgoing5);
+        outgoingDetailJpaRepository.save(outgoingDetail1);
+        outgoingDetailJpaRepository.save(outgoingDetail2);
+        outgoing1Id = outgoing1.getOutgoingId();
         em.flush();
         em.clear();
     }
@@ -127,7 +127,6 @@ class OutgoingServiceTest {
         CompanyEntity company = companyRepository.findById(companyId).get();
         //when
         Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(companyId, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"");
-        boolean fetch = emf.getPersistenceUnitUtil().isLoaded(result.getContent().get(0).getOutgoingDetails());
 
         //then
         assertThat(result.getContent()).hasSize(3)
@@ -146,7 +145,6 @@ class OutgoingServiceTest {
         CompanyEntity company = companyRepository.findById(companyId).get();
         //when
         Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(companyId, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,8,20),"아리");
-        boolean fetch = emf.getPersistenceUnitUtil().isLoaded(result.getContent().get(0).getOutgoingDetails());
 
         //then
         assertThat(result.getContent()).hasSize(1)
@@ -178,10 +176,10 @@ class OutgoingServiceTest {
     @DisplayName("출고대기(ready)로 출고의 상태를 변경한다")
     void changeOutgoingStateToReady() {
         // given
-        OutgoingEntity outgoing = outgoingJpaRepository.findById(data1Id).get();
+        OutgoingEntity outgoing = outgoingJpaRepository.findById(outgoing1Id).get();
         // when
         outgoing.changeState(OutgoingState.READY);
-        OutgoingEntity result = outgoingJpaRepository.findById(data1Id).get();
+        OutgoingEntity result = outgoingJpaRepository.findById(outgoing1Id).get();
         // then
         assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.READY);
     }
@@ -190,10 +188,10 @@ class OutgoingServiceTest {
     @DisplayName("출고완료(complete)로 출고의 상태를 변경한다")
     void changeOutgoingStateToComplete() {
         // given
-        OutgoingEntity outgoing = outgoingJpaRepository.findById(data1Id).get();
+        OutgoingEntity outgoing = outgoingJpaRepository.findById(outgoing1Id).get();
         // when
         outgoing.changeState(OutgoingState.COMPLETE);
-        OutgoingEntity result = outgoingJpaRepository.findById(data1Id).get();
+        OutgoingEntity result = outgoingJpaRepository.findById(outgoing1Id).get();
         // then
         assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.COMPLETE);
     }
