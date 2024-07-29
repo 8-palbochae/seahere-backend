@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seahere.backend.common.entity.Address;
 import com.seahere.backend.user.repository.UserRepository;
 import com.seahere.backend.user.request.CustomerSignupReq;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,11 @@ class UserControllerTest {
     
     @Autowired
     private UserRepository userRepository;
+
+    @BeforeEach
+    void clear(){
+        userRepository.deleteAll();
+    }
     
     @Test
     @DisplayName("CusomterSignupReq 클래스로 POST 요청시 커스터머 계정이 생성된다")
@@ -53,7 +59,87 @@ class UserControllerTest {
                         .contentType(APPLICATION_JSON)
                         .content(json)
                 )
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("CusomterSignupReq 클래스로 POST 요청시 이메일이 없으면 400을 반환 한다")
+    void test2() throws Exception{
+        //given
+        Address address = Address.builder()
+                .postCode("12345")
+                .mainAddress("부산광역시")
+                .subAddress("스파로스 아카데미")
+                .build();
+
+        CustomerSignupReq signupReq = CustomerSignupReq.builder()
+                .username("여보소")
+                .password("1234")
+                .address(address)
+                .build();
+
+        String json = objectMapper.writeValueAsString(signupReq);
+        //expect
+        mockMvc.perform(MockMvcRequestBuilders. post("/users/customer")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+
+    @Test
+    @DisplayName("CusomterSignupReq 클래스로 POST 요청시 비밀번호가 없으면 400을 반환 한다")
+    void test3() throws Exception{
+        //given
+        Address address = Address.builder()
+                .postCode("12345")
+                .mainAddress("부산광역시")
+                .subAddress("스파로스 아카데미")
+                .build();
+
+        CustomerSignupReq signupReq = CustomerSignupReq.builder()
+                .username("여보소")
+                .email("test@test.com")
+                .address(address)
+                .build();
+
+        String json = objectMapper.writeValueAsString(signupReq);
+        //expect
+        mockMvc.perform(MockMvcRequestBuilders. post("/users/customer")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+
+    @Test
+    @DisplayName("CusomterSignupReq 클래스로 POST 요청시 이름이 없으면 400를 반환 한다")
+    void test4() throws Exception{
+        //given
+        Address address = Address.builder()
+                .postCode("12345")
+                .mainAddress("부산광역시")
+                .subAddress("스파로스 아카데미")
+                .build();
+
+        CustomerSignupReq signupReq = CustomerSignupReq.builder()
+                .email("test@test.com")
+                .password("1234")
+                .address(address)
+                .build();
+
+        String json = objectMapper.writeValueAsString(signupReq);
+        //expect
+        mockMvc.perform(MockMvcRequestBuilders. post("/users/customer")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isBadRequest())
                 .andDo(print());
     }
 }
