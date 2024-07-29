@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,12 +20,23 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/users/customer")
-    public ResponseEntity<Void> customerAdd(@RequestBody CustomerSignupReq customerSignupReq){
-        if(!userService.validateEmail(customerSignupReq.getEmail())){
+    public ResponseEntity<Void> customerAdd(@RequestBody @Valid CustomerSignupReq customerSignupReq){
+        if(userService.validateEmail(customerSignupReq.getEmail())){
             throw new DuplicateEmailException();
         }
 
         userService.signupCustomer(customerSignupReq);
         return ResponseEntity.created(URI.create("/login")).build();
+    }
+
+    @PostMapping("/users/validation")
+    public ResponseEntity<Map<String, Object>> validateEmail(@RequestBody String email){
+        Map<String, Object> response = new HashMap<>();
+        boolean isAvailable = !userService.validateEmail(email);
+
+        response.put("available", isAvailable);
+        response.put("message", isAvailable ? "이메일을 사용할 수 있습니다." : "이메일이 이미 사용 중입니다.");
+
+        return ResponseEntity.ok(response);
     }
 }
