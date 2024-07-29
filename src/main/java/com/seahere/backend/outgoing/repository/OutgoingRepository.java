@@ -2,6 +2,7 @@ package com.seahere.backend.outgoing.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import lombok.RequiredArgsConstructor;
@@ -22,10 +23,10 @@ public class OutgoingRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable, LocalDate startDate, LocalDate endDate, String search) {
+    public Slice<OutgoingEntity> findByOutgoingStateIsPending(CompanyEntity company, Pageable pageable, LocalDate startDate, LocalDate endDate, String search) {
         List<OutgoingEntity> results = queryFactory.selectFrom(outgoingEntity).distinct()
                 .leftJoin(outgoingEntity.outgoingDetails, outgoingDetailEntity)
-                .where(outgoingStateIsPending(companyId,startDate,endDate,search))
+                .where(outgoingStateIsPending(company,startDate,endDate,search))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
@@ -35,9 +36,9 @@ public class OutgoingRepository {
         }
         return new SliceImpl<>(results,pageable, hasNext);
     }
-    private BooleanExpression outgoingStateIsPending(Long companyId,LocalDate startDate, LocalDate endDate, String search) {
+    private BooleanExpression outgoingStateIsPending(CompanyEntity company,LocalDate startDate, LocalDate endDate, String search) {
         return outgoingEntity.outgoingState.eq(OutgoingState.pending)
-                .and(outgoingEntity.companyId.eq(companyId))
+                .and(outgoingEntity.company.eq(company))
                 .and(outgoingEntity.outgoingDate.goe(startDate))
                 .and(outgoingEntity.outgoingDate.loe(endDate))
                 .and(outgoingEntity.customerName.contains(search).or(outgoingDetailEntity.productName.contains(search)));

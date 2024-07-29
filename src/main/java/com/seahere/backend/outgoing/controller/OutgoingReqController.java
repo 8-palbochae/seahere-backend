@@ -4,6 +4,7 @@ import com.seahere.backend.outgoing.controller.request.OutgoingReqSearchRequest;
 import com.seahere.backend.outgoing.controller.response.OutgoingReqListResponse;
 import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDetailsDto;
 import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDto;
+import com.seahere.backend.outgoing.dto.OutgoingReqDto;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.outgoing.service.OutgoingService;
@@ -29,21 +30,10 @@ public class OutgoingReqController {
     private final static String STATE = "state";
 
     private final OutgoingService outgoingService;
-
-    List<OutgoingReqMockDto> mockList;
     List<OutgoingReqMockDetailsDto> mockDetailList;
     @PostConstruct
     void init() {
-        mockList = new ArrayList<>();
         mockDetailList = new ArrayList<>();
-        mockList.add(new OutgoingReqMockDto(1L,"스파로스","광어외3...", OutgoingState.pending, true));
-        mockList.add(new OutgoingReqMockDto(2L,"kdt","우럭외3...",OutgoingState.pending ,false));
-        mockList.add(new OutgoingReqMockDto(3L,"부산시","고등어외3...",OutgoingState.pending, true));
-        mockList.add(new OutgoingReqMockDto(4L,"신세계","갈치외3...",OutgoingState.pending));
-        mockList.add(new OutgoingReqMockDto(5L,"아이앤씨","다시마외3...",OutgoingState.pending));
-        mockList.add(new OutgoingReqMockDto(6L,"아이앤씨","대방어외3...",OutgoingState.pending));
-        mockList.add(new OutgoingReqMockDto(7L,"아이앤씨","전어외3...",OutgoingState.pending));
-        mockList.add(new OutgoingReqMockDto(8L,"아이앤씨","전갱이외3...",OutgoingState.pending));
         mockDetailList.add(new OutgoingReqMockDetailsDto(1L, 1L,"", "광어",20,100,80,100000));
         mockDetailList.add(new OutgoingReqMockDetailsDto(1L, 2L,"", "넙치",30,100,70,100000));
         mockDetailList.add(new OutgoingReqMockDetailsDto(1L, 3L,"", "고등어",40,100,60,200000));
@@ -75,26 +65,10 @@ public class OutgoingReqController {
     }
 
     @PatchMapping("/{outgoingId}")
-    public ResponseEntity<OutgoingReqMockDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody Map<String,OutgoingState> state){
-        int index = (int) (outgoingId -1);
-        OutgoingReqMockDto item = mockList.get(index);
-        if(isStateToReady(state.get(STATE))){
-            item.setOutgoingStateToReady();
-        }
-        if(isStateToReject(state.get(STATE))){
-            item.setOutgoingStateToReject();
-        }
-        return ResponseEntity.ok(item);
+    public ResponseEntity<OutgoingReqDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody Map<String,OutgoingState> state){
+        OutgoingReqDto outgoing = outgoingService.changeOutgoingState(outgoingId, state.get(STATE));
+        return ResponseEntity.ok(outgoing);
     }
-
-    private boolean isStateToReady(OutgoingState state){
-        return state == OutgoingState.ready;
-    }
-
-    private boolean isStateToReject(OutgoingState state){
-        return state == OutgoingState.reject;
-    }
-
     @DeleteMapping("/details/{outgoingDetailId}")
     public void outgoingDetailDelete(@PathVariable("outgoingDetailId")Long detailId){
         int index = (int) (detailId -1);

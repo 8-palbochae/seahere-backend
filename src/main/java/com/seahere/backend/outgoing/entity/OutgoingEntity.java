@@ -1,5 +1,6 @@
 package com.seahere.backend.outgoing.entity;
 
+import com.seahere.backend.company.entity.CompanyEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,7 +18,9 @@ public class OutgoingEntity {
     @Id @GeneratedValue
     private Long outgoingId;
 
-    private Long companyId;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private CompanyEntity company;
 
     private String customerName;
 
@@ -30,12 +33,11 @@ public class OutgoingEntity {
     private OutgoingState outgoingState;
 
     private boolean partialOutgoing;
-    //    private float quantity;
     //    private UserEntity customer;
 
     @Builder
-    public OutgoingEntity(Long companyId,String customerName, LocalDate outgoingDate, OutgoingState outgoingState, boolean partialOutgoing) {
-        this.companyId = companyId;
+    public OutgoingEntity(CompanyEntity company,String customerName, LocalDate outgoingDate, OutgoingState outgoingState, boolean partialOutgoing) {
+        this.company = company;
         this.customerName = customerName;
         this.outgoingDate = outgoingDate;
         this.outgoingState = outgoingState;
@@ -45,5 +47,9 @@ public class OutgoingEntity {
     public void addOutgoingDetail(OutgoingDetailEntity outgoingDetail){
         this.outgoingDetails.add(outgoingDetail);
         outgoingDetail.assignOutgoing(this);
+    }
+
+    public void changeState(OutgoingState state){
+        this.outgoingState = state;
     }
 }
