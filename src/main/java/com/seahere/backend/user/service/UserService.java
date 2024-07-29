@@ -1,7 +1,7 @@
 package com.seahere.backend.user.service;
 
-import com.seahere.backend.user.request.SignupReq;
+import com.seahere.backend.user.request.CustomerSignupReq;
 
 public interface UserService {
-    Long signupUser(SignupReq signupReq);
+    Long signupCustomer(CustomerSignupReq customerSignupReq);
 }
