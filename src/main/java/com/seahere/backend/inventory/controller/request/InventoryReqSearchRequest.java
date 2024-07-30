@@ -11,5 +11,5 @@ public class InventoryReqSearchRequest {
     private Long companyId;
     private int size = 10;
     private int page = 0;
-    private String search = "";
+    private String search;
 }
