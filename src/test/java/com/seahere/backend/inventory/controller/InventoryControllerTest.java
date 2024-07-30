@@ -1,31 +1,46 @@
-package com.seahere.backend.inventory.service;
+package com.seahere.backend.inventory.controller;
 
-import com.seahere.backend.inventory.controller.response.InventoryReqDetailDto;
-import com.seahere.backend.inventory.controller.response.InventoryReqDto;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seahere.backend.inventory.controller.request.InventoryReqSearchRequest;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
-import lombok.extern.slf4j.Slf4j;
+import com.seahere.backend.inventory.service.InventoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 
-@Slf4j
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @SpringBootTest
-class InventoryServiceTest {
+@AutoConfigureMockMvc
+public class InventoryControllerTest {
     @Autowired
     InventoryService inventoryService;
     @Autowired
     InventoryJpaRepository inventoryJpaRepository;
+    @Autowired
+    ObjectMapper objectMapper;
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
-    @DisplayName("companyId를 통한 재고 목록 조회")
-    void test1() throws Exception {
+    @DisplayName("InventoryReqSearchRequest 클래스로 GET 요청시 CompanyId에 따른 재고 목록이 반환된다.")
+    public void test1() throws Exception{
+        //given
+
+        InventoryReqSearchRequest inventoryReqSearchRequest = InventoryReqSearchRequest.builder()
+                .companyId(101L)
+                .size(10)
+                .page(0)
+                .search("")
+                .build();
 
         LocalDate date1 = LocalDate.of(2024, 7, 23);
         LocalDate date2 = LocalDate.of(2024, 7, 21);
@@ -286,21 +301,15 @@ class InventoryServiceTest {
         inventoryJpaRepository.save(inventory20);
         inventoryJpaRepository.save(inventory21);
 
-        // when
-        Long companyId = 101L;
-        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "name"));
-        Page<InventoryReqDto> inventoryReqDtoSlice = inventoryJpaRepository.findPagedInventoryByCompanyId(companyId, pageRequest);
-        Page<InventoryReqDetailDto> inventoryReqDetailDtoPage1 = inventoryJpaRepository.getPagedProductsByCompanyId(companyId, "광어", "활어", pageRequest);
-        inventoryReqDtoSlice.forEach(inventory -> log.info("Inventory: {}", inventory.toString()));
-        inventoryReqDetailDtoPage1.forEach(product -> log.info("Product before remove: {}", product.toString()));
-        inventoryJpaRepository.deleteById(1L);
+        String json = objectMapper.writeValueAsString(inventoryReqSearchRequest);
 
-        // then
-        Page<InventoryReqDetailDto> inventoryReqDetailDtoPage2 = inventoryJpaRepository.getPagedProductsByCompanyId(companyId, "광어", "활어", pageRequest);
-
-        inventoryReqDetailDtoPage2.forEach(product -> log.info("Product after remove: {}", product.toString()));
-
-
+        // expect
+        mockMvc.perform(get("/inventories")
+                        .param("companyId", "101")
+                        .param("size", "10")
+                        .param("page", "0")
+                        .param("search", ""))
+                .andExpect(status().isOk())
+                .andDo(print());
     }
-
 }
