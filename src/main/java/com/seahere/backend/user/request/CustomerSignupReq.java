@@ -7,10 +7,12 @@ import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.domain.UserStatus;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 
 @Getter
+@NoArgsConstructor
 public class CustomerSignupReq {
     @NotBlank(message = "이메일은 필수 입니다")
     private String email;
