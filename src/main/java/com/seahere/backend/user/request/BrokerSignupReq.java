@@ -3,6 +3,7 @@ package com.seahere.backend.user.request;
 import com.seahere.backend.common.entity.Address;
 import com.seahere.backend.common.entity.Role;
 import com.seahere.backend.common.entity.SocialType;
+import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.domain.UserStatus;
 import lombok.Builder;
@@ -13,7 +14,7 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
-public class CustomerSignupReq {
+public class BrokerSignupReq {
     @NotBlank(message = "이메일은 필수 입니다")
     private String email;
 
@@ -30,7 +31,7 @@ public class CustomerSignupReq {
     private String socialId;
 
     @Builder
-    public CustomerSignupReq(String email, String password, String username, Address address, SocialType socialType, String socialId) {
+    public BrokerSignupReq(String email, String password, String username, Address address, SocialType socialType, String socialId, Long companyId, String ceoName) {
         this.email = email;
         this.password = password;
         this.username = username;
@@ -47,8 +48,8 @@ public class CustomerSignupReq {
                 .address(address)
                 .socialType(socialType)
                 .socialId(socialId)
-                .role(Role.CUSTOMER)
-                .status(UserStatus.APPROVED)
+                .role(Role.EMPLOYEE)
+                .status(UserStatus.PENDING)
                 .leave(false)
                 .build();
     }

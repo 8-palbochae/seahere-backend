@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -29,81 +30,15 @@ import static org.assertj.core.api.Assertions.*;
 @SpringBootTest
 @Transactional
 @Slf4j
+@Sql(value = "/sql/outgoing-service-test.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class OutgoingServiceTest {
     //todo 추후에 user도 entity로 바꿀것
     @Autowired
     private OutgoingService outgoingService;
     @Autowired
-    private OutgoingDetailJpaRepository outgoingDetailJpaRepository;
-    @Autowired
     private CompanyRepository companyRepository;
     @Autowired
-    private EntityManager em;
-    @Autowired
     private OutgoingJpaRepository outgoingJpaRepository;
-
-    @PersistenceUnit
-    EntityManagerFactory emf;
-
-    private Long companyId;
-    private Long outgoing1Id;
-    @BeforeEach
-    void init(){
-        CompanyEntity company = CompanyEntity.builder().companyName("A수산").build();
-        companyRepository.save(company);
-        companyId = company.getId();
-        OutgoingEntity outgoing1 = OutgoingEntity.builder()
-                .outgoingDate(LocalDate.of(2024,7,20))
-                .customerName("아리랑")
-                .partialOutgoing(true)
-                .outgoingState(OutgoingState.PENDING)
-                .company(company)
-                .build();
-        OutgoingDetailEntity outgoingDetail1 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO)
-                .quantity(3).build();
-        outgoing1.addOutgoingDetail(outgoingDetail1);
-        OutgoingEntity outgoing2 = OutgoingEntity.builder()
-                .outgoingDate(LocalDate.of(2024,7,28))
-                .customerName("스리랑")
-                .partialOutgoing(true)
-                .outgoingState(OutgoingState.READY)
-                .company(company)
-                .build();
-        OutgoingEntity outgoing3 = OutgoingEntity.builder()
-                .outgoingDate(LocalDate.of(2024,7,28))
-                .customerName("스리랑")
-                .company(company)
-                .partialOutgoing(true)
-                .outgoingState(OutgoingState.PENDING)
-                .build();
-        OutgoingDetailEntity outgoingDetail2 = OutgoingDetailEntity.builder().productName("광어").price(BigDecimal.ZERO)
-                .quantity(3).build();
-        outgoing3.addOutgoingDetail(outgoingDetail2);
-        OutgoingEntity outgoing4 = OutgoingEntity.builder()
-                .outgoingDate(LocalDate.of(2024,7,28))
-                .customerName("스리랑")
-                .company(company)
-                .partialOutgoing(true)
-                .outgoingState(OutgoingState.PENDING)
-                .build();
-        OutgoingEntity outgoing5 = OutgoingEntity.builder()
-                .outgoingDate(LocalDate.of(2024,7,28))
-                .customerName("스리랑")
-                .company(company)
-                .partialOutgoing(true)
-                .outgoingState(OutgoingState.READY)
-                .build();
-        outgoingJpaRepository.save(outgoing1);
-        outgoingJpaRepository.save(outgoing2);
-        outgoingJpaRepository.save(outgoing3);
-        outgoingJpaRepository.save(outgoing4);
-        outgoingJpaRepository.save(outgoing5);
-        outgoingDetailJpaRepository.save(outgoingDetail1);
-        outgoingDetailJpaRepository.save(outgoingDetail2);
-        outgoing1Id = outgoing1.getOutgoingId();
-        em.flush();
-        em.clear();
-    }
 
 
     @Test
@@ -114,7 +49,7 @@ class OutgoingServiceTest {
         //when
         //then
         assertThatThrownBy(() ->
-                outgoingService.findByOutgoingStateIsPending(2L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),""))
+                outgoingService.findByOutgoingStateIsPending(3L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),""))
                 .isInstanceOf(CompanyNotFound.class)
                 .hasMessage("존재하는 회사가 없습니다.");
     }
@@ -124,9 +59,9 @@ class OutgoingServiceTest {
     void findByOutgoingStateIsPendingSlice(){
         //given
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
-        CompanyEntity company = companyRepository.findById(companyId).get();
+        CompanyEntity company = companyRepository.findById(1L).get();
         //when
-        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(companyId, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"");
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"");
 
         //then
         assertThat(result.getContent()).hasSize(3)
@@ -142,9 +77,9 @@ class OutgoingServiceTest {
     void findByOutgoingStateIsPendingSliceSearch(){
         //given
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
-        CompanyEntity company = companyRepository.findById(companyId).get();
+        CompanyEntity company = companyRepository.findById(1L).get();
         //when
-        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(companyId, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,8,20),"아리");
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,8,20),"아리");
 
         //then
         assertThat(result.getContent()).hasSize(1)
@@ -157,12 +92,11 @@ class OutgoingServiceTest {
     @DisplayName("출고 리스트중 상태가 해당 회사 번호와 출고요청(pending), 지정날짜 사이 그리고 상품이름이 광어가 포함된 출고 목록을 반환한다.")
     void findByOutgoingStateIsPendingSliceSearchProductName(){
         //given
-        CompanyEntity company = companyRepository.findById(companyId).get();
+        CompanyEntity company = companyRepository.findById(1L).get();
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
         //when
-        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(companyId, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"광어");
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"광어");
         //then
-        assertThat(result.getContent()).hasSize(2);
         assertThat(result.getContent().get(0).getOutgoingDetails().get(0).getProductName()).isEqualTo("광어");
         assertThat(result.getContent()).hasSize(2)
                 .extracting("company","outgoingState","partialOutgoing","customerName")
@@ -176,10 +110,10 @@ class OutgoingServiceTest {
     @DisplayName("출고대기(ready)로 출고의 상태를 변경한다")
     void changeOutgoingStateToReady() {
         // given
-        OutgoingEntity outgoing = outgoingJpaRepository.findById(outgoing1Id).get();
+        OutgoingEntity outgoing = outgoingJpaRepository.findById(1L).get();
         // when
         outgoing.changeState(OutgoingState.READY);
-        OutgoingEntity result = outgoingJpaRepository.findById(outgoing1Id).get();
+        OutgoingEntity result = outgoingJpaRepository.findById(1L).get();
         // then
         assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.READY);
     }
@@ -188,10 +122,10 @@ class OutgoingServiceTest {
     @DisplayName("출고완료(complete)로 출고의 상태를 변경한다")
     void changeOutgoingStateToComplete() {
         // given
-        OutgoingEntity outgoing = outgoingJpaRepository.findById(outgoing1Id).get();
+        OutgoingEntity outgoing = outgoingJpaRepository.findById(1L).get();
         // when
         outgoing.changeState(OutgoingState.COMPLETE);
-        OutgoingEntity result = outgoingJpaRepository.findById(outgoing1Id).get();
+        OutgoingEntity result = outgoingJpaRepository.findById(1L).get();
         // then
         assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.COMPLETE);
     }
