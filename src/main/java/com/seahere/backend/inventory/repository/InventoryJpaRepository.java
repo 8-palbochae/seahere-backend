@@ -13,13 +13,13 @@ public interface InventoryJpaRepository extends JpaRepository<InventoryEntity, L
 
     @Query("SELECT new com.seahere.backend.inventory.controller.response.InventoryReqDto(" +
             "i.companyId, i.name, i.category, MAX(i.incomingDate), SUM(i.quantity)) " +
-            "FROM InventoryEntity i WHERE i.companyId = :companyId GROUP BY i.name, i.category")
-    Page<InventoryReqDto> findPagedInventoryByCompanyId(@Param("companyId") Long companyId, Pageable pageable);
+            "FROM InventoryEntity i WHERE i.companyId = :companyId and i.name like %:search% GROUP BY i.name, i.category")
+    Page<InventoryReqDto> findPagedInventoryByCompanyId(@Param("companyId") Long companyId, Pageable pageable, @Param("search") String search);
 
     @Query("SELECT new com.seahere.backend.inventory.controller.response.InventoryReqDetailDto(" +
             "i.inventoryId, i.companyId, i.name, i.category, i.quantity, i.incomingDate, i.country, i.naturalStatus) " +
             "FROM InventoryEntity i WHERE i.companyId = :companyId AND i.name = :name AND i.category = :category")
-    Page<InventoryReqDetailDto> getPagedProductsByCompanyId(@Param("companyId") Long companyId,
+    Page<InventoryReqDetailDto> findPagedProductsByCompanyId(@Param("companyId") Long companyId,
                                                             @Param("name") String name,
                                                             @Param("category") String category,
                                                             Pageable pageable);

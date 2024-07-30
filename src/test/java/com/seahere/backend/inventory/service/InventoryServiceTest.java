@@ -288,15 +288,16 @@ class InventoryServiceTest {
 
         // when
         Long companyId = 101L;
+        String search = "";
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "name"));
-        Page<InventoryReqDto> inventoryReqDtoSlice = inventoryJpaRepository.findPagedInventoryByCompanyId(companyId, pageRequest);
-        Page<InventoryReqDetailDto> inventoryReqDetailDtoPage1 = inventoryJpaRepository.getPagedProductsByCompanyId(companyId, "광어", "활어", pageRequest);
+        Page<InventoryReqDto> inventoryReqDtoSlice = inventoryJpaRepository.findPagedInventoryByCompanyId(companyId, pageRequest, search);
+        Page<InventoryReqDetailDto> inventoryReqDetailDtoPage1 = inventoryJpaRepository.findPagedProductsByCompanyId(companyId, "광어", "활어", pageRequest);
         inventoryReqDtoSlice.forEach(inventory -> log.info("Inventory: {}", inventory.toString()));
         inventoryReqDetailDtoPage1.forEach(product -> log.info("Product before remove: {}", product.toString()));
         inventoryJpaRepository.deleteById(1L);
 
         // then
-        Page<InventoryReqDetailDto> inventoryReqDetailDtoPage2 = inventoryJpaRepository.getPagedProductsByCompanyId(companyId, "광어", "활어", pageRequest);
+        Page<InventoryReqDetailDto> inventoryReqDetailDtoPage2 = inventoryJpaRepository.findPagedProductsByCompanyId(companyId, "광어", "활어", pageRequest);
 
         inventoryReqDetailDtoPage2.forEach(product -> log.info("Product after remove: {}", product.toString()));
 

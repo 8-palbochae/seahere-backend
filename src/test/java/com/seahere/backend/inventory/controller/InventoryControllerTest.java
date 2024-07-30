@@ -39,7 +39,6 @@ public class InventoryControllerTest {
                 .companyId(101L)
                 .size(10)
                 .page(0)
-                .search("")
                 .build();
 
         LocalDate date1 = LocalDate.of(2024, 7, 23);
@@ -301,14 +300,29 @@ public class InventoryControllerTest {
         inventoryJpaRepository.save(inventory20);
         inventoryJpaRepository.save(inventory21);
 
-        String json = objectMapper.writeValueAsString(inventoryReqSearchRequest);
-
         // expect
         mockMvc.perform(get("/inventories")
                         .param("companyId", "101")
                         .param("size", "10")
                         .param("page", "0")
                         .param("search", ""))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        mockMvc.perform(get("/inventories/details")
+                        .param("companyId", "101")
+                        .param("size", "10")
+                        .param("page", "0")
+                        .param("name", "광어")
+                        .param("category", "활어"))
+                .andExpect(status().isOk())
+                .andDo(print());
+
+        mockMvc.perform(get("/inventories")
+                        .param("companyId", "101")
+                        .param("size", "10")
+                        .param("page", "0")
+                        .param("search", "광어"))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
