@@ -1,13 +1,12 @@
 package com.seahere.backend.inventory.controller.request;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class InventoryReqSearchRequest {
     private Long companyId;
     private int size = 10;
