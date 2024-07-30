@@ -1,4 +1,5 @@
 insert into COMPANIES(id) values(1);
+insert into USERS(id) values(2);
 
 INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, partial_outgoing,customer_name) VALUES
                                                                                                     (1, 1, '2024-07-27', 'pending', true,'스리랑'),

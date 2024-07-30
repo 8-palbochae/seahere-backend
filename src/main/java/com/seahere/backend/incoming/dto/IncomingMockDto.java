@@ -24,4 +24,5 @@ public class IncomingMockDto {
     private String natural;
     private String category;
     private Long userId;
+
 }
