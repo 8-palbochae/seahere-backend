@@ -40,4 +40,7 @@ public class OutgoingDetailEntity {
     public void stateToDelete(){
         this.state = OutgoingDetailState.DELETE;
     }
+    public void stateToActive(){
+        this.state = OutgoingDetailState.ACTIVE;
+    }
 }
