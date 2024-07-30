@@ -114,7 +114,7 @@ class OutgoingServiceTest {
         //when
         //then
         assertThatThrownBy(() ->
-                outgoingService.findByOutgoingStateIsPending(2L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),""))
+                outgoingService.findByOutgoingStateIsPending(3L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),""))
                 .isInstanceOf(CompanyNotFound.class)
                 .hasMessage("존재하는 회사가 없습니다.");
     }
