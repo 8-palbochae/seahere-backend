@@ -29,7 +29,7 @@ class InventoryServiceTest {
         Long companyId = 101L;
         String search = "";
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "name"));
-        Page<InventoryReqDto> inventoryReqDtoSlice = inventoryJpaRepository.findPagedInventoryByCompanyId(companyId, pageRequest, search);
+        Page<InventoryReqDto> inventoryReqDtoSlice = inventoryJpaRepository.findPagedInventoryByCompanyId(companyId, search, pageRequest);
         Page<InventoryReqDetailDto> inventoryReqDetailDtoPage1 = inventoryJpaRepository.findPagedProductsByCompanyId(companyId, "광어", "활어", pageRequest);
         inventoryReqDtoSlice.forEach(inventory -> log.info("Inventory: {}", inventory.toString()));
         inventoryReqDetailDtoPage1.forEach(product -> log.info("Product before remove: {}", product.toString()));
