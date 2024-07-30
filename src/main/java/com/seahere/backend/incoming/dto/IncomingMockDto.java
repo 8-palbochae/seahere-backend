@@ -21,7 +21,7 @@ public class IncomingMockDto {
     private String memo;
     private String countryDetail;
     private String country;
-    private String natural;
+    private String naturalStatus;
     private String category;
     private Long userId;
 

@@ -24,7 +24,7 @@ public class OutgoingReqDto {
 
     public static OutgoingReqDto from(OutgoingEntity outgoingEntity) {
         return OutgoingReqDto.builder()
-                .companyId(outgoingEntity.getCompanyId())
+                .companyId(outgoingEntity.getCompany().getId())
                 .customerName(outgoingEntity.getCustomerName())
                 .outgoingDate(outgoingEntity.getOutgoingDate())
                 .state(outgoingEntity.getOutgoingState())

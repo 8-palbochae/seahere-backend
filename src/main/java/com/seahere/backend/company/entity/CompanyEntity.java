@@ -2,28 +2,38 @@ package com.seahere.backend.company.entity;
 
 import com.seahere.backend.common.entity.Address;
 import com.seahere.backend.company.request.CompanyCreateReq;
+import com.seahere.backend.user.domain.UserEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "companies")
+@Table(name = "company")
 public class CompanyEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "company_id")
     private Long id;
+
     private String registrationNumber;
+
     private String companyName;
 
     @Embedded
     private Address address;
 
     private String profileImage;
+
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    private List<UserEntity> userEntityList =new ArrayList<>();
 
     @Builder
     public CompanyEntity(Long id, String registrationNumber, String companyName, Address address, String profileImage) {

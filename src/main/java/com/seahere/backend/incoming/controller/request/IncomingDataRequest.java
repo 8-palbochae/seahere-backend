@@ -16,7 +16,7 @@ public class IncomingDataRequest {
     private final int incomingPrice;
     private final String memo;
     private final String countryDetail;
-    private final String natural;
+    private final String naturalStatus;
     private final String category;
     private final String country;
 
