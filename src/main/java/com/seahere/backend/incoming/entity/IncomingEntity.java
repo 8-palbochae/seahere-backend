@@ -5,6 +5,7 @@ import com.seahere.backend.user.domain.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
@@ -39,6 +40,11 @@ public class IncomingEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    public void enroll(UserEntity user, CompanyEntity company){
+        this.user = user;
+        this.company = company;
+    }
 
     @Builder
     public IncomingEntity(Long incomingId, CompanyEntity company, Long productId, int quantity, LocalDate incomingDate, int incomingPrice, String memo, String countryDetail, String country, String naturalStatus, String category, UserEntity user) {

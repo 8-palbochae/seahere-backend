@@ -30,21 +30,8 @@ public class IncomingServiceImpl implements IncomingService{
 
         CompanyEntity companyEntity = companyRepository.findById(companyId).orElseThrow(CompanyNotFound::new);
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-
-        IncomingEntity incomingEntity = IncomingEntity.builder()
-                .company(companyEntity)
-                .user(userEntity)
-                .productId(incomingDataRequest.getProductId())
-                .quantity(incomingDataRequest.getQuantity())
-                .incomingDate(LocalDate.now())
-                .incomingPrice(incomingDataRequest.getIncomingPrice())
-                .memo(incomingDataRequest.getMemo())
-                .category(incomingDataRequest.getCategory())
-                .country(incomingDataRequest.getCountry())
-                .countryDetail(incomingDataRequest.getCountryDetail())
-                .naturalStatus(incomingDataRequest.getNaturalStatus())
-                .build();
-
+        IncomingEntity incomingEntity = incomingDataRequest.toEntity();
+        incomingEntity.enroll(userEntity,companyEntity);
         incomingRepository.save(incomingEntity);
     }
 }
