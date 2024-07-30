@@ -3,11 +3,13 @@ package com.seahere.backend.outgoing.service;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingDetailState;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
+import com.seahere.backend.outgoing.exception.NotPartialOutgoingException;
 import com.seahere.backend.outgoing.exception.OutgoingDetailNotFoundException;
 import com.seahere.backend.outgoing.exception.OutgoingNotFoundException;
 import com.seahere.backend.outgoing.repository.OutgoingDetailJpaRepository;
 import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +18,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Slf4j
 public class OutgoingDetailService {
 
     private final OutgoingDetailJpaRepository outgoingDetailJpaRepository;
@@ -24,7 +27,11 @@ public class OutgoingDetailService {
     @Transactional
     public void deleteOutgoingDetail(Long outgoingDetailId){
         OutgoingDetailEntity detail = outgoingDetailJpaRepository.findById(outgoingDetailId).orElseThrow(OutgoingDetailNotFoundException::new);
-        detail.stateToDelete();
+        if(detail.isPossibleDelete()){
+            detail.stateToDelete();
+            return;
+        }
+        throw new NotPartialOutgoingException();
     }
 
     public List<OutgoingDetailEntity> findByOutgoingAndStateIsAcitve(Long outgoingId){
