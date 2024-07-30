@@ -4,7 +4,6 @@ import com.seahere.backend.common.entity.Address;
 import com.seahere.backend.common.entity.Role;
 import com.seahere.backend.common.entity.SocialType;
 import com.seahere.backend.company.entity.CompanyEntity;
-import com.seahere.backend.user.request.CustomerSignupReq;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -79,6 +78,11 @@ public class UserEntity {
 
     public void authorizeEmployee() {
         this.role = Role.EMPLOYEE;
+    }
+
+    public void signupOAuth(String username, Address address){
+        this.username=username;
+        this.address=address;
     }
 
     public void passwordEncode(PasswordEncoder passwordEncoder) {

@@ -4,6 +4,7 @@ import com.seahere.backend.user.exception.DuplicateEmailException;
 import com.seahere.backend.user.request.BrokerSignupReq;
 import com.seahere.backend.user.request.CeoSignupReq;
 import com.seahere.backend.user.request.CustomerSignupReq;
+import com.seahere.backend.user.request.OAuthSignupReq;
 import com.seahere.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -48,6 +49,12 @@ public class UserController {
         }
 
         userService.signupCeo(ceoSignupReq);
+        return ResponseEntity.created(URI.create("/login")).build();
+    }
+
+    @PostMapping("/users/oauth")
+    public ResponseEntity<Void> oauthSignup(@RequestBody OAuthSignupReq oAuthSignupReq){
+        userService.signupOauth(oAuthSignupReq);
         return ResponseEntity.created(URI.create("/login")).build();
     }
 
