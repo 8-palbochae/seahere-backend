@@ -26,9 +26,6 @@ public class InventoryEntity {
     @Column(name = "quantity")
     private int quantity;
 
-    @Column(name = "incoming_price")
-    private int incomingPrice;
-
     @Column(name = "category")
     private String category;
 

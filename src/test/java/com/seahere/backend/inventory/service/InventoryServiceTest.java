@@ -1,5 +1,6 @@
 package com.seahere.backend.inventory.service;
 
+import com.seahere.backend.inventory.controller.response.InventoryReqDetailDto;
 import com.seahere.backend.inventory.controller.response.InventoryReqDto;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
@@ -24,23 +25,22 @@ class InventoryServiceTest {
     InventoryJpaRepository inventoryJpaRepository;
 
     @Test
-    @DisplayName("CustomerSignupReq 클래스를 통해서 커스터머 일반 회원 가입이 가능하다")
+    @DisplayName("companyId를 통한 재고 목록 조회")
     void test1() throws Exception {
 
         LocalDate date1 = LocalDate.of(2024, 7, 23);
-        LocalDate date2 = LocalDate.of(2024, 7, 23);
-        LocalDate date3 = LocalDate.of(2024,7,23);
-        LocalDate date4 = LocalDate.of(2024,7,23);
-        LocalDate date5 = LocalDate.of(2024,7,23);
-        LocalDate date6 = LocalDate.of(2024,7,23);
-        LocalDate date7 = LocalDate.of(2024,7,23);
+        LocalDate date2 = LocalDate.of(2024, 7, 21);
+        LocalDate date3 = LocalDate.of(2024,7,22);
+        LocalDate date4 = LocalDate.of(2024,7,12);
+        LocalDate date5 = LocalDate.of(2024,7,9);
+        LocalDate date6 = LocalDate.of(2024,7,31);
+        LocalDate date7 = LocalDate.of(2024,7,14);
         //given
         InventoryEntity inventory01 = InventoryEntity.builder()
                 .inventoryId(1L)
                 .name("광어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -52,11 +52,10 @@ class InventoryServiceTest {
                 .name("우럭")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("양식")
                 .companyId(101L)
-                .incomingDate(date2)
+                .incomingDate(date1)
                 .build();
 
         InventoryEntity inventory03 = InventoryEntity.builder()
@@ -64,7 +63,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("선어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -75,7 +73,6 @@ class InventoryServiceTest {
                 .name("우럭")
                 .category("활어")
                 .quantity(30)
-                .incomingPrice(5000)
                 .country("일본")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -87,7 +84,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("선어")
                 .quantity(16)
-                .incomingPrice(2100)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -99,7 +95,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("선어")
                 .quantity(10)
-                .incomingPrice(3300)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -110,7 +105,6 @@ class InventoryServiceTest {
                 .name("우럭")
                 .category("활어")
                 .quantity(17)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("양식")
                 .companyId(101L)
@@ -122,7 +116,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -134,7 +127,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -146,7 +138,6 @@ class InventoryServiceTest {
                 .name("숭어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("양식")
                 .companyId(101L)
@@ -158,7 +149,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -170,7 +160,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -182,7 +171,6 @@ class InventoryServiceTest {
                 .name("민어")
                 .category("활어")
                 .quantity(10)
-                .incomingPrice(4000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -194,7 +182,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -206,7 +193,6 @@ class InventoryServiceTest {
                 .name("우럭")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -218,7 +204,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -230,7 +215,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -242,7 +226,6 @@ class InventoryServiceTest {
                 .name("장어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("일본")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -254,7 +237,6 @@ class InventoryServiceTest {
                 .name("광어")
                 .category("활어")
                 .quantity(60)
-                .incomingPrice(7000)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -266,7 +248,6 @@ class InventoryServiceTest {
                 .name("문어")
                 .category("활어")
                 .quantity(40)
-                .incomingPrice(3400)
                 .country("국산")
                 .naturalStatus("자연")
                 .companyId(101L)
@@ -278,7 +259,6 @@ class InventoryServiceTest {
                 .name("장어")
                 .category("활어")
                 .quantity(23)
-                .incomingPrice(10000)
                 .country("국산")
                 .naturalStatus("양식")
                 .companyId(101L)
@@ -307,13 +287,20 @@ class InventoryServiceTest {
         inventoryJpaRepository.save(inventory20);
         inventoryJpaRepository.save(inventory21);
 
-        //when
-        Long companyId = 301L;
-        PageRequest pageRequest = PageRequest.of(1, 5, Sort.by(Sort.Direction.DESC, "name"));
+        // when
+        Long companyId = 101L;
+        PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "name"));
         Page<InventoryReqDto> inventoryReqDtoSlice = inventoryJpaRepository.findPagedInventoryByCompanyId(companyId, pageRequest);
+        Page<InventoryReqDetailDto> inventoryReqDetailDtoPage1 = inventoryJpaRepository.getPagedProductsByCompanyId(companyId, "광어", "활어", pageRequest);
+        inventoryReqDtoSlice.forEach(inventory -> log.info("Inventory: {}", inventory.toString()));
+        inventoryReqDetailDtoPage1.forEach(product -> log.info("Product before remove: {}", product.toString()));
+        inventoryJpaRepository.deleteById(1L);
 
-        //then
-        log.info("result: {}", inventoryReqDtoSlice);
+        // then
+        Page<InventoryReqDetailDto> inventoryReqDetailDtoPage2 = inventoryJpaRepository.getPagedProductsByCompanyId(companyId, "광어", "활어", pageRequest);
+
+        inventoryReqDetailDtoPage2.forEach(product -> log.info("Product after remove: {}", product.toString()));
+
 
     }
 
