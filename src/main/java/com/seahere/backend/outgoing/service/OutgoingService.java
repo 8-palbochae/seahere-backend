@@ -3,10 +3,9 @@ package com.seahere.backend.outgoing.service;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
-import com.seahere.backend.outgoing.dto.OutgoingReqDto;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
-import com.seahere.backend.outgoing.exception.OutgoingReqNotFoundException;
+import com.seahere.backend.outgoing.exception.OutgoingNotFoundException;
 import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
 import com.seahere.backend.outgoing.repository.OutgoingRepository;
 import lombok.RequiredArgsConstructor;
@@ -34,9 +33,9 @@ public class OutgoingService {
         outgoingJpaRepository.save(outgoingEntity);
     }
     @Transactional
-    public OutgoingReqDto changeOutgoingState(Long outgoingId, OutgoingState state){
-        OutgoingEntity outgoingReq = outgoingJpaRepository.findById(outgoingId).orElseThrow(OutgoingReqNotFoundException::new);
+    public OutgoingEntity changeOutgoingState(Long outgoingId, OutgoingState state){
+        OutgoingEntity outgoingReq = outgoingJpaRepository.findById(outgoingId).orElseThrow(OutgoingNotFoundException::new);
         outgoingReq.changeState(state);
-        return OutgoingReqDto.from(outgoingReq);
+        return outgoingReq;
     }
 }

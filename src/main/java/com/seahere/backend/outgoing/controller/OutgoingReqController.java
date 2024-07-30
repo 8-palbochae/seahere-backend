@@ -3,10 +3,11 @@ package com.seahere.backend.outgoing.controller;
 import com.seahere.backend.outgoing.controller.request.OutgoingReqSearchRequest;
 import com.seahere.backend.outgoing.controller.request.OutgoingStateChangeRequest;
 import com.seahere.backend.outgoing.controller.response.OutgoingReqListResponse;
-import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDetailsDto;
+import com.seahere.backend.outgoing.controller.response.OutgoingDetailResponse;
 import com.seahere.backend.outgoing.dto.OutgoingReqDto;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
+import com.seahere.backend.outgoing.service.OutgoingDetailService;
 import com.seahere.backend.outgoing.service.OutgoingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -28,6 +27,7 @@ import java.util.stream.Collectors;
 public class OutgoingReqController {
 
     private final OutgoingService outgoingService;
+    private final OutgoingDetailService outgoingDetailService;
 
     @GetMapping()
     public ResponseEntity<OutgoingReqListResponse> outgoingReqList(OutgoingReqSearchRequest request){
@@ -40,18 +40,23 @@ public class OutgoingReqController {
     }
 
     @GetMapping("/{outgoingId}")
-    public ResponseEntity<List<OutgoingReqMockDetailsDto>> outgoingReqDetailList(@PathVariable("outgoingId") Long outgoingId){
-        return null;
+    public List<OutgoingDetailResponse> outgoingReqDetailList(@PathVariable("outgoingId") Long outgoingId){
+        return outgoingDetailService.findByOutgoingAndStateIsAcitve(outgoingId).stream().map(OutgoingDetailResponse::from).collect(Collectors.toList());
     }
 
     @PatchMapping("/{outgoingId}")
     public ResponseEntity<OutgoingReqDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody OutgoingStateChangeRequest request){
         OutgoingState state = OutgoingState.from(request.getState());
-        OutgoingReqDto outgoing = outgoingService.changeOutgoingState(outgoingId,state);
+        OutgoingReqDto outgoing = OutgoingReqDto.from(outgoingService.changeOutgoingState(outgoingId,state));
         return ResponseEntity.ok(outgoing);
-
     }
+    @PutMapping("/{outgoingId}")
+    public void outgoingDetailRecovery(@PathVariable("outgoingId")Long outgoingId){
+        outgoingDetailService.updateByOutgoingDetailStateToActive(outgoingId);
+    }
+
     @DeleteMapping("/details/{outgoingDetailId}")
     public void outgoingDetailDelete(@PathVariable("outgoingDetailId")Long detailId){
+        outgoingDetailService.deleteOutgoingDetail(detailId);
     }
 }
