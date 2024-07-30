@@ -30,7 +30,6 @@ public class IncomingMockController {
 
     @PostMapping("/saveIncomingData")
     public ResponseEntity<String> saveIncomingData(@RequestBody IncomingDataRequest incomingDataRequest) {
-        log.info("받은데이터 ={}", incomingDataRequest);
         inocmingService.save(companyId, userId, incomingDataRequest);
         return ResponseEntity.ok("데이터를 성공적으로 받았습니다.");
 
