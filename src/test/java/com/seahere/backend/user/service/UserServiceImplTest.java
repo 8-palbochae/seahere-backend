@@ -212,7 +212,7 @@ class UserServiceImplTest{
                 .username("여보소")
                 .companyId(null)
                 .address(address)
-                .type("employee")
+                .type("broker")
                 .build();
         //when
         Long userId = userService.signupOauth(signupReq);
