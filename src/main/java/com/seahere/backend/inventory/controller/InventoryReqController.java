@@ -1,5 +1,7 @@
 package com.seahere.backend.inventory.controller;
 
+import com.seahere.backend.inventory.controller.request.InventoryReqDetailSearchRequest;
+import com.seahere.backend.inventory.controller.request.InventoryReqSearchRequest;
 import com.seahere.backend.inventory.controller.response.InventoryReqDetailDto;
 import com.seahere.backend.inventory.controller.response.InventoryReqDetailListResponse;
 import com.seahere.backend.inventory.controller.response.InventoryReqDto;
@@ -21,17 +23,17 @@ public class InventoryReqController {
     private final InventoryService inventoryService;
 
     @GetMapping
-    public ResponseEntity<InventoryReqListResponse> inventoryReqList(@RequestParam Long companyId, @RequestParam int size, @RequestParam int page, @RequestParam String search) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "name"));
-        Page<InventoryReqDto> results = inventoryService.findPagedInventoryByCompanyId(companyId, pageRequest, search);
+    public ResponseEntity<InventoryReqListResponse> inventoryReqList(InventoryReqSearchRequest searchRequest) {
+        PageRequest pageRequest = PageRequest.of(searchRequest.getPage(), searchRequest.getSize(), Sort.by(Sort.Direction.ASC, "name"));
+        Page<InventoryReqDto> results = inventoryService.findPagedInventoryByCompanyId(searchRequest.getCompanyId(), pageRequest, searchRequest.getSearch());
         InventoryReqListResponse inventoryReqListResponse = new InventoryReqListResponse(results);
         return ResponseEntity.ok(inventoryReqListResponse);
     }
 
     @GetMapping("/details")
-    public ResponseEntity<InventoryReqDetailListResponse> inventoryReqDetailList(@RequestParam Long companyId, @RequestParam int page, @RequestParam int size, @RequestParam String name, @RequestParam String category) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "incomingDate"));
-        Page<InventoryReqDetailDto> results = inventoryService.findPagedProductsByCompanyId(companyId, name, category, pageRequest);
+    public ResponseEntity<InventoryReqDetailListResponse> inventoryReqDetailList(InventoryReqDetailSearchRequest detailSearchRequest) {
+        PageRequest pageRequest = PageRequest.of(detailSearchRequest.getPage(), detailSearchRequest.getSize(), Sort.by(Sort.Direction.ASC, "incomingDate"));
+        Page<InventoryReqDetailDto> results = inventoryService.findPagedProductsByCompanyId(detailSearchRequest.getCompanyId(), detailSearchRequest.getName(), detailSearchRequest.getCategory(), pageRequest);
         InventoryReqDetailListResponse inventoryReqDetailListResponse = new InventoryReqDetailListResponse(results);
         return ResponseEntity.ok(inventoryReqDetailListResponse);
     }

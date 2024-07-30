@@ -15,7 +15,7 @@ public class InventoryService {
     private final InventoryJpaRepository inventoryJpaRepository;
 
     public Page<InventoryReqDto> findPagedInventoryByCompanyId(Long companyId, Pageable pageable, String search) {
-        return inventoryJpaRepository.findPagedInventoryByCompanyId(companyId, pageable, search);
+        return inventoryJpaRepository.findPagedInventoryByCompanyId(companyId, search, pageable);
     }
 
     public Page<InventoryReqDetailDto> findPagedProductsByCompanyId(Long companyId, String name, String category, PageRequest pageable) {
