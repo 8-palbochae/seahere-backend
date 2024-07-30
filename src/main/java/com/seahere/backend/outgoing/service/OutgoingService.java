@@ -34,9 +34,9 @@ public class OutgoingService {
         outgoingJpaRepository.save(outgoingEntity);
     }
     @Transactional
-    public OutgoingReqDto changeOutgoingState(Long outgoingId, OutgoingState state){
+    public OutgoingEntity changeOutgoingState(Long outgoingId, OutgoingState state){
         OutgoingEntity outgoingReq = outgoingJpaRepository.findById(outgoingId).orElseThrow(OutgoingReqNotFoundException::new);
         outgoingReq.changeState(state);
-        return OutgoingReqDto.from(outgoingReq);
+        return outgoingReq;
     }
 }

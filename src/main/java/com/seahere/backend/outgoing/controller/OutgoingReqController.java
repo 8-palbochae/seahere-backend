@@ -47,7 +47,7 @@ public class OutgoingReqController {
     @PatchMapping("/{outgoingId}")
     public ResponseEntity<OutgoingReqDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody OutgoingStateChangeRequest request){
         OutgoingState state = OutgoingState.from(request.getState());
-        OutgoingReqDto outgoing = outgoingService.changeOutgoingState(outgoingId,state);
+        OutgoingReqDto outgoing = OutgoingReqDto.from(outgoingService.changeOutgoingState(outgoingId,state));
         return ResponseEntity.ok(outgoing);
 
     }

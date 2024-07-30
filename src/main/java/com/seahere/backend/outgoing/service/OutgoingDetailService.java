@@ -1,5 +1,6 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.outgoing.dto.OutgoingDetailDto;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.exception.OutgoingDetailNotFoundException;
 import com.seahere.backend.outgoing.repository.OutgoingDetailJpaRepository;
@@ -19,4 +20,7 @@ public class OutgoingDetailService {
         OutgoingDetailEntity detail = outgoingDetailJpaRepository.findById(outgoingDetailId).orElseThrow(OutgoingDetailNotFoundException::new);
         detail.stateToDelete();
     }
+
+    public List<OutgoingDetailDto>
+
 }

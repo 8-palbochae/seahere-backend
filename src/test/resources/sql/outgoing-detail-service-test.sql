@@ -5,3 +5,5 @@ INSERT INTO outgoing_detail (detail_id, price, product_name, outgoing_id, quanti
                                                                                            (2,10000,'넙치',1,20),
                                                                                            (3,10000,'갈치',1,20),
                                                                                            (4,10000,'고등어',1,20);
+
+INSERT INTO outgoing_detail (detail_id, price, product_name, outgoing_id, quantity,state) values (5,10000,'광어',1,20,'DELETE');
