@@ -1,6 +1,8 @@
 package com.seahere.backend.user.controller;
 
 import com.seahere.backend.user.exception.DuplicateEmailException;
+import com.seahere.backend.user.request.BrokerSignupReq;
+import com.seahere.backend.user.request.CeoSignupReq;
 import com.seahere.backend.user.request.CustomerSignupReq;
 import com.seahere.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +28,26 @@ public class UserController {
         }
 
         userService.signupCustomer(customerSignupReq);
+        return ResponseEntity.created(URI.create("/login")).build();
+    }
+
+    @PostMapping("/users/broker")
+    public ResponseEntity<Void> brokerSignup(@RequestBody @Valid BrokerSignupReq brokerSignupReq){
+        if(userService.validateEmail(brokerSignupReq.getEmail())){
+            throw new DuplicateEmailException();
+        }
+
+        userService.signupBroker(brokerSignupReq);
+        return ResponseEntity.created(URI.create("/login")).build();
+    }
+
+    @PostMapping("/users/ceo")
+    public ResponseEntity<Void> ceoSignup(@RequestBody @Valid CeoSignupReq ceoSignupReq){
+        if(userService.validateEmail(ceoSignupReq.getEmail())){
+            throw new DuplicateEmailException();
+        }
+
+        userService.signupCeo(ceoSignupReq);
         return ResponseEntity.created(URI.create("/login")).build();
     }
 

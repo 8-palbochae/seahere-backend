@@ -20,6 +20,7 @@ import javax.persistence.*;
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -88,6 +89,9 @@ public class UserEntity {
         this.refreshToken = updateRefreshToken;
     }
 
+    public void updateCompany(CompanyEntity company){
+        this.company = company;
+    }
 
     public void editRole(Role role){
         this.role  = role;

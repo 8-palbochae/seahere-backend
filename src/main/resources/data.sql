@@ -1,4 +1,4 @@
-INSERT INTO company (company_id) values (1);
+INSERT INTO company(company_id) VALUES (1);
 INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, partial_outgoing,customer_name) VALUES
                                                                                                     (1, 1, '2024-07-27', 'PENDING', true,'스리랑'),
                                                                                                     (2, 1, '2024-07-28', 'PENDING', false,'아리랑'),
