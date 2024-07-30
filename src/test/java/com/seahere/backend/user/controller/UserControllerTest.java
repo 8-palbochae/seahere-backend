@@ -3,6 +3,7 @@ package com.seahere.backend.user.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seahere.backend.common.entity.Address;
 import com.seahere.backend.user.repository.UserRepository;
+import com.seahere.backend.user.request.BrokerSignupReq;
 import com.seahere.backend.user.request.CustomerSignupReq;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -140,6 +141,33 @@ class UserControllerTest {
                         .content(json)
                 )
                 .andExpect(status().isBadRequest())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("BrokerSignupReq 클래스로 POST 요청시 브로커 계정이 대기 상태로 생성된다")
+    public void test5() throws Exception{
+        //given
+        Address address = Address.builder()
+                .postCode("12345")
+                .mainAddress("부산광역시")
+                .subAddress("스파로스 아카데미")
+                .build();
+
+        BrokerSignupReq signupReq = BrokerSignupReq.builder()
+                .email("test@test.com")
+                .username("여보소")
+                .password("1234")
+                .address(address)
+                .build();
+
+        String json = objectMapper.writeValueAsString(signupReq);
+        //expect
+        mockMvc.perform(MockMvcRequestBuilders. post("/users/broker")
+                        .contentType(APPLICATION_JSON)
+                        .content(json)
+                )
+                .andExpect(status().isCreated())
                 .andDo(print());
     }
 }
