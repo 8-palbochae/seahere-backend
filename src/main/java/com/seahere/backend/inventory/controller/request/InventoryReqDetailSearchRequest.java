@@ -7,9 +7,10 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InventoryReqSearchRequest {
+public class InventoryReqDetailSearchRequest {
     private Long companyId;
     private int size = 10;
     private int page = 0;
-    private String search;
+    private String name;
+    private String category;
 }
