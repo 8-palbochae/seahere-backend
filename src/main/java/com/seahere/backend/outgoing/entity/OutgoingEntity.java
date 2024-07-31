@@ -23,8 +23,6 @@ public class OutgoingEntity {
     @JoinColumn(name = "company_id")
     private CompanyEntity company;
 
-    private String customerName;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "outgoing")
     private final List<OutgoingDetailEntity> outgoingDetails = new ArrayList<>();
 
@@ -40,9 +38,9 @@ public class OutgoingEntity {
     private UserEntity customer;
 
     @Builder
-    public OutgoingEntity(CompanyEntity company,String customerName, LocalDate outgoingDate, OutgoingState outgoingState, boolean partialOutgoing) {
+    public OutgoingEntity(CompanyEntity company,UserEntity customer, LocalDate outgoingDate, OutgoingState outgoingState, boolean partialOutgoing) {
         this.company = company;
-        this.customerName = customerName;
+        this.customer = customer;
         this.outgoingDate = outgoingDate;
         this.outgoingState = outgoingState;
         this.partialOutgoing = partialOutgoing;

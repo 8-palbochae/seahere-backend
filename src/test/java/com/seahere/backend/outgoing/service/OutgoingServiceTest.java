@@ -3,13 +3,12 @@ package com.seahere.backend.outgoing.service;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
-import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
-import com.seahere.backend.outgoing.repository.OutgoingDetailJpaRepository;
 import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
+import com.seahere.backend.user.domain.UserEntity;
+import com.seahere.backend.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +18,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.PersistenceUnit;
-import java.math.BigDecimal;
+
 import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.*;
@@ -39,7 +35,8 @@ class OutgoingServiceTest {
     private CompanyRepository companyRepository;
     @Autowired
     private OutgoingJpaRepository outgoingJpaRepository;
-
+    @Autowired
+    private UserRepository userRepository;
 
     @Test
     @DisplayName("출고 리스트중 상태가 해당 회사 번호가 없다면 예외를 던진다.")
@@ -78,14 +75,15 @@ class OutgoingServiceTest {
         //given
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
         CompanyEntity company = companyRepository.findById(1L).get();
+        UserEntity 아리랑 = userRepository.findById(1L).get();
         //when
-        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,8,20),"아리");
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,8,20),"아리랑");
 
         //then
         assertThat(result.getContent()).hasSize(1)
-                .extracting("company","outgoingState","partialOutgoing","customerName")
+                .extracting("company","outgoingState","partialOutgoing","customer")
                 .contains(
-                        tuple(company,OutgoingState.PENDING,true,"아리랑")
+                        tuple(company,OutgoingState.PENDING,true,아리랑)
                 );
     }
     @Test
@@ -94,15 +92,17 @@ class OutgoingServiceTest {
         //given
         CompanyEntity company = companyRepository.findById(1L).get();
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
+        UserEntity 아리랑 = userRepository.findById(1L).get();
+        UserEntity 스리랑 = userRepository.findById(2L).get();
         //when
         Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"광어");
         //then
         assertThat(result.getContent().get(0).getOutgoingDetails().get(0).getProductName()).isEqualTo("광어");
         assertThat(result.getContent()).hasSize(2)
-                .extracting("company","outgoingState","partialOutgoing","customerName")
+                .extracting("company","outgoingState","partialOutgoing","customer")
                 .contains(
-                        tuple(company,OutgoingState.PENDING,true,"아리랑"),
-                        tuple(company,OutgoingState.PENDING,true,"스리랑")
+                        tuple(company,OutgoingState.PENDING,true,아리랑),
+                        tuple(company,OutgoingState.PENDING,true,스리랑)
                 );
     }
 
