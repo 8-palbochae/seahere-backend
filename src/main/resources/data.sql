@@ -8,6 +8,9 @@ insert into PRODUCT(product_id, product_img, product_name, qr) values(2,'img1','
                                                                      (6,'장어이미지','장어','');
 insert into USERS(user_id,username) values(1,'스리랑'),
                                           (2,'아리랑');
+INSERT INTO company(company_id) VALUES (101);
+INSERT INTO company(company_id) VALUES (102);
+
 
 INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, partial_outgoing, user_id) VALUES
                                                                                                     (1, 1, '2024-07-27', 'PENDING', true,1),

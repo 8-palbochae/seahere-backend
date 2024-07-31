@@ -44,7 +44,7 @@ public class SecurityConfig implements WebMvcConfigurer {
             .csrf().disable()
             .formLogin().disable()
             .httpBasic().disable()
-            .cors().disable()
+            .cors().and()
             .headers().frameOptions().disable()
             .and()
             .authorizeHttpRequests().anyRequest().permitAll()
@@ -66,9 +66,9 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:3000","http://10.10.10.140:3000")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
                 .allowedHeaders("*")
-                .allowCredentials(true);
+                .allowCredentials(true)
+                .exposedHeaders("Authorization", "Authorization-refresh");
     }
-
 
     @Bean
     public PasswordEncoder passwordEncoder() {

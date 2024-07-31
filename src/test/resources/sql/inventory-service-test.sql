@@ -1,4 +1,7 @@
 DELETE FROM inventories;
+DELETE FROM company;
+INSERT INTO company(company_id) VALUES (101);
+INSERT INTO company(company_id) VALUES (102);
 
 INSERT INTO inventories (inventory_id, company_id, quantity, category, name, country, incoming_date, natural_status) VALUES
                                                                                                                          (1, 101, 60, '활어', '광어', '국산', '2024-07-23', '자연'),
@@ -10,7 +13,7 @@ INSERT INTO inventories (inventory_id, company_id, quantity, category, name, cou
                                                                                                                          (7, 101, 17, '활어', '우럭', '국산', '2024-07-28', '양식'),
                                                                                                                          (8, 101, 60, '활어', '광어', '국산', '2024-07-03', '자연'),
                                                                                                                          (9, 101, 60, '활어', '광어', '국산', '2024-07-17', '자연'),
-                                                                                                                         (10, 101, 60,'활어', '숭어', '국산', '2024-07-23', '양식'),
+                                                                                                                         (10, 101, 60, '활어', '숭어', '국산', '2024-07-23', '양식'),
                                                                                                                          (11, 101, 60, '활어', '광어', '국산', '2024-07-23', '자연'),
                                                                                                                          (12, 101, 60, '활어', '광어', '국산', '2024-07-31', '자연'),
                                                                                                                          (13, 101, 10, '활어', '민어', '국산', '2024-07-28', '자연'),

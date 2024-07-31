@@ -1,7 +1,6 @@
 package com.seahere.backend.inventory.entity;
 
 import com.seahere.backend.company.entity.CompanyEntity;
-import com.seahere.backend.user.domain.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,8 +21,9 @@ public class InventoryEntity {
     @Column(name = "inventory_id")
     private Long inventoryId;
 
-    @Column(name = "company_id")
-    private Long companyId;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private CompanyEntity company;
 
     @Column(name = "quantity")
     private int quantity;
