@@ -1,7 +1,9 @@
 package com.seahere.backend.auth.jwt.filter;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.seahere.backend.auth.jwt.service.JwtService;
 import com.seahere.backend.auth.jwt.util.PasswordUtil;
+import com.seahere.backend.common.exception.SeaHereException;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,23 +34,29 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (request.getRequestURI().equals(NO_CHECK_URL)) {
-            filterChain.doFilter(request, response);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException , SeaHereException {
+        try {
+            if (request.getRequestURI().equals(NO_CHECK_URL)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+
+            String refreshToken = jwtService.extractRefreshToken(request)
+                    .filter(jwtService::isTokenValid)
+                    .orElse(null);
+
+            if (refreshToken != null) {
+                checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
+                return;
+            }
+
+            if (refreshToken == null) {
+                checkAccessTokenAndAuthentication(request, response, filterChain);
+            }
+        } catch (SeaHereException | TokenExpiredException e) {
+            // 예외 처리 및 HTTP 응답 설정
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
             return;
-        }
-
-        String refreshToken = jwtService.extractRefreshToken(request)
-                .filter(jwtService::isTokenValid)
-                .orElse(null);
-
-        if (refreshToken != null) {
-            checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
-            return;
-        }
-
-        if (refreshToken == null) {
-            checkAccessTokenAndAuthentication(request, response, filterChain);
         }
     }
 
@@ -69,9 +77,9 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     }
 
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
-                                                  FilterChain filterChain) throws ServletException, IOException {
+                                                  FilterChain filterChain) throws ServletException, IOException, TokenExpiredException {
         jwtService.extractAccessToken(request)
-                .filter(jwtService::isTokenValid)
+                .filter(jwtService::isAccessTokenValid)
                 .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
                         .ifPresent(email -> userRepository.findByEmail(email)
                                 .ifPresent(this::saveAuthentication)));
