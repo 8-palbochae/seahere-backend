@@ -39,17 +39,21 @@ public class InventoryService {
 
     //todo 나중에 뜯어 고쳐야함
     private boolean isInventory(Long companyId, IncomingDataRequest incomingDataRequest) {
-        return inventoryJpaRepository.findByCategoryAndNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),"광어",companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).isPresent();
+        ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
+
+        return inventoryJpaRepository.findByCategoryAndNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).isPresent();
     }
 
     public InventoryEntity inventoryUpdateEnroll(Long companyId, IncomingDataRequest incomingDataRequest){
-        if(isInventory(companyId, incomingDataRequest)){
 
-            return null;
+        ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
+
+        if(isInventory(companyId, incomingDataRequest)){
+            InventoryEntity inventoryEntity = inventoryJpaRepository.findByCategoryAndNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).get();
+            inventoryEntity.addQuantity(incomingDataRequest.getQuantity());
+            return inventoryEntity;
         }
         else{
-            ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
-
             InventoryRequest inventoryRequest = InventoryRequest.builder()
                     .companyId(companyId)
                     .quantity(incomingDataRequest.getQuantity())
