@@ -1,5 +1,6 @@
 delete from outgoing_detail;
 delete from outgoing;
+delete from inventories;
 delete from company;
 delete from users;
 INSERT INTO company (company_id) values (1);

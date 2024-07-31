@@ -21,6 +21,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -41,6 +42,17 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 return;
             }
 
+            Optional<String> extractRefreshToken = jwtService.extractRefreshToken(request);
+            if(extractRefreshToken.isPresent()) {
+                boolean valid = jwtService.isTokenValid(extractRefreshToken.get());
+                if(!valid) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json");
+                    response.getWriter().write("{\"errorCode\": \"REFRESH_TOKEN_EXPIRED\", \"message\": \"Refresh 토큰 만기 로그인 필요\"}");
+                    return;
+                }
+            }
+
             String refreshToken = jwtService.extractRefreshToken(request)
                     .filter(jwtService::isTokenValid)
                     .orElse(null);
@@ -54,8 +66,10 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 checkAccessTokenAndAuthentication(request, response, filterChain);
             }
         } catch (SeaHereException | TokenExpiredException e) {
-            // 예외 처리 및 HTTP 응답 설정
-            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json");
+            response.getWriter().write("{\"errorCode\": \"ACCESS_TOKEN_EXPIRED\", \"message\": \"Access 토큰 만료 리프레시 토큰 전달 필요\"}");
+
             return;
         }
     }

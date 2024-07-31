@@ -1,13 +1,9 @@
 package com.seahere.backend.inventory.repository;
 
-import com.seahere.backend.inventory.controller.response.InventoryReqDetailDto;
-import com.seahere.backend.inventory.controller.response.InventoryReqDto;
 import com.seahere.backend.inventory.entity.InventoryEntity;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 public interface InventoryJpaRepository extends JpaRepository<InventoryEntity, Long> {
 
@@ -25,4 +21,5 @@ public interface InventoryJpaRepository extends JpaRepository<InventoryEntity, L
 //                                                             @Param("name") String name,
 //                                                             @Param("category") String category,
 //                                                             Pageable pageable);
+    Optional<InventoryEntity> findByCategoryAndNameAndCompanyIdAndNaturalStatusAndCountry(String category, String name, Long companyId, String naturalStatus, String country);
 }

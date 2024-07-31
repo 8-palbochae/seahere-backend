@@ -1,5 +1,4 @@
 INSERT INTO company(company_id) VALUES (1);
-
 insert into PRODUCT(product_id, product_img, product_name, qr) values(2,'img1','이광수','qr1'),
                                                                      (1,'광어이미지','광어',''),
                                                                      (5,'넙치이미지','넙치',''),

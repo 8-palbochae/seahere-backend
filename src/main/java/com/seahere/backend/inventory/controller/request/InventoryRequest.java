@@ -23,7 +23,6 @@ public class InventoryRequest {
     public InventoryEntity toEntity(){
         return InventoryEntity.builder()
                 .inventoryId(this.inventoryId)
-                .companyId(this.companyId)
                 .quantity(this.quantity)
                 .category(this.category)
                 .name(this.name)
