@@ -3,7 +3,6 @@ package com.seahere.backend.inventory.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seahere.backend.inventory.controller.request.InventoryReqDetailSearchRequest;
 import com.seahere.backend.inventory.controller.request.InventoryReqSearchRequest;
-import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
 import com.seahere.backend.inventory.service.InventoryService;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
