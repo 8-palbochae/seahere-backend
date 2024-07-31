@@ -1,6 +1,5 @@
 package com.seahere.backend.outgoing.service;
 
-import com.seahere.backend.outgoing.controller.response.OutgoingDetailResponse;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingDetailState;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
@@ -16,13 +15,13 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 @Transactional
 @Sql(value = "/sql/outgoing-detail-service-test.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+
 class OutgoingDetailServiceTest {
 
     @Autowired
@@ -46,6 +45,7 @@ class OutgoingDetailServiceTest {
         //then
         assertThat(result.getState()).isEqualTo(OutgoingDetailState.DELETE);
     }
+
     @Test
     @DisplayName("일치하는 출고 상세 번호에 대항하는 출고 상세의 상태를 state로 바꾼다.")
     void stateToState() {
