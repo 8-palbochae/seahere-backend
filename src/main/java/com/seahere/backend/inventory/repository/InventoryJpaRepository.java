@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface InventoryJpaRepository extends JpaRepository<InventoryEntity, Long> {
 
     @Query("SELECT new com.seahere.backend.inventory.controller.response.InventoryReqDto(" +
@@ -25,4 +27,6 @@ public interface InventoryJpaRepository extends JpaRepository<InventoryEntity, L
                                                              @Param("name") String name,
                                                              @Param("category") String category,
                                                              Pageable pageable);
+
+    Optional<InventoryEntity> findByCategoryAndNameAndCompanyIdAndNaturalStatusAndCountry(String category, String name, Long companyId, String naturalStatus, String country);
 }
