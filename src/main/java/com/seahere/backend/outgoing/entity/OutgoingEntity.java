@@ -1,6 +1,7 @@
 package com.seahere.backend.outgoing.entity;
 
 import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.user.domain.UserEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,7 +34,10 @@ public class OutgoingEntity {
     private OutgoingState outgoingState;
 
     private boolean partialOutgoing;
-    //    private UserEntity customer;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity customer;
 
     @Builder
     public OutgoingEntity(CompanyEntity company,String customerName, LocalDate outgoingDate, OutgoingState outgoingState, boolean partialOutgoing) {
