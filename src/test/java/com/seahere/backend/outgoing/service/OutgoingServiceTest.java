@@ -97,7 +97,7 @@ class OutgoingServiceTest {
         //when
         Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"광어");
         //then
-        assertThat(result.getContent().get(0).getOutgoingDetails().get(0).getProductName()).isEqualTo("광어");
+        assertThat(result.getContent().get(0).getOutgoingDetails().get(0).getProduct().getProductName()).isEqualTo("광어");
         assertThat(result.getContent()).hasSize(2)
                 .extracting("company","outgoingState","partialOutgoing","customer")
                 .contains(

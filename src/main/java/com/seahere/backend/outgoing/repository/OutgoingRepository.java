@@ -1,12 +1,10 @@
 package com.seahere.backend.outgoing.repository;
 
-import com.querydsl.core.Query;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
-import com.seahere.backend.user.domain.QUserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -18,7 +16,8 @@ import java.util.List;
 
 import static com.seahere.backend.outgoing.entity.QOutgoingDetailEntity.outgoingDetailEntity;
 import static com.seahere.backend.outgoing.entity.QOutgoingEntity.outgoingEntity;
-import static com.seahere.backend.user.domain.QUserEntity.*;
+import static com.seahere.backend.product.entity.QProductEntity.productEntity;
+import static com.seahere.backend.user.domain.QUserEntity.userEntity;
 
 @Repository
 @RequiredArgsConstructor
@@ -30,6 +29,7 @@ public class OutgoingRepository {
         List<OutgoingEntity> results = queryFactory.selectFrom(outgoingEntity).distinct()
                 .leftJoin(outgoingEntity.outgoingDetails, outgoingDetailEntity)
                 .leftJoin(outgoingEntity.customer, userEntity)
+                .leftJoin(outgoingDetailEntity.product,productEntity)
                 .where(outgoingStateIsPending(company,startDate,endDate,search))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
@@ -46,7 +46,7 @@ public class OutgoingRepository {
                 .and(outgoingEntity.company.eq(company))
                 .and(outgoingEntity.outgoingDate.goe(startDate))
                 .and(outgoingEntity.outgoingDate.loe(endDate))
-                .and(userEntity.username.contains(search).or(outgoingDetailEntity.productName.contains(search)));
+                .and(userEntity.username.contains(search).or(productEntity.productName.contains(search)));
     }
 
 }

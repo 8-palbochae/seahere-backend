@@ -21,7 +21,7 @@ public class OutgoingDetailResponse {
     public static OutgoingDetailResponse from(OutgoingDetailEntity outgoingDetail){
         return OutgoingDetailResponse.builder()
                 .imgSrc("")
-                .productName(outgoingDetail.getProductName())
+                .productName(outgoingDetail.getProduct().getProductName())
                 .outgoingId(outgoingDetail.getOutgoing().getOutgoingId())
                 .outgoingDetailId(outgoingDetail.getDetailId())
                 .outgoingQuantity(outgoingDetail.getQuantity())

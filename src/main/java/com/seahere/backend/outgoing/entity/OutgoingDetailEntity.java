@@ -1,5 +1,6 @@
 package com.seahere.backend.outgoing.entity;
 
+import com.seahere.backend.product.entity.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,8 +18,10 @@ import java.math.BigDecimal;
 public class OutgoingDetailEntity {
     @Id @GeneratedValue
     private Long detailId;
-//    private ProductEntity product
-    private String productName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private ProductEntity product;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "outgoing_id")
