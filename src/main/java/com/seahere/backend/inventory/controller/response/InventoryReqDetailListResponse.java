@@ -4,8 +4,6 @@ import com.seahere.backend.common.response.SortResponse;
 import lombok.Getter;
 import org.springframework.data.domain.Slice;
 
-import java.util.List;
-
 @Getter
 public class InventoryReqDetailListResponse {
     private final Slice<InventoryReqDetailDto> content;

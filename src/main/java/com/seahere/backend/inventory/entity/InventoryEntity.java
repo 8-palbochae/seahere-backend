@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @Builder
+@DynamicUpdate
 public class InventoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,4 +44,14 @@ public class InventoryEntity {
 
     @Column(name = "natural_status")
     private String naturalStatus;
+
+    public void addQuantity(int quantity){
+        this.quantity += quantity;
+    }
+
+    public void assignCompany(CompanyEntity company){
+        this.company = company;
+    }
 }
+
+
