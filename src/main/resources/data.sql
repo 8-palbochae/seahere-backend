@@ -1,4 +1,11 @@
 INSERT INTO company(company_id) VALUES (1);
+
+insert into PRODUCT(product_id, product_img, product_name, qr) values(2,'img1','이광수','qr1'),
+                                                                     (1,'광어이미지','광어',''),
+                                                                     (5,'넙치이미지','넙치',''),
+                                                                     (3,'갈치이미지','갈치',''),
+                                                                     (4,'고등어이미지','고등어',''),
+                                                                     (6,'장어이미지','장어','');
 insert into USERS(user_id,username) values(1,'스리랑'),
                                           (2,'아리랑');
 
@@ -74,14 +81,14 @@ INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, pa
                                                                                                     (69, 1, '2024-10-03', 'PENDING', true,2),
                                                                                                     (70, 1, '2024-10-04', 'PENDING', false,2);
 
-INSERT INTO outgoing_detail (detail_id, price, product_name, outgoing_id, quantity) values (1,10000,'광어',1,20),
-                                                                                           (2,10000,'넙치',1,20),
-                                                                                           (3,10000,'갈치',1,20),
-                                                                                           (4,10000,'고등어',1,20),
-                                                                                           (5,10000,'장어',2,20),
-                                                                                           (6,10000,'넙치',2,20),
-                                                                                           (7,10000,'갈치',2,20),
-                                                                                           (8,10000,'광어',2,20);
+INSERT INTO outgoing_detail (detail_id, price, product_id, outgoing_id, quantity) values (1,10000,1,1,30),
+                                                                                           (2,10000,5,1,40),
+                                                                                           (3,10000,3,1,50),
+                                                                                           (4,10000,4,1,60),
+                                                                                           (5,10000,6,2,70),
+                                                                                           (6,10000,5,2,80),
+                                                                                           (7,10000,3,2,90),
+                                                                                           (8,10000,1,2,100);
 INSERT INTO inventories (inventory_id, company_id, quantity, category, name, country, incoming_date, natural_status) VALUES
                                                                                                                                 (1, 101, 60, '활어', '광어', '국산', '2024-07-23', '자연'),
                                                                                                                                 (2, 101, 60, '활어', '우럭', '국산', '2024-07-03', '양식'),

@@ -1,5 +1,7 @@
 package com.seahere.backend.inventory.entity;
 
+import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.user.domain.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

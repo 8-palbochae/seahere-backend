@@ -36,7 +36,7 @@ public class OutgoingReqDto {
 
     public static String calcTitle(List<OutgoingDetailEntity> details){
         if(details.isEmpty()) return "상품이 없습니다.";
-        if(details.size() == 1) return details.get(0).getProductName() + "외0건";
-        return details.get(0).getProductName() + "외"+(details.size()-1)+"건";
+        if(details.size() == 1) return details.get(0).getProduct().getProductName() + "외0건";
+        return details.get(0).getProduct().getProductName() + "외"+(details.size()-1)+"건";
     }
 }
