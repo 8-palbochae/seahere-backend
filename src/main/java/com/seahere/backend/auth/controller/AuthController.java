@@ -5,11 +5,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.seahere.backend.auth.jwt.exception.ValidateTokenException;
 import com.seahere.backend.auth.jwt.util.CookieUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,5 +40,10 @@ public class AuthController {
         } catch (Exception e) {
             throw new ValidateTokenException();
         }
+    }
+
+    @PostMapping("/auth/token")
+    public ResponseEntity<Void> accessTokenGet(HttpServletRequest request){
+        return ResponseEntity.ok(null);
     }
 }
