@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Slf4j
 @ControllerAdvice
 public class ExceptionController {
-    @ExceptionHandler
+
+    @ExceptionHandler(SeaHereException.class)
     @ResponseBody
     public ResponseEntity<ErrorResponse> seahereExceptionHandler(SeaHereException e) {
         int statusCode = e.getStatusCode();
