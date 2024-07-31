@@ -3,6 +3,8 @@ package com.seahere.backend.auth.oauth.handler;
 import com.seahere.backend.auth.jwt.service.JwtService;
 import com.seahere.backend.auth.oauth.CustomOAuth2User;
 import com.seahere.backend.common.entity.Role;
+import com.seahere.backend.user.domain.UserEntity;
+import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +14,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Transactional;
@@ -36,14 +39,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
             if(oAuth2User.getRole() == Role.GUEST) {
                 String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
-                String email = oAuth2User.getEmail();
+                UserEntity findUser = userRepository.findByEmail(oAuth2User.getEmail())
+                        .orElseThrow(UserNotFound::new);
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-                response.sendRedirect(CLIENT_SERVER_ADDRESS + "/signup/choice?social=1");
+                response.sendRedirect(CLIENT_SERVER_ADDRESS + "/signup/choice?guest="+findUser.getId());
 
                 jwtService.sendAccessAndRefreshToken(response, accessToken, null);
-//                User findUser = userRepository.findByEmail(oAuth2User.getEmail())
-//                                .orElseThrow(() -> new IllegalArgumentException("이메일에 해당하는 유저가 없습니다."));
-//                findUser.authorizeUser();
             } else {
                 loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
             }
@@ -57,10 +58,22 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
         String refreshToken = jwtService.createRefreshToken();
-        response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-        response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
+        Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
+        accessTokenCookie.setHttpOnly(true);
+        accessTokenCookie.setPath("/");
+        accessTokenCookie.setMaxAge(60 * 60); // 1 hour
+        response.addCookie(accessTokenCookie);
 
-        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+        // Refresh Token을 HttpOnly 쿠키에 저장
+        Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+        refreshTokenCookie.setHttpOnly(true);
+        refreshTokenCookie.setPath("/");
+        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 1 week
+        response.addCookie(refreshTokenCookie);
+
         jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+        jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
+
+        response.sendRedirect(CLIENT_SERVER_ADDRESS + "/main");
     }
 }

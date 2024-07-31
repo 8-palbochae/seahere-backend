@@ -1,5 +1,7 @@
 package com.seahere.backend.inventory.service;
 
+import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
 import com.seahere.backend.incoming.entity.IncomingEntity;
 import com.seahere.backend.inventory.controller.request.InventoryRequest;
@@ -11,11 +13,13 @@ import com.seahere.backend.product.controller.ProductController;
 import com.seahere.backend.product.entity.ProductEntity;
 import com.seahere.backend.product.repository.ProductRepository;
 import com.seahere.backend.user.repository.UserRepository;
+import com.seahere.backend.inventory.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -25,16 +29,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 public class InventoryService {
+    private final InventoryRepository inventoryRepository;
     private final InventoryJpaRepository inventoryJpaRepository;
     private final ProductRepository productRepository;
+    private final CompanyRepository companyRepository;
 
-
-    public Page<InventoryReqDto> findPagedInventoryByCompanyId(Long companyId, Pageable pageable, String search) {
-        return inventoryJpaRepository.findPagedInventoryByCompanyId(companyId, search, pageable);
+    public Slice<InventoryReqDto> findPagedInventoryByCompanyId(Long companyId, Pageable pageable, String search) {
+        return inventoryRepository.findPagedInventoryByCompanyId(companyId, search, pageable);
     }
 
-    public Page<InventoryReqDetailDto> findPagedProductsByCompanyId(Long companyId, String name, String category, PageRequest pageable) {
-        return inventoryJpaRepository.findPagedProductsByCompanyId(companyId, name, category, pageable);
+    public Slice<InventoryReqDetailDto> findPagedProductsByCompanyId(Long companyId, String name, String category, PageRequest pageable) {
+        return inventoryRepository.findPagedProductsByCompanyId(companyId, name, category, pageable);
     }
 
     //todo 나중에 뜯어 고쳐야함
@@ -65,6 +70,8 @@ public class InventoryService {
                     .build();
 
             InventoryEntity inventoryEntity = inventoryRequest.toEntity();
+            CompanyEntity company = companyRepository.findById(companyId).get();
+            inventoryEntity.assignCompany(company);
             inventoryJpaRepository.save(inventoryEntity);
             return inventoryEntity;
         }
