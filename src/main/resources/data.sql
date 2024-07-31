@@ -1,5 +1,6 @@
 INSERT INTO company(company_id) VALUES (1);
 insert into USERS(user_id) values(2);
+insert into PRODUCT(product_id, product_img, product_name, qr) values(2,'img1','이광수','qr1');
 
 INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, partial_outgoing,customer_name) VALUES
                                                                                                     (1, 1, '2024-07-27', 'pending', true,'스리랑'),

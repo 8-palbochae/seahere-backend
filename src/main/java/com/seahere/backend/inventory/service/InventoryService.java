@@ -7,6 +7,10 @@ import com.seahere.backend.inventory.controller.response.InventoryReqDetailDto;
 import com.seahere.backend.inventory.controller.response.InventoryReqDto;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
+import com.seahere.backend.product.controller.ProductController;
+import com.seahere.backend.product.entity.ProductEntity;
+import com.seahere.backend.product.repository.ProductRepository;
+import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -15,12 +19,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class InventoryService {
     private final InventoryJpaRepository inventoryJpaRepository;
+    private final ProductRepository productRepository;
+
 
     public Page<InventoryReqDto> findPagedInventoryByCompanyId(Long companyId, Pageable pageable, String search) {
         return inventoryJpaRepository.findPagedInventoryByCompanyId(companyId, search, pageable);
@@ -37,16 +44,19 @@ public class InventoryService {
 
     public InventoryEntity inventoryUpdateEnroll(Long companyId, IncomingDataRequest incomingDataRequest){
         if(isInventory(companyId, incomingDataRequest)){
+
             return null;
         }
         else{
+            ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
+
             InventoryRequest inventoryRequest = InventoryRequest.builder()
                     .companyId(companyId)
                     .quantity(incomingDataRequest.getQuantity())
                     .category(incomingDataRequest.getCategory())
-                    .name("광어")
+                    .name(productEntity.getProductName())
                     .country(incomingDataRequest.getCountry())
-                    .incomingDate(LocalDate.now()) // 또는 incomingDataRequest에서 날짜를 가져오도록 수정
+                    .incomingDate(LocalDate.now())
                     .naturalStatus(incomingDataRequest.getNaturalStatus())
                     .build();
 
