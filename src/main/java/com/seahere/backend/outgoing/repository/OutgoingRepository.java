@@ -1,14 +1,10 @@
 package com.seahere.backend.outgoing.repository;
 
-import com.querydsl.core.Query;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
-import com.seahere.backend.product.entity.ProductEntity;
-import com.seahere.backend.product.entity.QProductEntity;
-import com.seahere.backend.user.domain.QUserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -21,7 +17,7 @@ import java.util.List;
 import static com.seahere.backend.outgoing.entity.QOutgoingDetailEntity.outgoingDetailEntity;
 import static com.seahere.backend.outgoing.entity.QOutgoingEntity.outgoingEntity;
 import static com.seahere.backend.product.entity.QProductEntity.productEntity;
-import static com.seahere.backend.user.domain.QUserEntity.*;
+import static com.seahere.backend.user.domain.QUserEntity.userEntity;
 
 @Repository
 @RequiredArgsConstructor
