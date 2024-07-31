@@ -1,14 +1,16 @@
 package com.seahere.backend.inventory.controller.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
-@Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class InventoryReqDto {
     private Long companyId;
     private String name;

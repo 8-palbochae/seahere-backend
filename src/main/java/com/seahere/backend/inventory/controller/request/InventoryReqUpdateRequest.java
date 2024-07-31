@@ -7,8 +7,9 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InventoryReqSearchRequest {
+public class InventoryReqUpdateRequest {
     private Long companyId;
+    private Long inventoryId;
     private int size;
     private int page;
     private String search;

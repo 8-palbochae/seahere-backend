@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seahere.backend.inventory.controller.request.InventoryReqDetailSearchRequest;
 import com.seahere.backend.inventory.controller.request.InventoryReqSearchRequest;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
+import com.seahere.backend.inventory.repository.InventoryRepository;
 import com.seahere.backend.inventory.service.InventoryService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class InventoryControllerTest {
     InventoryService inventoryService;
 
     @Autowired
-    InventoryJpaRepository inventoryJpaRepository;
+    InventoryRepository inventoryRepository;
 
     @Autowired
     ObjectMapper objectMapper;
@@ -88,6 +89,48 @@ public class InventoryControllerTest {
                 .size(10)
                 .page(0)
                 .search("광어")
+                .build();
+
+        //expect
+        mockMvc.perform(get("/inventories")
+                        .param("companyId", String.valueOf(inventoryReqSearchRequest.getCompanyId()))
+                        .param("size", String.valueOf(inventoryReqSearchRequest.getSize()))
+                        .param("page", String.valueOf(inventoryReqSearchRequest.getPage()))
+                        .param("search", inventoryReqSearchRequest.getSearch()))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("재고가 없을 경우 content에 null을 반환된다.")
+    public void test4() throws Exception {
+        //given
+        InventoryReqSearchRequest inventoryReqSearchRequest = InventoryReqSearchRequest.builder()
+                .companyId(102L)
+                .size(10)
+                .page(0)
+                .search("")
+                .build();
+
+        //expect
+        mockMvc.perform(get("/inventories")
+                        .param("companyId", String.valueOf(inventoryReqSearchRequest.getCompanyId()))
+                        .param("size", String.valueOf(inventoryReqSearchRequest.getSize()))
+                        .param("page", String.valueOf(inventoryReqSearchRequest.getPage()))
+                        .param("search", inventoryReqSearchRequest.getSearch()))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("재고보다 많은 페이지를 param으로 넣을 경우 content에 null을 반환된다.")
+    public void test5() throws Exception {
+        //given
+        InventoryReqSearchRequest inventoryReqSearchRequest = InventoryReqSearchRequest.builder()
+                .companyId(102L)
+                .size(10)
+                .page(3)
+                .search("")
                 .build();
 
         //expect

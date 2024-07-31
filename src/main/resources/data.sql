@@ -1,4 +1,5 @@
-INSERT INTO company(company_id) VALUES (1);
+INSERT INTO company(company_id) VALUES (101);
+INSERT INTO company(company_id) VALUES (102);
 insert into USERS(user_id) values(2);
 
 INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, partial_outgoing,customer_name) VALUES
