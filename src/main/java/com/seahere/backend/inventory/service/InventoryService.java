@@ -59,6 +59,7 @@ public class InventoryService {
             return inventoryEntity;
         }
         else{
+
             InventoryRequest inventoryRequest = InventoryRequest.builder()
                     .companyId(companyId)
                     .quantity(incomingDataRequest.getQuantity())
@@ -70,6 +71,7 @@ public class InventoryService {
                     .build();
 
             InventoryEntity inventoryEntity = inventoryRequest.toEntity();
+            inventoryEntity.setProduct(productEntity);
             CompanyEntity company = companyRepository.findById(companyId).get();
             inventoryEntity.assignCompany(company);
             inventoryJpaRepository.save(inventoryEntity);
