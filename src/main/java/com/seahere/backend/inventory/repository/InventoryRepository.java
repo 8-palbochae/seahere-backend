@@ -1,7 +1,6 @@
 package com.seahere.backend.inventory.repository;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.seahere.backend.inventory.controller.response.InventoryReqDetailDto;
 import com.seahere.backend.inventory.controller.response.InventoryReqDto;
@@ -26,10 +25,10 @@ public class InventoryRepository {
         List<InventoryReqDto> results = queryFactory
                 .select(Projections.constructor(InventoryReqDto.class,
                         inventory.company.id,
-                        inventory.product.productName,
+                        inventory.product.productName.as("name"),
                         inventory.category,
-                        inventory.incomingDate.max(),
-                        Expressions.asNumber(inventory.quantity.sum()).longValue()))
+                        inventory.incomingDate.max().as("latestIncoming"),
+                        inventory.quantity.sum().as("totalQuantity").floatValue()))
                 .from(inventory)
                 .where(inventory.company.id.eq(companyId)
                         .and(inventory.product.productName.containsIgnoreCase(search)))
@@ -52,9 +51,9 @@ public class InventoryRepository {
                 .select(Projections.constructor(InventoryReqDetailDto.class,
                         inventory.inventoryId,
                         inventory.company.id,
-                        inventory.product.productName,
+                        inventory.product.productName.as("name"),
                         inventory.category,
-                        Expressions.asNumber(inventory.quantity).longValue(),
+                        inventory.quantity.floatValue(),
                         inventory.incomingDate,
                         inventory.country,
                         inventory.naturalStatus))

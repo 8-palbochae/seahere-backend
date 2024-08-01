@@ -14,10 +14,16 @@ import javax.persistence.*;
 public class ProductEntity {
     @Id
     @GeneratedValue
+    @Column(name = "product_id")
     private Long productId;
 
+    @Column(name = "product_name")
     private String productName;
+
+    @Column(name = "qr")
     private String qr;
+
+    @Column(name = "product_img")
     private String productImg;
 
 }

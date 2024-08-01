@@ -45,11 +45,12 @@ class InventoryServiceTest {
     @DisplayName("어종, 상태, 자연, 나라,회사번호가 같은 재고가있다면 true를 반환한다.")
     void checkInventory(){
         //given
-        //when
-        boolean result = inventoryJpaRepository.findByCategoryAndNameAndCompanyIdAndNaturalStatusAndCountry(
+        // when
+        boolean result = inventoryJpaRepository.existsByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(
                 "활어", "광어", 101L, "자연", "국산"
-        ).isPresent();
-        //then
+        );
+
+        // then
         assertThat(result).isTrue();
 
     }

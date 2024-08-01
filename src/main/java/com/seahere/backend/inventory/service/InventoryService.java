@@ -46,7 +46,7 @@ public class InventoryService {
     private boolean isInventory(Long companyId, IncomingDataRequest incomingDataRequest) {
         ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
 
-        return inventoryJpaRepository.findByCategoryAndNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).isPresent();
+        return inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).isPresent();
     }
 
     public InventoryEntity inventoryUpdateEnroll(Long companyId, IncomingDataRequest incomingDataRequest){
@@ -54,7 +54,7 @@ public class InventoryService {
         ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
 
         if(isInventory(companyId, incomingDataRequest)){
-            InventoryEntity inventoryEntity = inventoryJpaRepository.findByCategoryAndNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).get();
+            InventoryEntity inventoryEntity = inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).get();
             inventoryEntity.addQuantity(incomingDataRequest.getQuantity());
             return inventoryEntity;
         }
