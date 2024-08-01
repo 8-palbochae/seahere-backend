@@ -1,14 +1,10 @@
 package com.seahere.backend.incoming.controller;
 
-import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
-import com.seahere.backend.incoming.dto.IncomingMockDto;
 import com.seahere.backend.incoming.service.IncomingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.web.access.WebInvocationPrivilegeEvaluator;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
