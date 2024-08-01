@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class InventoryRequest {
     private final Long inventoryId;
     private final Long companyId;
-    private final Float quantity;
+    private final float quantity;
     private final String category;
     private final String name;
     private final String country;

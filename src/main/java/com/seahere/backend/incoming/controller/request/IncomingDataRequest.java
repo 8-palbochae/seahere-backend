@@ -17,7 +17,7 @@ public class IncomingDataRequest {
     private int incomingPrice;
     private String memo;
     private String countryDetail;
-    private String naturalStatus;
+    private String natural;
     private String category;
     private String country;
 
@@ -31,7 +31,7 @@ public class IncomingDataRequest {
                 .category(this.category)
                 .country(this.country)
                 .countryDetail(this.countryDetail)
-                .naturalStatus(this.naturalStatus)
+                .naturalStatus(this.natural)
                 .build();
     }
 }
