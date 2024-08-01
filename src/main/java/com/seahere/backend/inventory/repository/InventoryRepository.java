@@ -1,7 +1,6 @@
 package com.seahere.backend.inventory.repository;
 
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.seahere.backend.inventory.controller.response.InventoryReqDetailDto;
 import com.seahere.backend.inventory.controller.response.InventoryReqDto;
@@ -26,15 +25,15 @@ public class InventoryRepository {
         List<InventoryReqDto> results = queryFactory
                 .select(Projections.constructor(InventoryReqDto.class,
                         inventory.company.id,
-                        inventory.name,
+                        inventory.product.productName.as("name"),
                         inventory.category,
-                        inventory.incomingDate.max(),
-                        Expressions.asNumber(inventory.quantity.sum()).longValue()))
+                        inventory.incomingDate.max().as("latestIncoming"),
+                        inventory.quantity.sum().as("totalQuantity").floatValue()))
                 .from(inventory)
                 .where(inventory.company.id.eq(companyId)
-                        .and(inventory.name.containsIgnoreCase(search)))
-                .groupBy(inventory.name, inventory.category, inventory.company.id)
-                .orderBy(inventory.name.asc())
+                        .and(inventory.product.productName.containsIgnoreCase(search)))
+                .groupBy(inventory.product.productName, inventory.category, inventory.company.id)
+                .orderBy(inventory.product.productName.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
@@ -52,15 +51,15 @@ public class InventoryRepository {
                 .select(Projections.constructor(InventoryReqDetailDto.class,
                         inventory.inventoryId,
                         inventory.company.id,
-                        inventory.name,
+                        inventory.product.productName.as("name"),
                         inventory.category,
-                        Expressions.asNumber(inventory.quantity).longValue(),
+                        inventory.quantity.floatValue(),
                         inventory.incomingDate,
                         inventory.country,
                         inventory.naturalStatus))
                 .from(inventory)
                 .where(inventory.company.id.eq(companyId)
-                        .and(inventory.name.eq(name))
+                        .and(inventory.product.productName.eq(name))
                         .and(inventory.category.eq(category)))
                 .orderBy(inventory.incomingDate.asc())
                 .offset(pageable.getOffset())

@@ -26,8 +26,8 @@ INSERT INTO outgoing_detail (detail_id, price, product_id, outgoing_id, quantity
                                                                                                  (8,10000,3,2,20,'DELETE','활어','국산','양식'),
                                                                                                  (9,10000,4,2,20,'DELETE','활어','국산','양식'),
                                                                                                  (10,10000,1,2,20,'DELETE','활어','국산','양식');
-insert into INVENTORIES (inventory_id, category, country, natural_status, incoming_date, name, quantity, company_id)
-values (1,'활어','국산','양식','2024-07-08','광어',150,1),
-       (2,'활어','국산','양식','2024-07-08','넙치',160,1),
-       (3,'활어','국산','양식','2024-07-08','갈치',170,1),
-       (4,'선어','국산','양식','2024-07-08','고등어',180,1);
+insert into INVENTORIES (inventory_id, category, country, natural_status, incoming_date, product_id, quantity, company_id)
+values (1,'활어','국산','양식','2024-07-08',1,150,1),
+       (2,'활어','국산','양식','2024-07-08',2,160,1),
+       (3,'활어','국산','양식','2024-07-08',3,170,1),
+       (4,'선어','국산','양식','2024-07-08',4,400,1);

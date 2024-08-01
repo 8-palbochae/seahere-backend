@@ -40,7 +40,7 @@ public class OutgoingDetailRepository {
                 .leftJoin(outgoingDetailEntity.product, productEntity)
                 .leftJoin(outgoingEntity.company, companyEntity)
                 .leftJoin(inventoryEntity).on(inventoryEntity.company.eq(companyEntity)
-                        .and(inventoryEntity.name.eq(outgoingDetailEntity.product.productName))
+                        .and(inventoryEntity.product.eq(outgoingDetailEntity.product))
                         .and(inventoryEntity.category.eq(outgoingDetailEntity.category))
                         .and(inventoryEntity.naturalStatus.eq(outgoingDetailEntity.naturalStatus))
                         .and(inventoryEntity.country.eq(outgoingDetailEntity.country)))

@@ -77,8 +77,6 @@ class OutgoingDetailServiceTest {
                         tuple("갈치", 20f, 170f),
                         tuple("고등어",20f, 0f)
                 );
-        ;
-        result.stream().forEach(item -> log.info("item = {}",item));
     }
 
     @Test

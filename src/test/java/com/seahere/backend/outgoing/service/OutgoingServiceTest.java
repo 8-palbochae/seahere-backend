@@ -55,9 +55,9 @@ class OutgoingServiceTest {
     void findByOutgoingStateIsPendingSlice(){
         //given
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
-        CompanyEntity company = companyRepository.findById(1L).get();
+        CompanyEntity company = companyRepository.findById(101L).get();
         //when
-        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"");
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(101L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"");
 
         //then
         assertThat(result.getContent()).hasSize(3)
@@ -73,10 +73,10 @@ class OutgoingServiceTest {
     void findByOutgoingStateIsPendingSliceSearch(){
         //given
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
-        CompanyEntity company = companyRepository.findById(1L).get();
-        UserEntity 아리랑 = userRepository.findById(1L).get();
+        CompanyEntity company = companyRepository.findById(101L).get();
+        UserEntity 아리랑 = userRepository.findById(101L).get();
         //when
-        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,8,20),"아리랑");
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(101L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,8,20),"아리랑");
 
         //then
         assertThat(result.getContent()).hasSize(1)
@@ -89,12 +89,12 @@ class OutgoingServiceTest {
     @DisplayName("출고 리스트중 상태가 해당 회사 번호와 출고요청(pending), 지정날짜 사이 그리고 상품이름이 광어가 포함된 출고 목록을 반환한다.")
     void findByOutgoingStateIsPendingSliceSearchProductName(){
         //given
-        CompanyEntity company = companyRepository.findById(1L).get();
+        CompanyEntity company = companyRepository.findById(101L).get();
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
-        UserEntity 아리랑 = userRepository.findById(1L).get();
-        UserEntity 스리랑 = userRepository.findById(2L).get();
+        UserEntity 아리랑 = userRepository.findById(101L).get();
+        UserEntity 스리랑 = userRepository.findById(201L).get();
         //when
-        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(1L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"광어");
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(101L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),"광어");
         //then
         assertThat(result.getContent().get(0).getOutgoingDetails().get(0).getProduct().getProductName()).isEqualTo("광어");
         assertThat(result.getContent()).hasSize(2)
@@ -109,10 +109,10 @@ class OutgoingServiceTest {
     @DisplayName("출고대기(ready)로 출고의 상태를 변경한다")
     void changeOutgoingStateToReady() {
         // given
-        OutgoingEntity outgoing = outgoingJpaRepository.findById(1L).get();
+        OutgoingEntity outgoing = outgoingJpaRepository.findById(101L).get();
         // when
         outgoing.changeState(OutgoingState.READY);
-        OutgoingEntity result = outgoingJpaRepository.findById(1L).get();
+        OutgoingEntity result = outgoingJpaRepository.findById(101L).get();
         // then
         assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.READY);
     }
@@ -121,10 +121,10 @@ class OutgoingServiceTest {
     @DisplayName("출고완료(complete)로 출고의 상태를 변경한다")
     void changeOutgoingStateToComplete() {
         // given
-        OutgoingEntity outgoing = outgoingJpaRepository.findById(1L).get();
+        OutgoingEntity outgoing = outgoingJpaRepository.findById(101L).get();
         // when
         outgoing.changeState(OutgoingState.COMPLETE);
-        OutgoingEntity result = outgoingJpaRepository.findById(1L).get();
+        OutgoingEntity result = outgoingJpaRepository.findById(101L).get();
         // then
         assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.COMPLETE);
     }

@@ -16,5 +16,5 @@ public class InventoryReqDto {
     private String name;
     private String category;
     private LocalDate latestIncoming;
-    private Long totalQuantity;
+    private Float totalQuantity;
 }

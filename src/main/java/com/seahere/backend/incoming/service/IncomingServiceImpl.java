@@ -8,6 +8,8 @@ import com.seahere.backend.incoming.entity.IncomingEntity;
 import com.seahere.backend.incoming.repository.IncomingRepository;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.service.InventoryService;
+import com.seahere.backend.product.entity.ProductEntity;
+import com.seahere.backend.product.repository.ProductRepository;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
@@ -25,6 +27,7 @@ import java.util.Optional;
 @Slf4j
 public class IncomingServiceImpl implements IncomingService{
 
+    private final ProductRepository productRepository;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final IncomingRepository incomingRepository;
@@ -32,13 +35,13 @@ public class IncomingServiceImpl implements IncomingService{
 
     @Override
     public void save(Long companyId, Long userId, IncomingDataRequest incomingDataRequest) {
-
+        ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).orElse(null);
         CompanyEntity companyEntity = companyRepository.findById(companyId).orElseThrow(CompanyNotFound::new);
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        IncomingEntity incomingEntity = incomingDataRequest.toEntity();
+        IncomingEntity incomingEntity = incomingDataRequest.toEntity(productEntity);
         incomingEntity.enroll(userEntity,companyEntity);
         InventoryEntity inventoryEntity = inventoryService.inventoryUpdateEnroll(companyId, incomingDataRequest);
-        log.info("name ={}",inventoryEntity.getName());
+        log.info("name ={}",inventoryEntity.getProduct().getProductName());
         incomingRepository.save(incomingEntity);
     }
 }
