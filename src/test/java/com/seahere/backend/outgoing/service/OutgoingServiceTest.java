@@ -28,7 +28,6 @@ import static org.assertj.core.api.Assertions.tuple;
 @Slf4j
 @Sql(value = "/sql/outgoing-service-test.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class OutgoingServiceTest {
-    //todo 추후에 user도 entity로 바꿀것
     @Autowired
     private OutgoingService outgoingService;
     @Autowired

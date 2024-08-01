@@ -92,12 +92,6 @@ INSERT INTO outgoing_detail (detail_id, price, product_id, outgoing_id, quantity
                                                                                            (6,10000,5,2,80,'활어','국산','양식'),
                                                                                            (7,10000,3,2,90,'선어','국산','양식'),
                                                                                            (8,10000,1,2,100,'선어','국산','양식');
--- 1 광어
--- 2 이광수
--- 3 갈치
--- 4 고등어
--- 5 넙치
--- 6 장어
 insert into inventories(inventory_id, category, country, incoming_date, name, natural_status, quantity, company_id)
 values (1,'활어','국산','2024-07-31','광어','양식',123,1),
        (2,'활어','국산','2024-07-31','갈치','양식',150,1),

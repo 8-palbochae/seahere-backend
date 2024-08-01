@@ -28,7 +28,7 @@ public class InventoryEntity {
     private CompanyEntity company;
 
     @Column(name = "quantity")
-    private int quantity;
+    private float quantity;
 
     @Column(name = "category")
     private String category;

@@ -1,10 +1,12 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.outgoing.dto.OutgoingDetailDto;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingDetailState;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.repository.OutgoingDetailJpaRepository;
 import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,15 +15,15 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @SpringBootTest
 @Transactional
 @Sql(value = "/sql/outgoing-detail-service-test.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-
+@Slf4j
 class OutgoingDetailServiceTest {
 
     @Autowired
@@ -65,9 +67,18 @@ class OutgoingDetailServiceTest {
     void findByOutgoingAndStateIsAcitve() {
         // given
         // when
-        List<OutgoingDetailEntity> outgoingDetails = outgoingDetailService.findByOutgoingAndStateIsAcitve(1L);
+        List<OutgoingDetailDto> result = outgoingDetailService.findByOutgoingAndStateIsAcitve(1L);
+
         // then
-        assertThat(outgoingDetails).hasSize(4);
+        assertThat(result).hasSize(4).extracting("productName","outgoingQuantity","inventoryQuantity")
+                .contains(
+                        tuple("광어", 20f, 150f),
+                        tuple("넙치", 20f, 160f),
+                        tuple("갈치", 20f, 170f),
+                        tuple("고등어",20f, 0f)
+                );
+        ;
+        result.stream().forEach(item -> log.info("item = {}",item));
     }
 
     @Test
