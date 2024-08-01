@@ -1,6 +1,7 @@
 package com.seahere.backend.inventory.entity;
 
 import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.product.entity.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,13 +29,14 @@ public class InventoryEntity {
     private CompanyEntity company;
 
     @Column(name = "quantity")
-    private int quantity;
+    private Float quantity;
 
     @Column(name = "category")
     private String category;
 
-    @Column(name = "name")
-    private String name;
+    @ManyToOne
+    @JoinColumn(name = "product_id")
+    private ProductEntity product;
 
     @Column(name = "country")
     private String country;
@@ -45,7 +47,7 @@ public class InventoryEntity {
     @Column(name = "natural_status")
     private String naturalStatus;
 
-    public void addQuantity(int quantity){
+    public void addQuantity(Float quantity){
         this.quantity += quantity;
     }
 

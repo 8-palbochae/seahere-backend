@@ -13,7 +13,7 @@ import java.time.LocalDate;
 public class InventoryRequest {
     private final Long inventoryId;
     private final Long companyId;
-    private final int quantity;
+    private final Float quantity;
     private final String category;
     private final String name;
     private final String country;
@@ -25,7 +25,6 @@ public class InventoryRequest {
                 .inventoryId(this.inventoryId)
                 .quantity(this.quantity)
                 .category(this.category)
-                .name(this.name)
                 .country(this.country)
                 .incomingDate(this.incomingDate)
                 .naturalStatus(this.naturalStatus).build();

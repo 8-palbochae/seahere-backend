@@ -18,21 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class IncomingMockController {
 
-    private final IncomingService inocmingService;
+    private final IncomingService incomingService;
 
     private static final long companyId = 1L;
     private static final long userId = 2L;
 
     @PostMapping("/saveIncomingData")
     public ResponseEntity<String> saveIncomingData(@RequestBody IncomingDataRequest incomingDataRequest) {
-        inocmingService.save(companyId, userId, incomingDataRequest);
+        incomingService.save(companyId, userId, incomingDataRequest);
 
         return ResponseEntity.ok("데이터를 성공적으로 받았습니다.");
 
     }
-
-
-
-
-
 }

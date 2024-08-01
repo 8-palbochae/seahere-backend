@@ -1,9 +1,7 @@
 package com.seahere.backend.incoming.controller.request;
 
-import com.seahere.backend.incoming.dto.IncomingMockDto;
 import com.seahere.backend.incoming.entity.IncomingEntity;
-import com.seahere.backend.product.controller.response.IncomingSearchResponse;
-import com.seahere.backend.product.dto.ProductMockDto;
+import com.seahere.backend.product.entity.ProductEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -15,7 +13,7 @@ import java.time.LocalDate;
 @ToString
 public class IncomingDataRequest {
     private final Long productId;
-    private final int quantity;
+    private final Float quantity;
     private final int incomingPrice;
     private final String memo;
     private final String countryDetail;
@@ -23,9 +21,9 @@ public class IncomingDataRequest {
     private final String category;
     private final String country;
 
-    public IncomingEntity toEntity(){
+    public IncomingEntity toEntity(ProductEntity product) {
         return IncomingEntity.builder()
-                .productId(this.productId)
+                .product(product)
                 .quantity(this.quantity)
                 .incomingDate(LocalDate.now())
                 .incomingPrice(this.incomingPrice)
@@ -36,5 +34,4 @@ public class IncomingDataRequest {
                 .naturalStatus(this.naturalStatus)
                 .build();
     }
-
 }

@@ -13,7 +13,7 @@ public class InventoryReqDetailDto {
     private Long companyId;
     private String name;
     private String category;
-    private Long quantity;
+    private Float quantity;
     private LocalDate incomingDate;
     private String country;
     private String naturalStatus;

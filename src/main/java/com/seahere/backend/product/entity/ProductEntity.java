@@ -1,5 +1,6 @@
 package com.seahere.backend.product.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table(name="product")
 @NoArgsConstructor
 @Getter
+@AllArgsConstructor
 public class ProductEntity {
     @Id
     @GeneratedValue
@@ -18,11 +20,4 @@ public class ProductEntity {
     private String qr;
     private String productImg;
 
-    public ProductEntity(Long productId, String productName, String qr, String productImg) {
-        this.productId = productId;
-        this.productName = productName;
-        this.qr = qr;
-        this.productImg = productImg;
-
-    }
 }
