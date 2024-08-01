@@ -1,8 +1,5 @@
 package com.seahere.backend.outgoing.service;
 
-import com.seahere.backend.company.entity.CompanyEntity;
-import com.seahere.backend.company.exception.CompanyNotFound;
-import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.outgoing.exception.OutgoingNotFoundException;
@@ -20,13 +17,12 @@ import java.time.LocalDate;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class OutgoingService {
+
     private final OutgoingJpaRepository outgoingJpaRepository;
     private final OutgoingRepository outgoingRepository;
-    private final CompanyRepository companyRepository;
 
     public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable, LocalDate startDate, LocalDate endDate, String search){
-        CompanyEntity company = companyRepository.findById(companyId).orElseThrow(CompanyNotFound::new);
-        return outgoingRepository.findByOutgoingStateIsPending(company,pageable, startDate, endDate, search);
+        return outgoingRepository.findByOutgoingStateIsPending(companyId,pageable, startDate, endDate, search);
     }
     @Transactional
     public void save(OutgoingEntity outgoingEntity){

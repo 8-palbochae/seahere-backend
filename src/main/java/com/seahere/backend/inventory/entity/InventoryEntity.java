@@ -2,10 +2,7 @@ package com.seahere.backend.inventory.entity;
 
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.product.entity.ProductEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -18,6 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @DynamicUpdate
+@Setter
 public class InventoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,12 +27,12 @@ public class InventoryEntity {
     private CompanyEntity company;
 
     @Column(name = "quantity")
-    private Float quantity;
+    private float quantity;
 
     @Column(name = "category")
     private String category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
 
@@ -47,7 +45,7 @@ public class InventoryEntity {
     @Column(name = "natural_status")
     private String naturalStatus;
 
-    public void addQuantity(Float quantity){
+    public void addQuantity(float quantity){
         this.quantity += quantity;
     }
 
