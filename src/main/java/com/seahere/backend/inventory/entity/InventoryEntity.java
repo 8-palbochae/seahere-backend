@@ -27,12 +27,12 @@ public class InventoryEntity {
     private CompanyEntity company;
 
     @Column(name = "quantity")
-    private Float quantity;
+    private float quantity;
 
     @Column(name = "category")
     private String category;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
     private ProductEntity product;
 
@@ -45,7 +45,7 @@ public class InventoryEntity {
     @Column(name = "natural_status")
     private String naturalStatus;
 
-    public void addQuantity(Float quantity){
+    public void addQuantity(float quantity){
         this.quantity += quantity;
     }
 
