@@ -86,12 +86,15 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException, TokenExpiredException {
-        jwtService.extractAccessToken(request)
+        Optional<String> optionalAccessToken = jwtService.extractAccessToken(request);
+
+        optionalAccessToken
                 .filter(jwtService::isAccessTokenValid)
                 .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
                         .ifPresent(email -> userRepository.findByEmail(email)
-                                .ifPresent(this::saveAuthentication)));
-
+                                .ifPresent(this::saveAuthentication)
+                        )
+                );
         filterChain.doFilter(request, response);
     }
 
