@@ -77,27 +77,24 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
         userRepository.findByRefreshToken(refreshToken)
                 .ifPresent(user -> {
-                    String reIssuedRefreshToken = reIssueRefreshToken(user);
                     jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
-                            reIssuedRefreshToken);
+                            refreshToken);
                 });
-    }
 
-    private String reIssueRefreshToken(UserEntity user) {
-        String reIssuedRefreshToken = jwtService.createRefreshToken();
-        user.updateRefreshToken(reIssuedRefreshToken);
-        userRepository.saveAndFlush(user);
-        return reIssuedRefreshToken;
+        log.info("ACCESS 토큰 재발급 성공");
     }
 
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException, TokenExpiredException {
-        jwtService.extractAccessToken(request)
+        Optional<String> optionalAccessToken = jwtService.extractAccessToken(request);
+
+        optionalAccessToken
                 .filter(jwtService::isAccessTokenValid)
                 .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
                         .ifPresent(email -> userRepository.findByEmail(email)
-                                .ifPresent(this::saveAuthentication)));
-
+                                .ifPresent(this::saveAuthentication)
+                        )
+                );
         filterChain.doFilter(request, response);
     }
 
