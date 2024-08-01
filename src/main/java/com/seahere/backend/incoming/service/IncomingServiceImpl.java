@@ -41,7 +41,6 @@ public class IncomingServiceImpl implements IncomingService{
         IncomingEntity incomingEntity = incomingDataRequest.toEntity(productEntity);
         incomingEntity.enroll(userEntity,companyEntity);
         InventoryEntity inventoryEntity = inventoryService.inventoryUpdateEnroll(companyId, incomingDataRequest);
-        log.info("name ={}",inventoryEntity.getProduct().getProductName());
         incomingRepository.save(incomingEntity);
     }
 }

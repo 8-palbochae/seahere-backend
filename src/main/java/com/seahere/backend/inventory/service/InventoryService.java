@@ -45,7 +45,6 @@ public class InventoryService {
     //todo 나중에 뜯어 고쳐야함
     private boolean isInventory(Long companyId, IncomingDataRequest incomingDataRequest) {
         ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
-
         return inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).isPresent();
     }
 
@@ -59,6 +58,7 @@ public class InventoryService {
             return inventoryEntity;
         }
         else{
+
             InventoryRequest inventoryRequest = InventoryRequest.builder()
                     .companyId(companyId)
                     .quantity(incomingDataRequest.getQuantity())
@@ -70,6 +70,7 @@ public class InventoryService {
                     .build();
 
             InventoryEntity inventoryEntity = inventoryRequest.toEntity();
+            inventoryEntity.setProduct(productEntity);
             CompanyEntity company = companyRepository.findById(companyId).get();
             inventoryEntity.assignCompany(company);
             inventoryJpaRepository.save(inventoryEntity);
