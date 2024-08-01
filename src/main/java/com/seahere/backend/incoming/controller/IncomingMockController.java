@@ -20,8 +20,8 @@ public class IncomingMockController {
 
     private final IncomingService incomingService;
 
-    private static final long companyId = 1L;
-    private static final long userId = 2L;
+    private static final long companyId = 4L;
+    private static final long userId = 5L;
 
     @PostMapping("/saveIncomingData")
     public ResponseEntity<String> saveIncomingData(@RequestBody IncomingDataRequest incomingDataRequest) {
