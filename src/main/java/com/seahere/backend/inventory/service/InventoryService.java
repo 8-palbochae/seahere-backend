@@ -45,7 +45,6 @@ public class InventoryService {
     //todo 나중에 뜯어 고쳐야함
     private boolean isInventory(Long companyId, IncomingDataRequest incomingDataRequest) {
         ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
-
         return inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).isPresent();
     }
 
