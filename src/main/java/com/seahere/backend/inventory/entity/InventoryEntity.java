@@ -2,10 +2,7 @@ package com.seahere.backend.inventory.entity;
 
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.product.entity.ProductEntity;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
@@ -18,6 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Builder
 @DynamicUpdate
+@Setter
 public class InventoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
