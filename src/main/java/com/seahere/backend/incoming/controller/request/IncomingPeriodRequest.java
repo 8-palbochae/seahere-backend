@@ -15,6 +15,8 @@ public class IncomingPeriodRequest {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate startDate = LocalDate.now();
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate = LocalDate.now();
 
 
