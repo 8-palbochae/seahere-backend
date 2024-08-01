@@ -31,6 +31,12 @@ public class OutgoingDetailEntity {
 
     private float quantity;
 
+    private String country;
+
+    private String naturalStatus;
+
+    private String category;
+
     @Enumerated(EnumType.STRING)
     @Column(columnDefinition = "varchar(255) default 'ACTIVE'")
     private OutgoingDetailState state;

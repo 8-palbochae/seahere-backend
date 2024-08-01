@@ -1,7 +1,6 @@
 package com.seahere.backend.outgoing.service;
 
 import com.seahere.backend.company.entity.CompanyEntity;
-import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
@@ -21,7 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 @SpringBootTest
 @Transactional
@@ -39,16 +39,16 @@ class OutgoingServiceTest {
     private UserRepository userRepository;
 
     @Test
-    @DisplayName("출고 리스트중 상태가 해당 회사 번호가 없다면 예외를 던진다.")
+    @DisplayName("출고 리스트중 상태가 해당 회사 번호가 없다면 0개를 던진다.")
     void findByOutgoingStateIsPendingIsEmpty() {
         //given
         PageRequest pageRequest = PageRequest.of(0, 3, Sort.by(Sort.Direction.DESC, "outgoingId"));
         //when
         //then
-        assertThatThrownBy(() ->
-                outgoingService.findByOutgoingStateIsPending(3L, pageRequest,LocalDate.of(2024,7,20),LocalDate.of(2024,7,30),""))
-                .isInstanceOf(CompanyNotFound.class)
-                .hasMessage("존재하는 회사가 없습니다.");
+
+        Slice<OutgoingEntity> result = outgoingService.findByOutgoingStateIsPending(3L, pageRequest, LocalDate.of(2024, 7, 20), LocalDate.of(2024, 7, 30), "");
+        assertThat(result.getContent()).hasSize(0);
+
     }
 
     @Test

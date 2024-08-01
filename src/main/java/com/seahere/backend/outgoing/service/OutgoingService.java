@@ -25,8 +25,7 @@ public class OutgoingService {
     private final CompanyRepository companyRepository;
 
     public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable, LocalDate startDate, LocalDate endDate, String search){
-        CompanyEntity company = companyRepository.findById(companyId).orElseThrow(CompanyNotFound::new);
-        return outgoingRepository.findByOutgoingStateIsPending(company,pageable, startDate, endDate, search);
+        return outgoingRepository.findByOutgoingStateIsPending(companyId,pageable, startDate, endDate, search);
     }
     @Transactional
     public void save(OutgoingEntity outgoingEntity){
