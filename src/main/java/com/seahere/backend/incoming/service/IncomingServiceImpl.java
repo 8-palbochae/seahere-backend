@@ -5,7 +5,7 @@ import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
 import com.seahere.backend.incoming.entity.IncomingEntity;
-import com.seahere.backend.incoming.repository.IncomingRepository;
+import com.seahere.backend.incoming.repository.IncomingJpaRepository;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.service.InventoryService;
 import com.seahere.backend.product.entity.ProductEntity;
@@ -18,9 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -30,7 +27,7 @@ public class IncomingServiceImpl implements IncomingService{
     private final ProductRepository productRepository;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
-    private final IncomingRepository incomingRepository;
+    private final IncomingJpaRepository incomingRepository;
     private final InventoryService inventoryService;
 
     @Override

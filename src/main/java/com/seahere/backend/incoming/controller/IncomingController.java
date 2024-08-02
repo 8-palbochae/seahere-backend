@@ -38,6 +38,7 @@ public class IncomingController {
         LocalDate startDate =periodRequest.getStartDate();
         LocalDate endDate =periodRequest.getEndDate();
         log.info("startDate: {}, endDate: {}", startDate, endDate);
+        
         return ResponseEntity.ok("데이터를 성공적으로 받았습니다.");
     }
 
