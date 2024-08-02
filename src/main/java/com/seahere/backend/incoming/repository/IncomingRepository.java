@@ -1,11 +1,13 @@
 package com.seahere.backend.incoming.repository;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.seahere.backend.incoming.entity.IncomingEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.seahere.backend.company.entity.QCompanyEntity.companyEntity;
@@ -22,12 +24,18 @@ public class IncomingRepository {
     public List<IncomingEntity> findIncomingList(Long companyId, LocalDate startDate, LocalDate endDate){
         List<IncomingEntity> results = queryFactory.selectFrom(incomingEntity).distinct()
                 .leftJoin(incomingEntity.company,companyEntity).fetchJoin()
-                .leftJoin(incomingEntity.user, userEntity).fetchJoin()
+//                .leftJoin(incomingEntity.user, userEntity).fetchJoin()
                 .leftJoin(incomingEntity.product,productEntity)
+                .where(incomingPeriodFindList(companyId,startDate,endDate))
+                .fetch();
 
+        return new ArrayList<>(results);
+    }
 
-
-        return new List<>(results);
+    private BooleanExpression incomingPeriodFindList(Long companyId,LocalDate startDate, LocalDate endDate){
+        return incomingEntity.company.id.eq(companyId)
+                .and(incomingEntity.incomingDate.goe(startDate))
+                .and(incomingEntity.incomingDate.loe(endDate));
     }
 
 
