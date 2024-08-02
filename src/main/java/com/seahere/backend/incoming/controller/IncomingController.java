@@ -1,25 +1,19 @@
 package com.seahere.backend.incoming.controller;
 
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
+import com.seahere.backend.incoming.controller.request.IncomingDateRequest;
 import com.seahere.backend.incoming.controller.request.IncomingPeriodRequest;
 import com.seahere.backend.incoming.controller.response.IncomingHistoryResponse;
 import com.seahere.backend.incoming.controller.response.IncomingResponse;
-import com.seahere.backend.incoming.dto.IncomingReqDto;
-import com.seahere.backend.incoming.entity.IncomingEntity;
 import com.seahere.backend.incoming.service.IncomingService;
-import com.seahere.backend.outgoing.controller.response.OutgoingReqListResponse;
-import com.seahere.backend.outgoing.entity.OutgoingEntity;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Slice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,14 +37,23 @@ public class IncomingController {
 
     //incomingDate, count 반환
     @GetMapping("/incomings")
-    public ResponseEntity<List<IncomingHistoryResponse>> incomingReqList(IncomingPeriodRequest periodRequest) {
-        List<IncomingHistoryResponse> result = incomingService.findIncomingList(1L,
+    public ResponseEntity<List<IncomingHistoryResponse>> incomingCountIncomingDate(IncomingPeriodRequest periodRequest) {
+        List<IncomingHistoryResponse> result = incomingService.findIncomingCountList(1L,
                         periodRequest.getStartDate(), periodRequest.getEndDate()).stream()
                 .map(IncomingHistoryResponse::from)
                 .collect(Collectors.toList());
 
         log.info("count:{},incomingDate:{}",result.get(0).getIncomingCount(),result.get(0).getIncomingDate());
 
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/incomings1")
+    public ResponseEntity<List<IncomingResponse>> incomingReqList(IncomingDateRequest dateRequest) {
+        List<IncomingResponse> result = incomingService.findIncomingList(1L, dateRequest.getIncomingDate())
+                .stream()
+                .map(IncomingResponse::from)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }
 }

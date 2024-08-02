@@ -46,7 +46,12 @@ public class IncomingServiceImpl implements IncomingService{
         incomingJpaRepository.save(incomingEntity);
     }
 
-    public List<IncomingReqDto> findIncomingList(Long companyId, LocalDate startDate, LocalDate endDate){
-        return incomingRepository.findIncomingList(companyId, startDate, endDate);
+    public List<IncomingReqDto> findIncomingCountList(Long companyId, LocalDate startDate, LocalDate endDate){
+        return incomingRepository.findIncomingCountList(companyId, startDate, endDate);
+    }
+
+    @Override
+    public List<IncomingEntity> findIncomingList(Long companyId, LocalDate incomingDate) {
+        return incomingRepository.findIncomingList(companyId, incomingDate);
     }
 }
