@@ -1,5 +1,6 @@
-package com.seahere.backend.inventory.entity;
+package com.seahere.backend.adjust.entity;
 
+import com.seahere.backend.inventory.entity.InventoryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
