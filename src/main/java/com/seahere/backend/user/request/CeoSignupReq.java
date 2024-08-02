@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor
@@ -23,7 +24,7 @@ public class CeoSignupReq {
     @NotBlank(message = "사용자 이름은 필수 입력 입니다.")
     private String username;
 
-    @NotBlank(message = "CEO는 회사 ID를 반드시 가지고 있어야 합니다.")
+    @NotNull(message = "CEO는 회사 ID를 반드시 가지고 있어야 합니다.")
     private Long companyId;
 
     private Address address;

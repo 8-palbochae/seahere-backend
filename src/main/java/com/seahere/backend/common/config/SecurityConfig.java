@@ -85,7 +85,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, userRepository);
+        return new LoginSuccessHandler(jwtService, userRepository,objectMapper);
     }
 
     @Bean
