@@ -22,10 +22,10 @@ public class IncomingRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<IncomingEntity> findIncomingList(Long companyId, LocalDate startDate, LocalDate endDate){
-        List<IncomingEntity> results = queryFactory.selectFrom(incomingEntity).distinct()
+        List<IncomingEntity> results = queryFactory.selectFrom(incomingEntity)
                 .leftJoin(incomingEntity.company,companyEntity).fetchJoin()
 //                .leftJoin(incomingEntity.user, userEntity).fetchJoin()
-                .leftJoin(incomingEntity.product,productEntity)
+                .leftJoin(incomingEntity.product,productEntity).fetchJoin()
                 .where(incomingPeriodFindList(companyId,startDate,endDate))
                 .fetch();
 

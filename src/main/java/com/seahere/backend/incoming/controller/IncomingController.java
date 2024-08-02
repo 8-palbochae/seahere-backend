@@ -2,9 +2,11 @@ package com.seahere.backend.incoming.controller;
 
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
 import com.seahere.backend.incoming.controller.request.IncomingPeriodRequest;
-import com.seahere.backend.incoming.controller.response.IncomingPeriodResponse;
+import com.seahere.backend.incoming.controller.response.IncomingResponse;
+import com.seahere.backend.incoming.dto.IncomingReqDto;
 import com.seahere.backend.incoming.entity.IncomingEntity;
 import com.seahere.backend.incoming.service.IncomingService;
+import com.seahere.backend.outgoing.controller.response.OutgoingReqListResponse;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -29,7 +32,7 @@ public class IncomingController {
     private static final long companyId = 4L;
     private static final long userId = 5L;
 
-    @PostMapping("/saveIncomingData")
+    @PostMapping("/incoming")
     public ResponseEntity<String> saveIncomingData(@RequestBody IncomingDataRequest incomingDataRequest) {
         incomingService.save(companyId, userId, incomingDataRequest);
 
@@ -38,17 +41,17 @@ public class IncomingController {
     }
 
     @GetMapping("/incomings")
-    public ResponseEntity<String> incomingReqList(IncomingPeriodRequest periodRequest) {
-        LocalDate startDate =periodRequest.getStartDate();
-        LocalDate endDate =periodRequest.getEndDate();
-        log.info("startDate: {}, endDate: {}", startDate, endDate);
+    public ResponseEntity<List<IncomingResponse>> incomingReqList(IncomingPeriodRequest periodRequest) {
+
         List<IncomingEntity> results = incomingService.findIncomingList(1L,
                  periodRequest.getStartDate(), periodRequest.getEndDate());
-        for(IncomingEntity incomingEntity : results){
-            log.info("natural = {}",incomingEntity.getNaturalStatus());
-        }
-        return ResponseEntity.ok("데이터를 성공적으로 받았습니다.");
-    }
 
+
+        List<IncomingResponse> incomingResponseList = results.stream()
+                .map(IncomingResponse::from)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(incomingResponseList);
+    }
 }
 

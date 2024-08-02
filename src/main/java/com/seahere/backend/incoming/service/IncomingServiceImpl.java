@@ -45,7 +45,7 @@ public class IncomingServiceImpl implements IncomingService{
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         IncomingEntity incomingEntity = incomingDataRequest.toEntity(productEntity);
         incomingEntity.enroll(userEntity,companyEntity);
-        InventoryEntity inventoryEntity = inventoryService.inventoryUpdateEnroll(companyId, incomingDataRequest);
+        inventoryService.inventoryUpdateEnroll(companyId, incomingDataRequest);
         incomingJpaRepository.save(incomingEntity);
     }
 
