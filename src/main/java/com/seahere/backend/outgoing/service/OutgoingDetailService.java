@@ -1,5 +1,6 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.outgoing.dto.OutgoingDetailDto;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingDetailState;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
@@ -7,6 +8,7 @@ import com.seahere.backend.outgoing.exception.NotPartialOutgoingException;
 import com.seahere.backend.outgoing.exception.OutgoingDetailNotFoundException;
 import com.seahere.backend.outgoing.exception.OutgoingNotFoundException;
 import com.seahere.backend.outgoing.repository.OutgoingDetailJpaRepository;
+import com.seahere.backend.outgoing.repository.OutgoingDetailRepository;
 import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,7 @@ public class OutgoingDetailService {
 
     private final OutgoingDetailJpaRepository outgoingDetailJpaRepository;
     private final OutgoingJpaRepository outgoingJpaRepository;
+    private final OutgoingDetailRepository outgoingDetailRepository;
 
     @Transactional
     public void deleteOutgoingDetail(Long outgoingDetailId){
@@ -34,9 +37,9 @@ public class OutgoingDetailService {
         throw new NotPartialOutgoingException();
     }
 
-    public List<OutgoingDetailEntity> findByOutgoingAndStateIsAcitve(Long outgoingId){
-        OutgoingEntity outgoing = outgoingJpaRepository.findById(outgoingId).orElseThrow(OutgoingNotFoundException::new);
-        return outgoingDetailJpaRepository.findByOutgoingAndState(outgoing, OutgoingDetailState.ACTIVE);
+    public List<OutgoingDetailDto> findByOutgoingAndStateIsAcitve(Long outgoingId){
+        return outgoingDetailRepository.findByOutgoingAndStateActive(outgoingId);
+//        return outgoingDetailJpaRepository.findByOutgoingAndState(outgoing, OutgoingDetailState.ACTIVE);
     }
 
     @Transactional

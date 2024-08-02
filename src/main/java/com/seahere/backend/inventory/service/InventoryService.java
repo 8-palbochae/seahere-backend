@@ -45,8 +45,7 @@ public class InventoryService {
     //todo 나중에 뜯어 고쳐야함
     private boolean isInventory(Long companyId, IncomingDataRequest incomingDataRequest) {
         ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
-
-        return inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).isPresent();
+        return inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNatural(),incomingDataRequest.getCountry()).isPresent();
     }
 
     public InventoryEntity inventoryUpdateEnroll(Long companyId, IncomingDataRequest incomingDataRequest){
@@ -54,11 +53,12 @@ public class InventoryService {
         ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
 
         if(isInventory(companyId, incomingDataRequest)){
-            InventoryEntity inventoryEntity = inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNaturalStatus(),incomingDataRequest.getCountry()).get();
+            InventoryEntity inventoryEntity = inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNatural(),incomingDataRequest.getCountry()).get();
             inventoryEntity.addQuantity(incomingDataRequest.getQuantity());
             return inventoryEntity;
         }
         else{
+
             InventoryRequest inventoryRequest = InventoryRequest.builder()
                     .companyId(companyId)
                     .quantity(incomingDataRequest.getQuantity())
@@ -66,10 +66,11 @@ public class InventoryService {
                     .name(productEntity.getProductName())
                     .country(incomingDataRequest.getCountry())
                     .incomingDate(LocalDate.now())
-                    .naturalStatus(incomingDataRequest.getNaturalStatus())
+                    .naturalStatus(incomingDataRequest.getNatural())
                     .build();
 
             InventoryEntity inventoryEntity = inventoryRequest.toEntity();
+            inventoryEntity.setProduct(productEntity);
             CompanyEntity company = companyRepository.findById(companyId).get();
             inventoryEntity.assignCompany(company);
             inventoryJpaRepository.save(inventoryEntity);
