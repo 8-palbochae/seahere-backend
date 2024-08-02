@@ -12,6 +12,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URLEncoder;
 
 @Slf4j
 @Component
@@ -21,23 +22,20 @@ public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/json;charset=UTF-8");
+        String errorMessage;
+        int statusCode;
 
         if (exception.getCause() instanceof BrokerPermissionException) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("{\"message\": \"사용자 계정이 활성화되지 않았습니다.\"}");
-            response.sendRedirect(CLIENT_SERVER_ADDRESS +"/login");
+            statusCode = HttpServletResponse.SC_UNAUTHORIZED;
+            errorMessage = "사용자 계정이 활성화되지 않았습니다.";
         } else if (exception.getCause() instanceof UserNotFound) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            response.getWriter().write("{\"message\": \"사용자를 찾을 수 없습니다.\"}");
-            response.sendRedirect(CLIENT_SERVER_ADDRESS +"/login");
+            statusCode = HttpServletResponse.SC_NOT_FOUND;
+            errorMessage = "사용자를 찾을 수 없습니다.";
         } else {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().write("{\"message\": \"로그인 실패! 이메일이나 비밀번호를 확인해주세요.\"}");
-            response.sendRedirect(CLIENT_SERVER_ADDRESS +"/login");
+            statusCode = HttpServletResponse.SC_BAD_REQUEST;
+            errorMessage = "로그인 실패! 이메일이나 비밀번호를 확인해주세요.";
         }
 
-        log.info("로그인에 실패했습니다. 메시지 : {}", exception.getMessage());
+        response.sendRedirect(CLIENT_SERVER_ADDRESS + "/login?error=" + URLEncoder.encode(errorMessage, "UTF-8"));
     }
 }
