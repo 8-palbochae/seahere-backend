@@ -1,11 +1,18 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.inventory.entity.InventoryEntity;
+import com.seahere.backend.inventory.exception.InventoryNotFoundException;
+import com.seahere.backend.inventory.repository.InventoryJpaRepository;
+import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
+import com.seahere.backend.outgoing.exception.LackInventoryException;
 import com.seahere.backend.outgoing.exception.OutgoingNotFoundException;
 import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
 import com.seahere.backend.outgoing.repository.OutgoingRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -16,9 +23,11 @@ import java.time.LocalDate;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Slf4j
 public class OutgoingService {
 
     private final OutgoingJpaRepository outgoingJpaRepository;
+    private final InventoryJpaRepository inventoryJpaRepository;
     private final OutgoingRepository outgoingRepository;
 
     public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable, LocalDate startDate, LocalDate endDate, String search){
@@ -30,8 +39,29 @@ public class OutgoingService {
     }
     @Transactional
     public OutgoingEntity changeOutgoingState(Long outgoingId, OutgoingState state){
-        OutgoingEntity outgoingReq = outgoingJpaRepository.findById(outgoingId).orElseThrow(OutgoingNotFoundException::new);
-        outgoingReq.changeState(state);
-        return outgoingReq;
+        if(OutgoingState.READY.equals(state)){
+            OutgoingEntity outgoingCall = acceptOutgoingRequest(outgoingId);
+            outgoingCall.changeState(state);
+            return outgoingCall;
+        }
+        OutgoingEntity outgoingCall = outgoingJpaRepository.findById(outgoingId).orElseThrow(OutgoingNotFoundException::new);
+        outgoingCall.changeState(state);
+        return outgoingCall;
+    }
+
+    @Transactional
+    public OutgoingEntity acceptOutgoingRequest(Long outgoingId){
+        OutgoingEntity outgoingCall = outgoingJpaRepository.findByIdFetchCompany(outgoingId).orElseThrow(OutgoingNotFoundException::new);
+        CompanyEntity company = outgoingCall.getCompany();
+
+        for(OutgoingDetailEntity detail : outgoingCall.getOutgoingDetails()){
+             InventoryEntity inventory= inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(detail.getCategory(), detail.getProduct().getProductName(), company.getId(), detail.getNaturalStatus(), detail.getCountry())
+                    .orElseThrow(InventoryNotFoundException::new);
+             log.info("요청 수량 = {}, 재고 수량 = {}",detail.getQuantity(),inventory.getQuantity());
+             if(detail.isLackInventory(inventory.getQuantity())) throw new LackInventoryException();
+             inventory.minusQuantity(detail.getQuantity());
+            log.info("요청 수량 = {}, 재고 감소후 수량 = {}",detail.getQuantity(),inventory.getQuantity());
+        }
+        return outgoingCall;
     }
 }

@@ -55,4 +55,8 @@ public class OutgoingDetailEntity {
     public boolean isPossibleDelete(){
         return this.outgoing.isPartialOutgoing();
     }
+
+    public boolean isLackInventory(float inventoryQuantity){
+        return inventoryQuantity < this.quantity;
+    }
 }

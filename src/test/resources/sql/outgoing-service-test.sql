@@ -19,5 +19,10 @@ INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, pa
     (401, 101, '2024-7-28', 'PENDING', true,201),
     (501, 101, '2024-7-28', 'READY', true,201);
 
-INSERT INTO outgoing_detail (detail_id, price, product_id, outgoing_id, quantity) values (101,10000,101,101,20),
-                                                                                           (201,10000,101,301,20);
+INSERT INTO outgoing_detail (detail_id, price, product_id, outgoing_id, quantity,natural_status, country, category) values (101,10000,101,101,20,'자연산','국산','활어'),
+                                                                                           (201,10000,101,301,20,'자연산','국산','활어');
+INSERT INTO inventories(inventory_id, category, country, incoming_date, natural_status, quantity, company_id, product_id)
+values (101,'활어','국산','2024-08-02','자연산',100,101,101),
+       (201,'활어','국산','2024-08-02','자연산',200,101,201),
+       (301,'활어','수입','2024-08-02','자연산',300,101,101),
+       (401,'활어','수입','2024-08-02','자연산',400,101,201);
