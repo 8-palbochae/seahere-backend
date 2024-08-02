@@ -2,6 +2,7 @@ package com.seahere.backend.incoming.controller;
 
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
 import com.seahere.backend.incoming.controller.request.IncomingPeriodRequest;
+import com.seahere.backend.incoming.controller.response.IncomingHistoryResponse;
 import com.seahere.backend.incoming.controller.response.IncomingResponse;
 import com.seahere.backend.incoming.dto.IncomingReqDto;
 import com.seahere.backend.incoming.entity.IncomingEntity;
@@ -40,18 +41,16 @@ public class IncomingController {
 
     }
 
+    //incomingDate, count 반환
     @GetMapping("/incomings")
-    public ResponseEntity<List<IncomingResponse>> incomingReqList(IncomingPeriodRequest periodRequest) {
-
-        List<IncomingEntity> results = incomingService.findIncomingList(1L,
-                 periodRequest.getStartDate(), periodRequest.getEndDate());
-
-
-        List<IncomingResponse> incomingResponseList = results.stream()
-                .map(IncomingResponse::from)
+    public ResponseEntity<List<IncomingHistoryResponse>> incomingReqList(IncomingPeriodRequest periodRequest) {
+        List<IncomingHistoryResponse> result = incomingService.findIncomingList(1L,
+                        periodRequest.getStartDate(), periodRequest.getEndDate()).stream()
+                .map(IncomingHistoryResponse::from)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(incomingResponseList);
+        log.info("count:{},incomingDate:{}",result.get(0).getIncomingCount(),result.get(0).getIncomingDate());
+
+        return ResponseEntity.ok(result);
     }
 }
-
