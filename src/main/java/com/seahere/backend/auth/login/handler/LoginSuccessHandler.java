@@ -24,7 +24,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
-    private final ObjectMapper objectMapper;
+
     @Value("${jwt.access.expiration}")
     private String accessTokenExpiration;
 
@@ -37,19 +37,11 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
 
-        Optional<UserEntity> optionalUser = userRepository.findWithCompanyByEmail(email);
-
-        if (optionalUser.isPresent()) {
-            UserEntity user = optionalUser.get();
-            user.updateRefreshToken(refreshToken);
-            userRepository.saveAndFlush(user);
-
-            if(user.getCompany() != null){
-                CompanyResponse companyResponse = CompanyResponse.from(user.getCompany());
-                String json = objectMapper.writeValueAsString(companyResponse);
-                response.getWriter().write(json);
-            }
-        }
+        userRepository.findByEmail(email)
+                .ifPresent(user -> {
+                    user.updateRefreshToken(refreshToken);
+                    userRepository.saveAndFlush(user);
+                });
         log.info("로그인에 성공하였습니다. 이메일 : {}", email);
         log.info("로그인에 성공하였습니다. AccessToken : {}", accessToken);
         log.info("발급된 AccessToken 만료 기간 : {}", accessTokenExpiration);

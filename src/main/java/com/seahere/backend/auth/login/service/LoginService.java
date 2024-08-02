@@ -1,6 +1,8 @@
 package com.seahere.backend.auth.login.service;
 
 import com.seahere.backend.user.domain.UserEntity;
+import com.seahere.backend.user.domain.UserStatus;
+import com.seahere.backend.user.exception.BrokerPermissionException;
 import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,10 @@ public class LoginService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFound::new);
+
+        if(user.getStatus() == UserStatus.PENDING || user.getStatus() == UserStatus.REJECTED){
+            throw new BrokerPermissionException();
+        }
 
         return org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
