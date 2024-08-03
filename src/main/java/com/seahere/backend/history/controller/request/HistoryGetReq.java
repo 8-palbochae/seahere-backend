@@ -1,20 +1,16 @@
 package com.seahere.backend.history.controller.request;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
+@Setter
 public class HistoryGetReq {
-    private LocalDate startDate;
-    private LocalDate endDate;
-
-    @Builder
-    public HistoryGetReq(LocalDate startDate, LocalDate endDate) {
-        this.startDate = startDate;
-        this.endDate = endDate;
-    }
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate startDate = LocalDate.now();
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDate endDate = LocalDate.now();
 }

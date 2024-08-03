@@ -35,24 +35,5 @@ public class IncomingController {
 
     }
 
-    //incomingDate, count 반환
-    @GetMapping("/incomings")
-    public ResponseEntity<List<IncomingHistoryResponse>> incomingCountIncomingDate(IncomingPeriodRequest periodRequest) {
-        List<IncomingHistoryResponse> result = incomingService.findIncomingCountList(1L,
-                        periodRequest.getStartDate(), periodRequest.getEndDate()).stream()
-                .map(IncomingHistoryResponse::from)
-                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(result);
-    }
-
-
-    @GetMapping("/incomings/detail")
-    public ResponseEntity<List<IncomingResponse>> incomingReqList(IncomingDateRequest dateRequest) {
-        List<IncomingResponse> result = incomingService.findIncomingList(1L, dateRequest.getIncomingDate())
-                .stream()
-                .map(IncomingResponse::from)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(result);
-    }
 }

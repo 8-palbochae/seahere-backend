@@ -1,22 +1,21 @@
-package com.seahere.backend.history.controller.response;
+package com.seahere.backend.history.dto;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
-
 @Getter
-@Setter
 @NoArgsConstructor
-public class HistoryDto {
+public class HistoryListDto {
+    LocalDate date;
     private int incomingCount;
     private int outgoingCount;
     private int modifiedCount;
 
     @Builder
-    public HistoryDto(LocalDate modifiedDate, int incomingCount, int outgoingCount, int modifiedCount) {
+    public HistoryListDto(LocalDate date, int incomingCount, int outgoingCount, int modifiedCount) {
+        this.date = date;
         this.incomingCount = incomingCount;
         this.outgoingCount = outgoingCount;
         this.modifiedCount = modifiedCount;
