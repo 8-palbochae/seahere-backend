@@ -49,8 +49,18 @@ public class InventoryEntity {
         this.quantity += quantity;
     }
 
+    public void updateQuantity(float quantity){
+        this.quantity = quantity;
+    }
+
+    public void minusQuantity(float quantity){ this.quantity -= quantity;}
+
     public void assignCompany(CompanyEntity company){
         this.company = company;
+    }
+
+    public void registProduct(ProductEntity productEntity) {
+        this.product = productEntity;
     }
 }
 

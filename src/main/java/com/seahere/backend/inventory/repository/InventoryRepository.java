@@ -13,6 +13,9 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static com.seahere.backend.company.entity.QCompanyEntity.companyEntity;
+import static com.seahere.backend.product.entity.QProductEntity.productEntity;
+
 @Repository
 @RequiredArgsConstructor
 public class InventoryRepository {
@@ -30,6 +33,8 @@ public class InventoryRepository {
                         inventory.incomingDate.max().as("latestIncoming"),
                         inventory.quantity.sum().as("totalQuantity").floatValue()))
                 .from(inventory)
+                .leftJoin(inventory.company, companyEntity)
+                .leftJoin(inventory.product, productEntity)
                 .where(inventory.company.id.eq(companyId)
                         .and(inventory.product.productName.containsIgnoreCase(search)))
                 .groupBy(inventory.product.productName, inventory.category, inventory.company.id)
@@ -42,7 +47,6 @@ public class InventoryRepository {
         if (hasNext) {
             results = results.subList(0, pageable.getPageSize());
         }
-
         return new SliceImpl<>(results, pageable, hasNext);
     }
 
@@ -58,6 +62,8 @@ public class InventoryRepository {
                         inventory.country,
                         inventory.naturalStatus))
                 .from(inventory)
+                .leftJoin(inventory.company, companyEntity)
+                .leftJoin(inventory.product, productEntity)
                 .where(inventory.company.id.eq(companyId)
                         .and(inventory.product.productName.eq(name))
                         .and(inventory.category.eq(category)))

@@ -2,9 +2,9 @@ package com.seahere.backend.outgoing.controller;
 
 import com.seahere.backend.outgoing.controller.request.OutgoingReqSearchRequest;
 import com.seahere.backend.outgoing.controller.request.OutgoingStateChangeRequest;
-import com.seahere.backend.outgoing.controller.response.OutgoingReqListResponse;
+import com.seahere.backend.outgoing.controller.response.OutgoingCallListResponse;
 import com.seahere.backend.outgoing.controller.response.OutgoingDetailResponse;
-import com.seahere.backend.outgoing.dto.OutgoingReqDto;
+import com.seahere.backend.outgoing.dto.OutgoingCallDto;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.outgoing.service.OutgoingDetailService;
@@ -30,13 +30,13 @@ public class OutgoingReqController {
     private final OutgoingDetailService outgoingDetailService;
 
     @GetMapping()
-    public ResponseEntity<OutgoingReqListResponse> outgoingReqList(OutgoingReqSearchRequest request){
+    public ResponseEntity<OutgoingCallListResponse> outgoingReqList(OutgoingReqSearchRequest request){
         log.info("size = {} page = {}",request.getSize(),request.getPage());
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Direction.DESC, "outgoingId"));
         Slice<OutgoingEntity> results = outgoingService.findByOutgoingStateIsPending(1L, pageRequest
                 , request.getStartDate(), request.getEndDate(), request.getSearch());
-        OutgoingReqListResponse outgoingReqListResponse = new OutgoingReqListResponse(results);
-        return ResponseEntity.ok(outgoingReqListResponse);
+        OutgoingCallListResponse outgoingCallListResponse = new OutgoingCallListResponse(results);
+        return ResponseEntity.ok(outgoingCallListResponse);
     }
 
     @GetMapping("/{outgoingId}")
@@ -45,11 +45,12 @@ public class OutgoingReqController {
     }
 
     @PatchMapping("/{outgoingId}")
-    public ResponseEntity<OutgoingReqDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody OutgoingStateChangeRequest request){
+    public ResponseEntity<OutgoingCallDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody OutgoingStateChangeRequest request){
         OutgoingState state = OutgoingState.from(request.getState());
-        OutgoingReqDto outgoing = OutgoingReqDto.from(outgoingService.changeOutgoingState(outgoingId,state));
+        OutgoingCallDto outgoing = OutgoingCallDto.from(outgoingService.changeOutgoingState(outgoingId,state));
         return ResponseEntity.ok(outgoing);
     }
+
     @PutMapping("/{outgoingId}")
     public void outgoingDetailRecovery(@PathVariable("outgoingId")Long outgoingId){
         outgoingDetailService.updateByOutgoingDetailStateToActive(outgoingId);

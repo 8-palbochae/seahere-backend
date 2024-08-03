@@ -42,7 +42,8 @@ public class InventoryService {
         ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
         return inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNatural(),incomingDataRequest.getCountry()).isPresent();
     }
-
+    
+    //todo 필요여부따라 반환형 결정하기
     public InventoryEntity inventoryUpdateEnroll(Long companyId, IncomingDataRequest incomingDataRequest){
 
         ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
@@ -65,7 +66,7 @@ public class InventoryService {
                     .build();
 
             InventoryEntity inventoryEntity = inventoryRequest.toEntity();
-            inventoryEntity.setProduct(productEntity);
+            inventoryEntity.registProduct(productEntity);
             CompanyEntity company = companyRepository.findById(companyId).get();
             inventoryEntity.assignCompany(company);
             inventoryJpaRepository.save(inventoryEntity);

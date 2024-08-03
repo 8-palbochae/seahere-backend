@@ -13,7 +13,6 @@ import java.util.List;
 import static com.seahere.backend.company.entity.QCompanyEntity.companyEntity;
 import static com.seahere.backend.incoming.entity.QIncomingEntity.incomingEntity;
 import static com.seahere.backend.product.entity.QProductEntity.productEntity;
-import static com.seahere.backend.user.domain.QUserEntity.userEntity;
 
 @Repository
 @RequiredArgsConstructor
