@@ -1,3 +1,4 @@
+DELETE FROM adjust WHERE INVENTORY_ID IN (SELECT INVENTORY_ID FROM inventories);
 DELETE FROM inventories;
 DELETE FROM company;
 DELETE FROM product;
