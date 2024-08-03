@@ -6,6 +6,7 @@ import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
 import com.seahere.backend.inventory.controller.request.InventoryRequest;
 import com.seahere.backend.inventory.controller.response.InventoryDetailResponse;
 import com.seahere.backend.inventory.controller.response.InventoryResponse;
+import com.seahere.backend.inventory.entity.InventoryDetailEntity;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.product.entity.ProductEntity;
@@ -17,12 +18,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
+@Transactional
 public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final InventoryJpaRepository inventoryJpaRepository;
@@ -54,7 +57,6 @@ public class InventoryService {
             return inventoryEntity;
         }
         else{
-
             InventoryRequest inventoryRequest = InventoryRequest.builder()
                     .companyId(companyId)
                     .quantity(incomingDataRequest.getQuantity())
