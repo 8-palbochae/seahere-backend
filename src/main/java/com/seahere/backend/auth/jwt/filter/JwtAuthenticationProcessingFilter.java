@@ -3,6 +3,7 @@ package com.seahere.backend.auth.jwt.filter;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.seahere.backend.auth.jwt.service.JwtService;
 import com.seahere.backend.auth.jwt.util.PasswordUtil;
+import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.common.exception.SeaHereException;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.repository.UserRepository;
@@ -90,11 +91,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         optionalAccessToken
                 .filter(jwtService::isAccessTokenValid)
-                .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
-                        .ifPresent(email -> userRepository.findByEmail(email)
-                                .ifPresent(this::saveAuthentication)
-                        )
-                );
+                .ifPresent(accessToken -> jwtService.extractEmail(accessToken));
         filterChain.doFilter(request, response);
     }
 
@@ -104,11 +101,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             password = PasswordUtil.generateRandomPassword();
         }
 
-        UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-                .username(myUser.getEmail())
-                .password(password)
-                .roles(myUser.getRole().name())
-                .build();
+        UserDetails userDetailsUser = new CustomUserDetails(myUser);
 
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetailsUser, null,
