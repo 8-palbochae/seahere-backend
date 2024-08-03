@@ -1,7 +1,6 @@
 package com.seahere.backend.auth.oauth;
 
-import com.seahere.backend.common.entity.Role;
-import com.seahere.backend.user.domain.UserStatus;
+import com.seahere.backend.user.domain.UserEntity;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
@@ -12,15 +11,12 @@ import java.util.Map;
 @Getter
 public class CustomOAuth2User extends DefaultOAuth2User {
 
-    private String email;
-    private Role role;
-    private UserStatus status;
+    private UserEntity user;
+
     public CustomOAuth2User(Collection<? extends GrantedAuthority> authorities,
                             Map<String, Object> attributes, String nameAttributeKey,
-                            String email, Role role, UserStatus status) {
+                            UserEntity user) {
         super(authorities, attributes, nameAttributeKey);
-        this.email = email;
-        this.role = role;
-        this.status = status;
+        this.user = user;
     }
 }

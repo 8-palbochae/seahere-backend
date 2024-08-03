@@ -289,5 +289,62 @@ class UserServiceImplTest{
         assertEquals(resultCompany.getCompanyName(),company.getCompanyName());
         assertEquals(resultCompany.getRegistrationNumber(),company.getRegistrationNumber());
     }
+
+    @Transactional
+    @Test
+    @DisplayName("CEO는 사원 이메일을 통해서 사원에게 회사 정보 접근 승인이 가능하다.")
+    void test7() throws Exception {
+        //given
+        Address address = Address.builder()
+                .postCode("12345")
+                .mainAddress("메인 주소")
+                .subAddress("상세 주소")
+                .build();
+
+        CompanyEntity company = CompanyEntity.builder()
+                .companyName("여보소 수산")
+                .registrationNumber("12345")
+                .profileImage(null)
+                .address(address)
+                .build();
+        companyRepository.save(company);
+
+        UserEntity ceo = UserEntity.builder()
+                .role(Role.ADMIN)
+                .company(company)
+                .socialType(null)
+                .socialId(null)
+                .status(UserStatus.APPROVED)
+                .email("admin@test.com")
+                .leave(false)
+                .password("1234")
+                .profileImage(null)
+                .build();
+        userRepository.save(ceo);
+
+        UserEntity employee = UserEntity.builder()
+                .role(Role.EMPLOYEE)
+                .socialType(null)
+                .socialId(null)
+                .status(UserStatus.PENDING)
+                .email("emp@test.com")
+                .leave(false)
+                .password("1234")
+                .profileImage(null)
+                .build();
+        userRepository.save(employee);
+
+        //when
+        userService.approveEmployee(ceo.getEmail(),employee.getEmail());
+
+        UserEntity result = userRepository.findById(employee.getId())
+                .orElseThrow(UserNotFound::new);
+
+        //then
+        assertNotNull(result.getCompany());
+        assertEquals(result.getStatus(),UserStatus.APPROVED);
+        assertEquals(result.getCompany().getCompanyName(),company.getCompanyName());
+        assertEquals(result.getCompany().getRegistrationNumber(),company.getRegistrationNumber());
+    }
 }
 

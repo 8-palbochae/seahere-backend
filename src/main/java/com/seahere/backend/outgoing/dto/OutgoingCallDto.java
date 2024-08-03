@@ -11,7 +11,7 @@ import java.util.List;
 
 @Getter
 @Builder
-public class OutgoingReqDto {
+public class OutgoingCallDto {
 
     private Long outgoingId;
     private Long companyId;
@@ -22,8 +22,8 @@ public class OutgoingReqDto {
     private boolean partialOutgoing;
     private String title;
 
-    public static OutgoingReqDto from(OutgoingEntity outgoingEntity) {
-        return OutgoingReqDto.builder()
+    public static OutgoingCallDto from(OutgoingEntity outgoingEntity) {
+        return OutgoingCallDto.builder()
                 .companyId(outgoingEntity.getCompany().getId())
                 .customerName(outgoingEntity.getCustomer().getUsername())
                 .outgoingDate(outgoingEntity.getOutgoingDate())

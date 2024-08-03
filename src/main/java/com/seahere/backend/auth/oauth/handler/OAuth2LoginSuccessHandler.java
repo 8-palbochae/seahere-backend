@@ -37,9 +37,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         try {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
-            if(oAuth2User.getRole() == Role.GUEST) {
-                String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
-                UserEntity findUser = userRepository.findByEmail(oAuth2User.getEmail())
+            if(oAuth2User.getUser().getRole() == Role.GUEST) {
+                String accessToken = jwtService.createAccessToken(oAuth2User.getUser().getEmail());
+                UserEntity findUser = userRepository.findByEmail(oAuth2User.getUser().getEmail())
                         .orElseThrow(UserNotFound::new);
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
                 response.sendRedirect(CLIENT_SERVER_ADDRESS + "/signup/choice?guest="+findUser.getId());
@@ -56,7 +56,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     // TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
     private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
-        String accessToken = jwtService.createAccessToken(oAuth2User.getEmail());
+        String accessToken = jwtService.createAccessToken(oAuth2User.getUser().getEmail());
         String refreshToken = jwtService.createRefreshToken();
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
@@ -71,7 +71,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 1 week
         response.addCookie(refreshTokenCookie);
 
-        jwtService.updateRefreshToken(oAuth2User.getEmail(), refreshToken);
+        jwtService.updateRefreshToken(oAuth2User.getUser().getEmail(), refreshToken);
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
 
         response.sendRedirect(CLIENT_SERVER_ADDRESS + "/loading");
