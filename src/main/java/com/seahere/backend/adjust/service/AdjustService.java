@@ -19,15 +19,31 @@ public class AdjustService {
     private final InventoryJpaRepository inventoryJpaRepository;
 
     public void save(AdjustRequest adjustRequest) {
-        InventoryEntity inventoryEntity = inventoryJpaRepository.findById(adjustRequest.getInventoryId()).orElse(null);
+        try {
+            log.info("Adjust request: {}", adjustRequest);
 
-        if (inventoryEntity == null) {
-            log.error("Inventory not found for id: {}", adjustRequest.getInventoryId());
-            throw new IllegalArgumentException("Inventory not found");
+            // 추가된 null 체크
+            if (adjustRequest.getInventoryId() == null) {
+                log.error("Inventory ID must not be null");
+                throw new IllegalArgumentException("Inventory ID must not be null");
+            }
+
+            InventoryEntity inventoryEntity = inventoryJpaRepository.findById(adjustRequest.getInventoryId()).orElse(null);
+
+            if (inventoryEntity == null) {
+                log.error("Inventory not found for id: {}", adjustRequest.getInventoryId());
+                throw new IllegalArgumentException("Inventory not found");
+            }
+
+            log.info("Inventory found: {}", inventoryEntity);
+
+            AdjustEntity adjustEntity = adjustRequest.toEntity(inventoryEntity);
+            inventoryEntity.updateQuantity(adjustRequest.getAfterQuantity());
+            adjustJpaRepository.save(adjustEntity);
+            log.info("Adjust entity saved: {}", adjustEntity);
+        } catch (Exception e) {
+            log.error("Error saving adjust request: {}", e.getMessage(), e);
+            throw e;
         }
-
-        AdjustEntity adjustEntity = adjustRequest.toEntity(inventoryEntity);
-        inventoryEntity.updateQuantity(adjustRequest.getAfterQuantity());
-        adjustJpaRepository.save(adjustEntity);
     }
 }
