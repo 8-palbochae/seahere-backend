@@ -1,10 +1,12 @@
 package com.seahere.backend.user.service;
 
+import com.seahere.backend.common.entity.Role;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.domain.UserStatus;
+import com.seahere.backend.user.exception.BrokerPermissionException;
 import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
 import com.seahere.backend.user.request.BrokerSignupReq;
@@ -83,5 +85,22 @@ public class UserServiceImpl implements UserService{
     @Override
     public Boolean validateEmail(String email) {
         return userRepository.existsByEmail(email);
+    }
+
+    @Override
+    public void approveEmployee(String ceoEmail, String employeeEmail){
+        UserEntity ceo = userRepository.findWithCompanyByEmail(ceoEmail)
+                .orElseThrow(UserNotFound::new);
+
+        if(ceo.getRole() != Role.ADMIN || ceo.getCompany() == null){
+            throw new BrokerPermissionException();
+        }
+
+        UserEntity employee = userRepository.findByEmail(employeeEmail)
+                .orElseThrow(UserNotFound::new);
+        employee.editStatus(UserStatus.APPROVED);
+        employee.updateCompany(ceo.getCompany());
+
+        userRepository.save(employee);
     }
 }
