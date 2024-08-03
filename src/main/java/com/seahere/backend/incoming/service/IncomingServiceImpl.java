@@ -4,7 +4,7 @@ import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
-import com.seahere.backend.incoming.dto.IncomingReqDto;
+import com.seahere.backend.incoming.dto.IncomingCountDto;
 import com.seahere.backend.incoming.entity.IncomingEntity;
 import com.seahere.backend.incoming.repository.IncomingJpaRepository;
 import com.seahere.backend.incoming.repository.IncomingRepository;
@@ -46,7 +46,7 @@ public class IncomingServiceImpl implements IncomingService{
         incomingJpaRepository.save(incomingEntity);
     }
 
-    public List<IncomingReqDto> findIncomingCountList(Long companyId, LocalDate startDate, LocalDate endDate){
+    public List<IncomingCountDto> findIncomingCountList(Long companyId, LocalDate startDate, LocalDate endDate){
         return incomingRepository.findIncomingCountList(companyId, startDate, endDate);
     }
 

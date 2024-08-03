@@ -10,7 +10,7 @@ import java.time.LocalDate;
 @ToString
 @Builder
 @NoArgsConstructor
-public class IncomingReqDto {
+public class IncomingCountDto {
 
     private LocalDate incomingDate;
     private long count;

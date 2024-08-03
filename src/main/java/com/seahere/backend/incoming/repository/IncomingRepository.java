@@ -3,7 +3,7 @@ package com.seahere.backend.incoming.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.seahere.backend.incoming.dto.IncomingReqDto;
+import com.seahere.backend.incoming.dto.IncomingCountDto;
 import com.seahere.backend.incoming.entity.IncomingEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -21,8 +21,8 @@ public class IncomingRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<IncomingReqDto> findIncomingCountList(Long companyId, LocalDate startDate, LocalDate endDate){
-        return queryFactory.select(Projections.constructor(IncomingReqDto.class, incomingEntity.incomingDate, incomingEntity.incomingId.count()))
+    public List<IncomingCountDto> findIncomingCountList(Long companyId, LocalDate startDate, LocalDate endDate){
+        return queryFactory.select(Projections.constructor(IncomingCountDto.class, incomingEntity.incomingDate, incomingEntity.incomingId.count()))
                 .from(incomingEntity)
                 .leftJoin(incomingEntity.company, companyEntity)
                 .leftJoin(incomingEntity.product, productEntity)

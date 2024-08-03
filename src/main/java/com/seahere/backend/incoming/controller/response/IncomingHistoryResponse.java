@@ -1,6 +1,6 @@
 package com.seahere.backend.incoming.controller.response;
 
-import com.seahere.backend.incoming.dto.IncomingReqDto;
+import com.seahere.backend.incoming.dto.IncomingCountDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,10 +20,10 @@ public class IncomingHistoryResponse {
         this.incomingCount = incomingCount;
     }
 
-    public static IncomingHistoryResponse from(IncomingReqDto incomingReqDto) {
+    public static IncomingHistoryResponse from(IncomingCountDto incomingCountDto) {
         return IncomingHistoryResponse.builder()
-                .incomingDate(incomingReqDto.getIncomingDate())
-                .incomingCount(incomingReqDto.getCount())
+                .incomingDate(incomingCountDto.getIncomingDate())
+                .incomingCount(incomingCountDto.getCount())
                 .build();
     }
 }
