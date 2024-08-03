@@ -6,10 +6,12 @@ import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.company.request.CompanyCreateReq;
 import com.seahere.backend.company.response.CompanyResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +22,12 @@ class CompanyServiceImplTest {
 
     @Autowired
     CompanyRepository companyRepository;
-    
+
+    @BeforeEach
+    void clear(){
+        companyRepository.deleteAll();
+    }
+
     @Test
     @DisplayName("CompanyCreateReq를 통해서 회사 등록이 가능하다.")
     void test1() throws Exception {
@@ -45,7 +52,8 @@ class CompanyServiceImplTest {
         assertEquals("여보소수산",result.getCompanyName());
         assertEquals("123456",result.getRegistrationNumber());
     }
-    
+
+    @Transactional
     @Test
     @DisplayName("Company ID로 회사 정보 조회가 가능하다")
     void test2() throws Exception {
@@ -57,7 +65,6 @@ class CompanyServiceImplTest {
                 .build();
 
         CompanyEntity company = CompanyEntity.builder()
-                .id(1L)
                 .companyName("여보소수산")
                 .registrationNumber("123456")
                 .address(address)
@@ -66,7 +73,7 @@ class CompanyServiceImplTest {
         companyRepository.save(company);
         //when
 
-        CompanyResponse result = companyService.getCompanyById(1L);
+        CompanyResponse result = companyService.getCompanyById(company.getId());
 
         //then
         assertEquals(result.getCompanyName(),"여보소수산");
@@ -84,7 +91,6 @@ class CompanyServiceImplTest {
                 .build();
 
         CompanyEntity company = CompanyEntity.builder()
-                .id(1L)
                 .companyName("여보소수산")
                 .registrationNumber("123456")
                 .address(address)
