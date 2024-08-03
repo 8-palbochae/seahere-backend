@@ -15,7 +15,7 @@ public class InventoryReqListResponse {
     private final boolean hasNext;
 
     public InventoryReqListResponse(Slice<InventoryResponse> slice) {
-        this.content = slice; // 이미 InventoryReqDto 객체들이므로 변환 필요 없음
+        this.content = slice;
         this.sort = new SortResponse(slice.getSort());
         this.currentPage = slice.getNumber();
         this.size = slice.getSize();
