@@ -3,27 +3,22 @@ package com.seahere.backend.inventory.service;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
-import com.seahere.backend.incoming.entity.IncomingEntity;
 import com.seahere.backend.inventory.controller.request.InventoryRequest;
-import com.seahere.backend.inventory.controller.response.InventoryReqDetailDto;
-import com.seahere.backend.inventory.controller.response.InventoryReqDto;
+import com.seahere.backend.inventory.controller.response.InventoryDetailResponse;
+import com.seahere.backend.inventory.controller.response.InventoryResponse;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
-import com.seahere.backend.product.controller.ProductController;
 import com.seahere.backend.product.entity.ProductEntity;
 import com.seahere.backend.product.repository.ProductRepository;
-import com.seahere.backend.user.repository.UserRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -34,11 +29,11 @@ public class InventoryService {
     private final ProductRepository productRepository;
     private final CompanyRepository companyRepository;
 
-    public Slice<InventoryReqDto> findPagedInventoryByCompanyId(Long companyId, Pageable pageable, String search) {
+    public Slice<InventoryResponse> findPagedInventoryByCompanyId(Long companyId, Pageable pageable, String search) {
         return inventoryRepository.findPagedInventoryByCompanyId(companyId, search, pageable);
     }
 
-    public Slice<InventoryReqDetailDto> findPagedProductsByCompanyId(Long companyId, String name, String category, PageRequest pageable) {
+    public Slice<InventoryDetailResponse> findPagedProductsByCompanyId(Long companyId, String name, String category, PageRequest pageable) {
         return inventoryRepository.findPagedProductsByCompanyId(companyId, name, category, pageable);
     }
 

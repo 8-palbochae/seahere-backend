@@ -1,6 +1,9 @@
 package com.seahere.backend.inventory.controller.response;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
 
@@ -8,13 +11,10 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InventoryReqDetailDto {
-    private Long inventoryId;
+public class InventoryResponse {
     private Long companyId;
     private String name;
     private String category;
-    private float quantity;
-    private LocalDate incomingDate;
-    private String country;
-    private String naturalStatus;
+    private LocalDate latestIncoming;
+    private float totalQuantity;
 }

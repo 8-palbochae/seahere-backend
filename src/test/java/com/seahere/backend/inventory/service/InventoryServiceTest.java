@@ -1,7 +1,6 @@
 package com.seahere.backend.inventory.service;
 
-import com.seahere.backend.inventory.controller.response.InventoryReqDto;
-import com.seahere.backend.inventory.entity.InventoryEntity;
+import com.seahere.backend.inventory.controller.response.InventoryResponse;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.in;
 
 @Sql(value = "/sql/inventory-service-test.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Slf4j
@@ -35,7 +33,7 @@ class InventoryServiceTest {
         Long companyId = 101L;
         String search = "";
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "name"));
-        Slice<InventoryReqDto> inventoryReqDtoSlice = inventoryRepository.findPagedInventoryByCompanyId(companyId, search, pageRequest);
+        Slice<InventoryResponse> inventoryReqDtoSlice = inventoryRepository.findPagedInventoryByCompanyId(companyId, search, pageRequest);
 
         // then
         inventoryReqDtoSlice.forEach(inventory -> log.info("Inventory: {}", inventory.toString()));
