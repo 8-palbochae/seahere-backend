@@ -5,11 +5,16 @@ import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.company.request.CompanyCreateReq;
+import com.seahere.backend.company.request.CompanySearch;
 import com.seahere.backend.company.response.CompanyResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -98,5 +103,31 @@ class CompanyServiceImplTest {
         //then
         assertEquals(result.getCompanyName(),"여보소수산");
         assertEquals(result.getRegistrationNumber(),"123456");
+    }
+    
+    @Test
+    @DisplayName("회사 정보 페이지 1페이 조회 테스트")
+    void test4() throws Exception {
+        //given
+        List<CompanyEntity> requestCompanies = IntStream.range(1,31)
+                .mapToObj(i -> CompanyEntity.builder()
+                        .companyName("여보소수산" + i)
+                        .registrationNumber("" + i)
+                        .build())
+                .collect(Collectors.toList());
+
+        companyRepository.saveAll(requestCompanies);
+
+        CompanySearch companySearch = CompanySearch.builder()
+                .page(1)
+                .size(10).build();
+
+        //when
+        List<CompanyResponse> result = companyService.getList(companySearch);
+
+        //then
+        assertEquals(10L,result.size());
+        assertEquals("여보소수산30",result.get(0).getCompanyName());
+        assertEquals("30",result.get(0).getRegistrationNumber());
     }
 }
