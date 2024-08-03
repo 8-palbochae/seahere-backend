@@ -1,6 +1,5 @@
 package com.seahere.backend.incoming.controller.response;
 
-import com.seahere.backend.incoming.dto.IncomingReqDto;
 import com.seahere.backend.incoming.entity.IncomingEntity;
 import lombok.Builder;
 import lombok.Getter;
