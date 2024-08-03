@@ -1,5 +1,6 @@
-package com.seahere.backend.inventory.entity;
+package com.seahere.backend.adjust.entity;
 
+import com.seahere.backend.inventory.entity.InventoryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,10 +29,10 @@ public class AdjustEntity {
     private String reason;
 
     @Column(name = "before_quantity")
-    private int beforeQuantity;
+    private float beforeQuantity;
 
     @Column(name = "after_quantity")
-    private int afterQuantity;
+    private float afterQuantity;
 
     @ManyToOne
     @JoinColumn(name = "inventory_id", nullable = false)
