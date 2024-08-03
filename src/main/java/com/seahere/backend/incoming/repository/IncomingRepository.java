@@ -1,13 +1,14 @@
 package com.seahere.backend.incoming.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.seahere.backend.incoming.dto.IncomingCountDto;
 import com.seahere.backend.incoming.entity.IncomingEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.seahere.backend.company.entity.QCompanyEntity.companyEntity;
@@ -20,15 +21,16 @@ public class IncomingRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<IncomingEntity> findIncomingList(Long companyId, LocalDate startDate, LocalDate endDate){
-        List<IncomingEntity> results = queryFactory.selectFrom(incomingEntity)
-                .leftJoin(incomingEntity.company,companyEntity).fetchJoin()
-//                .leftJoin(incomingEntity.user, userEntity).fetchJoin()
-                .leftJoin(incomingEntity.product,productEntity).fetchJoin()
-                .where(incomingPeriodFindList(companyId,startDate,endDate))
+    public List<IncomingCountDto> findIncomingCountList(Long companyId, LocalDate startDate, LocalDate endDate){
+        return queryFactory.select(Projections.constructor(IncomingCountDto.class, incomingEntity.incomingDate, incomingEntity.incomingId.count()))
+                .from(incomingEntity)
+                .leftJoin(incomingEntity.company, companyEntity)
+                .leftJoin(incomingEntity.product, productEntity)
+                .where(incomingPeriodFindList(companyId, startDate, endDate))
+                .groupBy(incomingEntity.incomingDate)
                 .fetch();
 
-        return new ArrayList<>(results);
+
     }
 
     private BooleanExpression incomingPeriodFindList(Long companyId,LocalDate startDate, LocalDate endDate){
@@ -36,6 +38,17 @@ public class IncomingRepository {
                 .and(incomingEntity.incomingDate.goe(startDate))
                 .and(incomingEntity.incomingDate.loe(endDate));
     }
+
+    public List<IncomingEntity> findIncomingList(Long companyId, LocalDate incomingDate){
+        return queryFactory.selectFrom(incomingEntity)
+                .leftJoin(incomingEntity.company, companyEntity).fetchJoin()
+                .leftJoin(incomingEntity.product, productEntity).fetchJoin()
+                .where(incomingEntity.company.id.eq(companyId).and(incomingEntity.incomingDate.eq(incomingDate)))
+                .fetch();
+
+
+    }
+
 
 
 }

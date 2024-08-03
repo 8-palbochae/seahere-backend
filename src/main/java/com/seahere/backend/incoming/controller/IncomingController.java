@@ -1,9 +1,10 @@
 package com.seahere.backend.incoming.controller;
 
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
+import com.seahere.backend.incoming.controller.request.IncomingDateRequest;
 import com.seahere.backend.incoming.controller.request.IncomingPeriodRequest;
+import com.seahere.backend.incoming.controller.response.IncomingHistoryResponse;
 import com.seahere.backend.incoming.controller.response.IncomingResponse;
-import com.seahere.backend.incoming.entity.IncomingEntity;
 import com.seahere.backend.incoming.service.IncomingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,18 +35,24 @@ public class IncomingController {
 
     }
 
+    //incomingDate, count 반환
     @GetMapping("/incomings")
-    public ResponseEntity<List<IncomingResponse>> incomingReqList(IncomingPeriodRequest periodRequest) {
-
-        List<IncomingEntity> results = incomingService.findIncomingList(1L,
-                 periodRequest.getStartDate(), periodRequest.getEndDate());
-
-
-        List<IncomingResponse> incomingResponseList = results.stream()
-                .map(IncomingResponse::from)
+    public ResponseEntity<List<IncomingHistoryResponse>> incomingCountIncomingDate(IncomingPeriodRequest periodRequest) {
+        List<IncomingHistoryResponse> result = incomingService.findIncomingCountList(1L,
+                        periodRequest.getStartDate(), periodRequest.getEndDate()).stream()
+                .map(IncomingHistoryResponse::from)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(incomingResponseList);
+        return ResponseEntity.ok(result);
+    }
+
+
+    @GetMapping("/incomings/detail")
+    public ResponseEntity<List<IncomingResponse>> incomingReqList(IncomingDateRequest dateRequest) {
+        List<IncomingResponse> result = incomingService.findIncomingList(1L, dateRequest.getIncomingDate())
+                .stream()
+                .map(IncomingResponse::from)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(result);
     }
 }
-
