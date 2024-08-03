@@ -48,6 +48,7 @@ public class IncomingController {
         return ResponseEntity.ok(result);
     }
 
+
     @GetMapping("/incomings1")
     public ResponseEntity<List<IncomingResponse>> incomingReqList(IncomingDateRequest dateRequest) {
         List<IncomingResponse> result = incomingService.findIncomingList(1L, dateRequest.getIncomingDate())
