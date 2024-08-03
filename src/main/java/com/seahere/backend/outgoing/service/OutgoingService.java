@@ -40,7 +40,7 @@ public class OutgoingService {
     @Transactional
     public OutgoingEntity changeOutgoingState(Long outgoingId, OutgoingState state){
         if(OutgoingState.READY.equals(state)){
-            OutgoingEntity outgoingCall = acceptOutgoingRequest(outgoingId);
+            OutgoingEntity outgoingCall = acceptOutgoingCall(outgoingId);
             outgoingCall.changeState(state);
             return outgoingCall;
         }
@@ -49,18 +49,15 @@ public class OutgoingService {
         return outgoingCall;
     }
 
-    @Transactional
-    public OutgoingEntity acceptOutgoingRequest(Long outgoingId){
+    private OutgoingEntity acceptOutgoingCall(Long outgoingId){
         OutgoingEntity outgoingCall = outgoingJpaRepository.findByIdFetchCompany(outgoingId).orElseThrow(OutgoingNotFoundException::new);
         CompanyEntity company = outgoingCall.getCompany();
 
         for(OutgoingDetailEntity detail : outgoingCall.getOutgoingDetails()){
              InventoryEntity inventory= inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(detail.getCategory(), detail.getProduct().getProductName(), company.getId(), detail.getNaturalStatus(), detail.getCountry())
                     .orElseThrow(InventoryNotFoundException::new);
-             log.info("요청 수량 = {}, 재고 수량 = {}",detail.getQuantity(),inventory.getQuantity());
              if(detail.isLackInventory(inventory.getQuantity())) throw new LackInventoryException();
              inventory.minusQuantity(detail.getQuantity());
-            log.info("요청 수량 = {}, 재고 감소후 수량 = {}",detail.getQuantity(),inventory.getQuantity());
         }
         return outgoingCall;
     }

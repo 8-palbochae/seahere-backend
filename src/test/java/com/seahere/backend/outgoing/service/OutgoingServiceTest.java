@@ -3,9 +3,11 @@ package com.seahere.backend.outgoing.service;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.inventory.entity.InventoryEntity;
+import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
+import com.seahere.backend.outgoing.exception.LackInventoryException;
 import com.seahere.backend.outgoing.exception.OutgoingNotFoundException;
 import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
 import com.seahere.backend.user.domain.UserEntity;
@@ -22,6 +24,7 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -39,7 +42,7 @@ class OutgoingServiceTest {
     @Autowired
     private UserRepository userRepository;
     @Autowired
-    private InventoryRepository inventoryRepository;
+    private InventoryJpaRepository inventoryJpaRepository;
 
     @Test
     @DisplayName("출고 리스트중 상태가 해당 회사 번호가 없다면 0개를 던진다.")
@@ -135,22 +138,36 @@ class OutgoingServiceTest {
 
     @Test
     @DisplayName("출고 요청 상태가 아닌 출고 번호를 입력하면 예외를 발생한다.")
-    void acceptOutgoingRequestThrow() {
+    void acceptOutgoingCallThrow() {
         // given
         // when
         // then
-        assertThatThrownBy(() -> outgoingService.acceptOutgoingRequest(201l)).isInstanceOf(OutgoingNotFoundException.class)
+        assertThatThrownBy(() -> outgoingService.changeOutgoingState(201L,OutgoingState.READY)).isInstanceOf(OutgoingNotFoundException.class)
                 .hasMessage("존재하지 않는 출고 요청 번호입니다.");
     }
 
     @Test
-    @DisplayName("출고 대기 상태로 변경")
-    void acceptOutgoingRequest() {
+    @DisplayName("해당하는 인벤토리의 재고를 감소시키로 출고를 출고 대기 상태로 변경")
+    void acceptOutgoingCall() {
         // given
-
+        var outgoing = outgoingJpaRepository.findById(101L).get();
+        var inventory = inventoryJpaRepository.findById(101L).get();
         // when
-        outgoingService.acceptOutgoingRequest(301l);
+        outgoingService.changeOutgoingState(101L,OutgoingState.READY);
         // then
+        assertThat(outgoing.getOutgoingState()).isEqualTo(OutgoingState.READY);
+        assertThat(inventory.getQuantity()).isEqualTo(80);
     }
+    @Test
+    @DisplayName("인벤토리의 재고가 부족할시 재고 부족 예외를 던진다.")
+    void acceptOutgoingCalllack() {
+        // given
+        OutgoingEntity outgoing = outgoingJpaRepository.findById(301L).get();
+        // when
+        // then
+        assertThatThrownBy(() -> outgoingService.changeOutgoingState(301L,OutgoingState.READY)).isInstanceOf(LackInventoryException.class)
+                .hasMessage("보유 재고가 요청 재고보다 부족합니다.");
+        assertThat(outgoing.getOutgoingState()).isEqualTo(OutgoingState.PENDING);
 
+    }
 }
