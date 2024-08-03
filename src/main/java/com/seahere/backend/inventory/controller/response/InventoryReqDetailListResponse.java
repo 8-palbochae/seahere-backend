@@ -6,7 +6,7 @@ import org.springframework.data.domain.Slice;
 
 @Getter
 public class InventoryReqDetailListResponse {
-    private final Slice<InventoryReqDetailDto> content;
+    private final Slice<InventoryDetailResponse> content;
     private final SortResponse sort;
     private final int currentPage;
     private final int size;
@@ -14,7 +14,7 @@ public class InventoryReqDetailListResponse {
     private final boolean last;
     private final boolean hasNext;
 
-    public InventoryReqDetailListResponse(Slice<InventoryReqDetailDto> slice) {
+    public InventoryReqDetailListResponse(Slice<InventoryDetailResponse> slice) {
         this.content = slice;
         this.sort = new SortResponse(slice.getSort());
         this.currentPage = slice.getNumber();

@@ -8,7 +8,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InventoryReqDetailDto {
+public class InventoryDetailResponse {
     private Long inventoryId;
     private Long companyId;
     private String name;
@@ -17,5 +17,4 @@ public class InventoryReqDetailDto {
     private LocalDate incomingDate;
     private String country;
     private String naturalStatus;
-
 }
