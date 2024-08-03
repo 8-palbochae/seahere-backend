@@ -1,8 +1,9 @@
-package com.seahere.backend.product.entity;
+package com.seahere.backend.inventory.entity;
 
 import com.seahere.backend.common.entity.ProductCountry;
 import com.seahere.backend.common.entity.ProductStatus;
 import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.inventory.controller.request.InventoryEditReq;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,7 +19,7 @@ import java.math.BigDecimal;
 @Getter
 public class InventoryDetailEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "inventory_detail_id")
     private Long id;
 
@@ -32,22 +33,19 @@ public class InventoryDetailEntity {
 
     private int warningQuantity;
 
-    private BigDecimal price;
+    private BigDecimal outgoingPrice;
 
     @Builder
-    public InventoryDetailEntity(Long id, InventoryEntity inventory, CompanyEntity company, int warningQuantity, BigDecimal price) {
+    public InventoryDetailEntity(Long id, InventoryEntity inventory, CompanyEntity company, int warningQuantity, BigDecimal outgoingPrice) {
         this.id = id;
         this.inventory = inventory;
         this.company = company;
         this.warningQuantity = warningQuantity;
-        this.price = price;
+        this.outgoingPrice = outgoingPrice;
     }
 
-    public void editQuantity(int warningQuantity){
-        this.warningQuantity = warningQuantity;
-    }
-
-    public void editPrice(BigDecimal price){
-        this.price =price;
+    public void edit(InventoryEditReq inventoryEditReq){
+        this.warningQuantity = inventoryEditReq.getWarningQuantity() != null ? inventoryEditReq.getWarningQuantity() : warningQuantity;
+        this.outgoingPrice = inventoryEditReq.getOutgoingPrice() != null ? inventoryEditReq.getOutgoingPrice() : outgoingPrice;
     }
 }
