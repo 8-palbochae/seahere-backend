@@ -5,7 +5,6 @@ import com.seahere.backend.incoming.controller.request.IncomingDateRequest;
 import com.seahere.backend.incoming.controller.request.IncomingPeriodRequest;
 import com.seahere.backend.incoming.controller.response.IncomingHistoryResponse;
 import com.seahere.backend.incoming.controller.response.IncomingResponse;
-import com.seahere.backend.incoming.entity.IncomingEntity;
 import com.seahere.backend.incoming.service.IncomingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,8 +42,6 @@ public class IncomingController {
                         periodRequest.getStartDate(), periodRequest.getEndDate()).stream()
                 .map(IncomingHistoryResponse::from)
                 .collect(Collectors.toList());
-
-        log.info("count:{},incomingDate:{}",result.get(0).getIncomingCount(),result.get(0).getIncomingDate());
 
         return ResponseEntity.ok(result);
     }
