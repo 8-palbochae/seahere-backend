@@ -11,4 +11,5 @@ public interface UserService {
     Long signupCeo(CeoSignupReq ceoSignupReq);
     Long signupOauth(OAuthSignupReq oauthSignupReq);
     Boolean validateEmail(String email);
+    void approveEmployee(String ceoEmail, String employeeEmail);
 }

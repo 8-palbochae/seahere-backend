@@ -1,6 +1,7 @@
 package com.seahere.backend.incoming.entity;
 
 import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.product.entity.ProductEntity;
 import com.seahere.backend.user.domain.UserEntity;
 import lombok.*;
@@ -47,5 +48,12 @@ public class IncomingEntity {
     public void enroll(UserEntity user, CompanyEntity company) {
         this.user = user;
         this.company = company;
+    }
+
+    @Builder
+    public IncomingEntity(CompanyEntity company, UserEntity user, LocalDate incomingDate) {
+        this.company = company;
+        this.user = user;
+        this.incomingDate = incomingDate;
     }
 }

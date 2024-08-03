@@ -1,5 +1,6 @@
 package com.seahere.backend.auth.login.service;
 
+import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.domain.UserStatus;
 import com.seahere.backend.user.exception.BrokerPermissionException;
@@ -22,14 +23,10 @@ public class LoginService implements UserDetailsService {
         UserEntity user = userRepository.findByEmail(email)
                 .orElseThrow(UserNotFound::new);
 
-        if(user.getStatus() == UserStatus.PENDING || user.getStatus() == UserStatus.REJECTED){
+        if (user.getStatus() == UserStatus.PENDING || user.getStatus() == UserStatus.REJECTED) {
             throw new BrokerPermissionException();
         }
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRole().name())
-                .build();
+        return new CustomUserDetails(user);
     }
 }
