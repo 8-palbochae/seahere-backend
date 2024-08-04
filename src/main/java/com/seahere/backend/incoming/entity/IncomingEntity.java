@@ -1,11 +1,9 @@
 package com.seahere.backend.incoming.entity;
 
 import com.seahere.backend.company.entity.CompanyEntity;
-import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.product.entity.ProductEntity;
 import com.seahere.backend.user.domain.UserEntity;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;

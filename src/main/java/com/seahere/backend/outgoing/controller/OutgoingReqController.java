@@ -50,6 +50,7 @@ public class OutgoingReqController {
         OutgoingCallDto outgoing = OutgoingCallDto.from(outgoingService.changeOutgoingState(outgoingId,state));
         return ResponseEntity.ok(outgoing);
     }
+
     @PutMapping("/{outgoingId}")
     public void outgoingDetailRecovery(@PathVariable("outgoingId")Long outgoingId){
         outgoingDetailService.updateByOutgoingDetailStateToActive(outgoingId);

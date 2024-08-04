@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class InventoryReqDto {
+public class InventoryResponse {
     private Long companyId;
     private String name;
     private String category;
