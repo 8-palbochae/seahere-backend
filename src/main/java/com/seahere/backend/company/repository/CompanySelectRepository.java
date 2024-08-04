@@ -3,7 +3,7 @@ package com.seahere.backend.company.repository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.entity.QCompanyEntity;
-import com.seahere.backend.company.request.CompanySearch;
+import com.seahere.backend.company.controller.request.CompanySearch;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,6 +16,9 @@ public class CompanySelectRepository {
 
     public List<CompanyEntity> getList(CompanySearch companySearch){
         return jpaQueryFactory.selectFrom(QCompanyEntity.companyEntity)
+                .where(
+                        QCompanyEntity.companyEntity.companyName.containsIgnoreCase(companySearch.getSearchWord())
+                )
                 .limit(companySearch.getSize())
                 .offset(companySearch.getOffset())
                 .orderBy(QCompanyEntity.companyEntity.id.desc())

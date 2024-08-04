@@ -1,4 +1,4 @@
-package com.seahere.backend.company.request;
+package com.seahere.backend.company.controller.request;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -19,6 +19,9 @@ public class CompanySearch {
 
     @Builder.Default
     private Integer size = 10;
+
+    @Builder.Default
+    private String searchWord = "";
 
     public long getOffset() {
         return (long) (max(1, page) - 1) * min(size, MAX_SIZE);
