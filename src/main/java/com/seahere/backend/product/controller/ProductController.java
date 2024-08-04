@@ -1,7 +1,10 @@
 package com.seahere.backend.product.controller;
 
 import com.seahere.backend.product.controller.response.IncomingSearchResponse;
-import com.seahere.backend.product.dto.ProductMockDto;
+import com.seahere.backend.product.dto.ProductDto;
+import com.seahere.backend.product.entity.ProductEntity;
+import com.seahere.backend.product.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,26 +15,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
+@RequiredArgsConstructor
 public class ProductController {
 
-    List<ProductMockDto> mockList;
-
-    @PostConstruct
-    void init() {
-        mockList = new ArrayList<>();
-        mockList.add(new ProductMockDto(1L, "광어", "qr1", "img1"));
-        mockList.add(new ProductMockDto(2L, "이광수", "qr2", "img2"));
-        mockList.add(new ProductMockDto(3L, "밀치", "qr3", "img3"));
-        mockList.add(new ProductMockDto(4L, "새우", "qr4", "img4"));
-        mockList.add(new ProductMockDto(5L, "우럭", "qr5", "img5"));
-        mockList.add(new ProductMockDto(6L, "해삼", "qr6", "img6"));
-        mockList.add(new ProductMockDto(7L, "멍게", "qr7", "img7"));
-    }
-
+    private final ProductService productService;
     @GetMapping("/product-search-incoming")
-    public ResponseEntity<List<IncomingSearchResponse>> getMockData() {
-        List<IncomingSearchResponse> fishList = mockList.stream().map(IncomingSearchResponse::from).collect(Collectors.toList());
-        return ResponseEntity.ok(fishList);
+    public ResponseEntity<List<IncomingSearchResponse>> getProducts() {
+        List<ProductEntity> products = productService.getAllProducts();
+        List<IncomingSearchResponse> productResponses = products.stream().map(ProductDto::from).map(IncomingSearchResponse::from).collect(Collectors.toList());
+        return ResponseEntity.ok(productResponses);
     }
 
 }
