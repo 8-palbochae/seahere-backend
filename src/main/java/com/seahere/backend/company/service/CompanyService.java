@@ -1,8 +1,8 @@
 package com.seahere.backend.company.service;
 
-import com.seahere.backend.company.request.CompanyCreateReq;
-import com.seahere.backend.company.request.CompanySearch;
-import com.seahere.backend.company.response.CompanyResponse;
+import com.seahere.backend.company.controller.request.CompanyCreateReq;
+import com.seahere.backend.company.controller.request.CompanySearch;
+import com.seahere.backend.company.controller.response.CompanyResponse;
 
 import java.util.List;
 

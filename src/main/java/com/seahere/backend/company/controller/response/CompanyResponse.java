@@ -1,11 +1,9 @@
-package com.seahere.backend.company.response;
+package com.seahere.backend.company.controller.response;
 
 import com.seahere.backend.common.entity.Address;
 import com.seahere.backend.company.entity.CompanyEntity;
 import lombok.Builder;
 import lombok.Getter;
-
-import javax.persistence.Embedded;
 
 @Getter
 public class CompanyResponse {
