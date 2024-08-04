@@ -1,7 +1,7 @@
 DELETE FROM inventories;
 DELETE FROM company;
 DELETE FROM product;
--- product 테이블 데이터 삽입
+-- product 테이블 데이터
 INSERT INTO product (product_id, product_name, qr, product_img) VALUES
                                                                     (1, '광어', 'qr1', 'img1'),
                                                                     (2, '우럭', 'qr2', 'img2'),
