@@ -7,6 +7,7 @@ import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.company.controller.request.CompanyCreateReq;
 import com.seahere.backend.company.controller.request.CompanySearch;
 import com.seahere.backend.company.controller.response.CompanyResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,11 @@ class CompanyServiceImplTest {
 
     @Autowired
     CompanyRepository companyRepository;
+
+    @BeforeEach
+    void clear(){
+        companyRepository.deleteAll();
+    }
     
     @Test
     @DisplayName("CompanyCreateReq를 통해서 회사 등록이 가능하다.")
@@ -62,7 +68,6 @@ class CompanyServiceImplTest {
                 .build();
 
         CompanyEntity company = CompanyEntity.builder()
-                .id(1L)
                 .companyName("여보소수산")
                 .registrationNumber("123456")
                 .address(address)
@@ -71,7 +76,7 @@ class CompanyServiceImplTest {
         companyRepository.save(company);
         //when
 
-        CompanyResponse result = companyService.getCompanyById(1L);
+        CompanyResponse result = companyService.getCompanyById(company.getId());
 
         //then
         assertEquals(result.getCompanyName(),"여보소수산");
@@ -89,7 +94,6 @@ class CompanyServiceImplTest {
                 .build();
 
         CompanyEntity company = CompanyEntity.builder()
-                .id(1L)
                 .companyName("여보소수산")
                 .registrationNumber("123456")
                 .address(address)
