@@ -13,12 +13,12 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class HistoryResponse {
     LocalDate date;
-    private int incomingCount;
-    private int outgoingCount;
-    private int modifiedCount;
+    private long incomingCount;
+    private long outgoingCount;
+    private long modifiedCount;
 
     @Builder
-    public HistoryResponse(LocalDate date, int incomingCount, int outgoingCount, int modifiedCount) {
+    public HistoryResponse(LocalDate date, long incomingCount, long outgoingCount, long modifiedCount) {
         this.date = date;
         this.incomingCount = incomingCount;
         this.outgoingCount = outgoingCount;
@@ -29,7 +29,7 @@ public class HistoryResponse {
         return HistoryResponse.builder()
                 .date(historyListDto.getDate())
                 .incomingCount(historyListDto.getIncomingCount())
-                .modifiedCount(historyListDto.getModifiedCount())
+                .modifiedCount(historyListDto.getAdjustCount())
                 .outgoingCount(historyListDto.getOutgoingCount())
                 .build();
     }

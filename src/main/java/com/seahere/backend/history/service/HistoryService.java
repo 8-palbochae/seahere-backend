@@ -15,11 +15,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class HistoryService {
 
-    private final IncomingRepository incomingRepository;
-    private final OutgoingRepository outgoingRepository;
     private final HistoryRepository historyRepository;
 
     public List<HistoryListDto> findByHistoryList(LocalDate startDate, LocalDate endDate){
-        return null;
+        return historyRepository.findByHistoryDate(startDate,endDate);
     }
 }

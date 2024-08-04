@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("/histories")
 public class HistoryController {
-    private IncomingService incomingService;
-    private HistoryService historyService;
+    private final IncomingService incomingService;
+    private final HistoryService historyService;
 
     @GetMapping("/incomings/detail")
     public ResponseEntity<List<IncomingResponse>> incomingReqList(IncomingDateRequest dateRequest) {
