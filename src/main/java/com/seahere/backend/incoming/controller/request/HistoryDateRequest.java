@@ -8,7 +8,7 @@ import java.time.LocalDate;
 
 @Getter
 @Setter
-public class IncomingDateRequest {
+public class HistoryDateRequest {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate incomingDate = LocalDate.now();

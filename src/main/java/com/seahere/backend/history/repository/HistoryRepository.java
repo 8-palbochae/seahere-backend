@@ -9,11 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.*;
 
 import static com.seahere.backend.adjust.entity.QAdjustEntity.adjustEntity;
 import static com.seahere.backend.incoming.entity.QIncomingEntity.incomingEntity;
@@ -27,6 +23,8 @@ public class HistoryRepository {
     private final JPAQueryFactory queryFactory;
 
     public List<HistoryListDto> findByHistoryDate(LocalDate startDate, LocalDate endDate) {
+        Map<LocalDate, HistoryListDto> map = new HashMap<>();
+
         List<HistoryListDto> incomingResults = queryFactory
                 .select(Projections.bean(HistoryListDto.class,
                         incomingEntity.incomingDate.as("date"),
@@ -38,10 +36,9 @@ public class HistoryRepository {
                 .groupBy(incomingEntity.incomingDate)
                 .fetch();
 
-        for(HistoryListDto dto : incomingResults){
-            log.info("incomingResults = {}",dto.getIncomingCount());
+        for (HistoryListDto dto : incomingResults) {
+            map.put(dto.getDate(), dto);
         }
-
 
         List<HistoryListDto> outgoingResults = queryFactory
                 .select(Projections.bean(HistoryListDto.class,
@@ -54,9 +51,15 @@ public class HistoryRepository {
                 .groupBy(outgoingEntity.outgoingDate)
                 .fetch();
 
-        for(HistoryListDto dto : outgoingResults){
-            log.info("outgoingResults = {}",dto.getOutgoingCount());
+        for (HistoryListDto dto : outgoingResults) {
+            if (map.containsKey(dto.getDate())) {
+                HistoryListDto historyListDto = map.get(dto.getDate());
+                historyListDto.setOutgoingCount(dto.getOutgoingCount());
+                continue;
+            }
+            map.put(dto.getDate(), dto);
         }
+
 
         List<HistoryListDto> adjustResults = queryFactory
                 .select(Projections.bean(HistoryListDto.class,
@@ -69,32 +72,14 @@ public class HistoryRepository {
                 .groupBy(adjustEntity.adjustDate)
                 .fetch();
 
-        for(HistoryListDto dto : outgoingResults){
-            log.info("adjustResults = {}",dto.getAdjustCount());
+        for (HistoryListDto dto : adjustResults) {
+            if (map.containsKey(dto.getDate())) {
+                HistoryListDto historyListDto = map.get(dto.getDate());
+                historyListDto.setAdjustCount(dto.getAdjustCount());
+            }
         }
-
-
-            //map 키벨류로 값을 넣고 키가 있다면 해당 키에 값 삽입하고 아니면 자기 값만 넣고 나머지 00
-
-
-
-
-//        List<HistoryListDto> result = Stream.of(incomingResults, outgoingResults, adjustResults)
-//                .flatMap(List::stream)
-//                .filter(dto -> dto.getDate() != null)
-//                .collect(Collectors.groupingBy(HistoryListDto::getDate))
-//                .entrySet().stream()
-//                .map(entry -> {
-//                    String date = String.valueOf(entry.getKey());
-//                    List<HistoryListDto> values = entry.getValue();
-//                    long incomingCount = values.stream().mapToLong(HistoryListDto::getIncomingCount).sum();
-//                    long outgoingCount = values.stream().mapToLong(HistoryListDto::getOutgoingCount).sum();
-//                    long adjustCount = values.stream().mapToLong(HistoryListDto::getAdjustCount).sum();
-//                    return new HistoryListDto(date, incomingCount, outgoingCount, adjustCount);
-//                })
-//                .sorted(Comparator.comparing(HistoryListDto::getDate))
-//                .collect(Collectors.toList());
-
-        return new ArrayList<>();
+        ArrayList<HistoryListDto> results = new ArrayList<>(map.values());
+        results.sort(Comparator.comparing(HistoryListDto::getDate));
+        return results;
     }
 }

@@ -2,9 +2,8 @@ package com.seahere.backend.history.controller;
 
 import com.seahere.backend.history.controller.request.HistoryGetReq;
 import com.seahere.backend.history.controller.response.HistoryResponse;
-import com.seahere.backend.history.dto.HistoryListDto;
 import com.seahere.backend.history.service.HistoryService;
-import com.seahere.backend.incoming.controller.request.IncomingDateRequest;
+import com.seahere.backend.incoming.controller.request.HistoryDateRequest;
 import com.seahere.backend.incoming.controller.response.IncomingResponse;
 import com.seahere.backend.incoming.service.IncomingService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +25,7 @@ public class HistoryController {
     private final HistoryService historyService;
 
     @GetMapping("/incomings/detail")
-    public ResponseEntity<List<IncomingResponse>> incomingReqList(IncomingDateRequest dateRequest) {
+    public ResponseEntity<List<IncomingResponse>> incomingReqList(HistoryDateRequest dateRequest) {
         List<IncomingResponse> result = incomingService.findIncomingList(1L, dateRequest.getIncomingDate())
                 .stream()
                 .map(IncomingResponse::from)

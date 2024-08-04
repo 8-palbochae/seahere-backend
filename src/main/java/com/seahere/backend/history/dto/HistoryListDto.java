@@ -1,9 +1,6 @@
 package com.seahere.backend.history.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
@@ -12,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 @Getter
 @NoArgsConstructor
 @Setter
+@ToString
 public class HistoryListDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     LocalDate date;
