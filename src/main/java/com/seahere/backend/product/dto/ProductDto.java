@@ -8,7 +8,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Getter
 @ToString
-public class ProductMockDto {
+public class ProductDto {
 
     private Long productId;
     private String productName;
