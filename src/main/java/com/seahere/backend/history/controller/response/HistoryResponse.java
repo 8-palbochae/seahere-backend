@@ -15,21 +15,21 @@ public class HistoryResponse {
     LocalDate date;
     private long incomingCount;
     private long outgoingCount;
-    private long modifiedCount;
+    private long adjustCount;
 
     @Builder
-    public HistoryResponse(LocalDate date, long incomingCount, long outgoingCount, long modifiedCount) {
+    public HistoryResponse(LocalDate date, long incomingCount, long outgoingCount, long adjustCount) {
         this.date = date;
         this.incomingCount = incomingCount;
         this.outgoingCount = outgoingCount;
-        this.modifiedCount = modifiedCount;
+        this.adjustCount = adjustCount;
     }
 
     public static HistoryResponse from(HistoryListDto historyListDto){
         return HistoryResponse.builder()
                 .date(historyListDto.getDate())
                 .incomingCount(historyListDto.getIncomingCount())
-                .modifiedCount(historyListDto.getAdjustCount())
+                .adjustCount(historyListDto.getAdjustCount())
                 .outgoingCount(historyListDto.getOutgoingCount())
                 .build();
     }

@@ -16,7 +16,7 @@ public class HistoryService {
 
     private final HistoryRepository historyRepository;
 
-    public List<HistoryListDto> findByHistoryList(LocalDate startDate, LocalDate endDate){
-        return historyRepository.findByHistoryDate(startDate,endDate);
+    public List<HistoryListDto> findByHistoryList(Long companyId,LocalDate startDate, LocalDate endDate){
+        return historyRepository.findByHistoryDate(companyId,startDate,endDate);
     }
 }

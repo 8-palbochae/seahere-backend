@@ -4,6 +4,7 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.seahere.backend.history.dto.HistoryListDto;
+import com.seahere.backend.outgoing.entity.OutgoingState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -22,7 +23,7 @@ public class HistoryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<HistoryListDto> findByHistoryDate(LocalDate startDate, LocalDate endDate) {
+    public List<HistoryListDto> findByHistoryDate(Long companyId,LocalDate startDate, LocalDate endDate) {
         Map<LocalDate, HistoryListDto> map = new HashMap<>();
 
         List<HistoryListDto> incomingResults = queryFactory
@@ -32,7 +33,7 @@ public class HistoryRepository {
                         Expressions.ZERO.longValue().as("outgoingCount"),
                         Expressions.ZERO.longValue().as("adjustCount")))
                 .from(incomingEntity)
-                .where(incomingEntity.incomingDate.goe(startDate).and(incomingEntity.incomingDate.loe(endDate)))
+                .where(incomingEntity.incomingDate.goe(startDate).and(incomingEntity.incomingDate.loe(endDate).and(incomingEntity.company.id.eq(companyId))))
                 .groupBy(incomingEntity.incomingDate)
                 .fetch();
 
@@ -47,7 +48,7 @@ public class HistoryRepository {
                         outgoingEntity.outgoingId.count().as("outgoingCount"),
                         Expressions.ZERO.longValue().as("adjustCount")))
                 .from(outgoingEntity)
-                .where(outgoingEntity.outgoingDate.goe(startDate).and(outgoingEntity.outgoingDate.loe(endDate)))
+                .where(outgoingEntity.company.id.eq(companyId).and(outgoingEntity.outgoingDate.goe(startDate)).and(outgoingEntity.outgoingDate.loe(endDate).and(outgoingEntity.outgoingState.ne(OutgoingState.PENDING))))
                 .groupBy(outgoingEntity.outgoingDate)
                 .fetch();
 
@@ -68,7 +69,7 @@ public class HistoryRepository {
                         Expressions.ZERO.longValue().as("outgoingCount"),
                         adjustEntity.adjustId.count().as("adjustCount")))
                 .from(adjustEntity)
-                .where(adjustEntity.adjustDate.goe(startDate).and(adjustEntity.adjustDate.loe(endDate)))
+                .where(adjustEntity.adjustDate.goe(startDate).and(adjustEntity.adjustDate.loe(endDate).and(adjustEntity.inventory.company.id.eq(companyId))))
                 .groupBy(adjustEntity.adjustDate)
                 .fetch();
 
