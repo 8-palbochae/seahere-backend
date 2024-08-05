@@ -54,6 +54,7 @@ public class OutgoingRepository {
         return queryFactory.selectFrom(outgoingEntity)
                 .leftJoin(outgoingEntity.outgoingDetails, outgoingDetailEntity)
                 .leftJoin(outgoingEntity.customer, userEntity).fetchJoin()
+                .leftJoin(outgoingEntity.company, companyEntity).fetchJoin()
                 .leftJoin(outgoingDetailEntity.product,productEntity)
                 .where(outgoingStateIsNotPendingAndDate(companyId,date,search))
                 .fetch();
