@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,6 +24,7 @@ public class HistoryOutgoingResponse {
     private String status;
     private boolean partialOutgoing;
     private String title;
+    private List<HistoryOutgoingDetailResponse> details;
 
     public static HistoryOutgoingResponse from(OutgoingEntity outgoingEntity) {
         return HistoryOutgoingResponse.builder()
@@ -33,6 +35,7 @@ public class HistoryOutgoingResponse {
                 .status(outgoingEntity.getOutgoingState().printState())
                 .partialOutgoing(outgoingEntity.isPartialOutgoing())
                 .title(calcTitle(outgoingEntity.getOutgoingDetails()))
+                .details(outgoingEntity.getOutgoingDetails().stream().map(HistoryOutgoingDetailResponse::from).collect(Collectors.toList()))
                 .outgoingId(outgoingEntity.getOutgoingId()).build();
     }
 
