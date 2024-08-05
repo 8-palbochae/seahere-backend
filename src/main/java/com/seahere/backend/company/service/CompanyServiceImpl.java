@@ -3,8 +3,10 @@ package com.seahere.backend.company.service;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
-import com.seahere.backend.company.request.CompanyCreateReq;
-import com.seahere.backend.company.response.CompanyResponse;
+import com.seahere.backend.company.repository.CompanySelectRepository;
+import com.seahere.backend.company.controller.request.CompanyCreateReq;
+import com.seahere.backend.company.controller.request.CompanySearch;
+import com.seahere.backend.company.controller.response.CompanyResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CompanyServiceImpl implements CompanyService{
     private final CompanyRepository companyRepository;
+    private  final CompanySelectRepository companySelectRepository;
     @Override
     public CompanyResponse getCompanyById(Long id) {
         CompanyEntity company = companyRepository.findById(id).orElseThrow(CompanyNotFound::new);
@@ -56,5 +59,13 @@ public class CompanyServiceImpl implements CompanyService{
 
         company.editProfileImage(profileImage);
         return CompanyResponse.from(company);
+    }
+
+    @Override
+    public List<CompanyResponse> getList(CompanySearch companySearch) {
+        return companySelectRepository.getList(companySearch)
+                .stream()
+                .map(CompanyResponse::from)
+                .collect(Collectors.toList());
     }
 }

@@ -3,8 +3,8 @@ DELETE FROM outgoing_detail;
 DELETE FROM outgoing;
 DELETE FROM incoming;
 DELETE FROM inventories;
-DELETE FROM product;
 DELETE FROM company;
+DELETE FROM product;
 DELETE FROM users;
 DELETE FROM adjust;
 
@@ -16,32 +16,26 @@ INSERT INTO product (product_id, product_name, qr, product_img) VALUES
                                                                     (4, '민어', 'qr4', 'img4'),
                                                                     (5, '장어', 'qr5', 'img5'),
                                                                     (6, '문어', 'qr6', 'img6');
+insert into USERS(user_id,username) values(1,'스리랑'),
+                                          (2,'아리랑');
+INSERT INTO company(company_id) VALUES (101);
+INSERT INTO company(company_id) VALUES (102);
+INSERT INTO company(company_id) VALUES (1);
 
--- users 테이블 데이터 삽입
-INSERT INTO users (user_id, username) VALUES
-                                          (1, '스리랑'),
-                                          (2, '아리랑'),
-                                          (5, '사용자5');
+INSERT INTO company(company_id) VALUES (4);
+INSERT INTO USERS(user_id) VALUES (5);
 
--- company 테이블 데이터 삽입
-INSERT INTO company (company_id) VALUES
-                                     (101),
-                                     (102),
-                                     (1),
-                                     (4);
-
--- incoming 테이블 데이터 삽입
-INSERT INTO incoming (incoming_id, category, country, country_detail, incoming_date, incoming_price, memo, natural_status, quantity, company_id, product_id, user_id) VALUES
-                                                                                                                                                                          (1, '활어', '국산', '호주', '2024-07-27', 10000, '방금잡은', '자연산', 20.0, 1, 1, 2),
-                                                                                                                                                                          (2, '선어', '수입', '호주', '2024-07-28', 20000, '방금잡은', '양식', 10.0, 1, 2, 2),
-                                                                                                                                                                          (3, '냉동', '국산', '호주', '2024-07-29', 30000, '방금잡은', '자연산', 50.0, 1, 3, 2),
-                                                                                                                                                                          (4, '냉동', '수입', '호주', '2024-07-28', 10000, '방금잡은', '양식', 25.0, 1, 4, 2),
-                                                                                                                                                                          (5, '선어', '수입', '호주', '2024-07-30', 10000, '방금잡은', '자연산', 15.0, 1, 5, 2),
-                                                                                                                                                                          (6, '활어', '국산', '호주', '2024-07-28', 20000, '방금잡은', '자연산', 45.0, 1, 1, 2),
-                                                                                                                                                                          (7, '활어', '국산', '호주', '2024-07-27', 10000, '방금잡은', '양식', 20.0, 1, 1, 2),
-                                                                                                                                                                          (8, '냉동', '국산', '호주', '2024-07-27', 30000, '방금잡은', '자연산', 60.0, 1, 2, 2),
-                                                                                                                                                                          (9, '선어', '수입', '호주', '2024-07-27', 50000, '방금잡은', '자연산', 20.0, 1, 2, 2),
-                                                                                                                                                                          (10, '선어', '국산', '호주', '2024-07-27', 40000, '방금잡은', '양식', 24.0, 1, 5, 2);
+INSERT INTO incoming(incoming_id,category,country,country_detail,incoming_date,incoming_price,memo,natural_status,quantity,company_id,product_id,user_id) VALUES
+                    (1,'활어','국산','호주','2024-07-27',10000,'방금잡은','자연산',20.0,1,1,2),
+                    (2,'선어','수입','호주','2024-07-28',20000,'방금잡은','양식',10.0,1,2,2),
+                    (3,'냉동','국산','호주','2024-07-29',30000,'방금잡은','자연산',50.0,1,3,2),
+                    (4,'냉동','수입','호주','2024-07-28',10000,'방금잡은','양식',25.0,1,4,2),
+                    (5,'선어','수입','호주','2024-07-30',10000,'방금잡은','자연산',15.0,1,5,2),
+                    (6,'활어','국산','호주','2024-07-28',20000,'방금잡은','자연산',45.0,1,1,2),
+                    (7,'활어','국산','호주','2024-07-27',10000,'방금잡은','양식',20.0,1,1,2),
+                    (8,'냉동','국산','호주','2024-07-27',30000,'방금잡은','자연산',60.0,1,2,2),
+                    (9,'선어','수입','호주','2024-07-27',50000,'방금잡은','자연산',20.0,1,2,2),
+                    (10,'선어','국산','호주','2024-07-27',40000,'방금잡은','양식',24.0,1,5,2);
 
 -- outgoing 테이블 데이터 삽입
 INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, partial_outgoing, user_id) VALUES
