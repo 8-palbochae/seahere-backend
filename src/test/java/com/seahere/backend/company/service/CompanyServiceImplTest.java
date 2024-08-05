@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Sql(value = "/sql/clear.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class CompanyServiceImplTest {
     @Autowired
     CompanyService companyService;
@@ -27,11 +29,6 @@ class CompanyServiceImplTest {
     @Autowired
     CompanyRepository companyRepository;
 
-    @BeforeEach
-    void clear(){
-        companyRepository.deleteAll();
-    }
-    
     @Test
     @DisplayName("CompanyCreateReq를 통해서 회사 등록이 가능하다.")
     void test1() throws Exception {
