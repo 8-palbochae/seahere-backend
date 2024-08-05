@@ -23,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-@Sql(value = "/sql/clear.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 class CompanyServiceImplTest {
     @Autowired
     CompanyService companyService;
