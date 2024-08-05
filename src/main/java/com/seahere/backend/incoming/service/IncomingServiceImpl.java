@@ -4,7 +4,9 @@ import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
+import com.seahere.backend.incoming.controller.request.IncomingEditReq;
 import com.seahere.backend.incoming.entity.IncomingEntity;
+import com.seahere.backend.incoming.exception.IncomingNotFound;
 import com.seahere.backend.incoming.repository.IncomingJpaRepository;
 import com.seahere.backend.inventory.service.InventoryService;
 import com.seahere.backend.product.entity.ProductEntity;
@@ -38,5 +40,14 @@ public class IncomingServiceImpl implements IncomingService{
         incomingEntity.enroll(userEntity,companyEntity);
         inventoryService.inventoryUpdateEnroll(companyId, incomingDataRequest);
         incomingJpaRepository.save(incomingEntity);
+    }
+
+    @Override
+    public Long editIncoming(IncomingEditReq incomingEditReq) {
+        IncomingEntity incoming = incomingJpaRepository.findById(incomingEditReq.getIncomingId())
+                .orElseThrow(IncomingNotFound::new);
+        incoming.edit(incomingEditReq.getPrice());
+        incomingJpaRepository.save(incoming);
+        return incoming.getIncomingId();
     }
 }
