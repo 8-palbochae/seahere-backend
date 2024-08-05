@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,13 +21,18 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Sql(value = "/sql/clear.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Transactional
 class CompanyServiceImplTest {
     @Autowired
     CompanyService companyService;
 
     @Autowired
     CompanyRepository companyRepository;
+
+    @BeforeEach
+    void clear() {
+        companyRepository.deleteAll();
+    }
 
     @Test
     @DisplayName("CompanyCreateReq를 통해서 회사 등록이 가능하다.")
@@ -49,11 +54,11 @@ class CompanyServiceImplTest {
         CompanyEntity result = companyRepository.findById(savedId).orElseThrow(CompanyNotFound::new);
 
         //then
-        assertEquals(savedId,result.getId());
-        assertEquals("여보소수산",result.getCompanyName());
-        assertEquals("123456",result.getRegistrationNumber());
+        assertEquals(savedId, result.getId());
+        assertEquals("여보소수산", result.getCompanyName());
+        assertEquals("123456", result.getRegistrationNumber());
     }
-    
+
     @Test
     @DisplayName("Company ID로 회사 정보 조회가 가능하다")
     void test2() throws Exception {
@@ -72,12 +77,11 @@ class CompanyServiceImplTest {
 
         companyRepository.save(company);
         //when
-
         CompanyResponse result = companyService.getCompanyById(company.getId());
 
         //then
-        assertEquals(result.getCompanyName(),"여보소수산");
-        assertEquals(result.getRegistrationNumber(),"123456");
+        assertEquals(result.getCompanyName(), "여보소수산");
+        assertEquals(result.getRegistrationNumber(), "123456");
     }
 
     @Test
@@ -98,22 +102,21 @@ class CompanyServiceImplTest {
 
         companyRepository.save(company);
         //when
-
         CompanyResponse result = companyService.getCompanyByRegNumber("123456");
 
         //then
-        assertEquals(result.getCompanyName(),"여보소수산");
-        assertEquals(result.getRegistrationNumber(),"123456");
+        assertEquals(result.getCompanyName(), "여보소수산");
+        assertEquals(result.getRegistrationNumber(), "123456");
     }
-    
+
     @Test
     @DisplayName("회사 정보 페이지 1페이지 조회 테스트")
     void test4() throws Exception {
         //given
-        List<CompanyEntity> requestCompanies = IntStream.range(1,31)
+        List<CompanyEntity> requestCompanies = IntStream.range(1, 31)
                 .mapToObj(i -> CompanyEntity.builder()
                         .companyName("여보소수산" + i)
-                        .registrationNumber("" + i)
+                        .registrationNumber(String.valueOf(i))
                         .build())
                 .collect(Collectors.toList());
 
@@ -121,25 +124,26 @@ class CompanyServiceImplTest {
 
         CompanySearch companySearch = CompanySearch.builder()
                 .page(1)
-                .size(10).build();
+                .size(10)
+                .build();
 
         //when
         List<CompanyResponse> result = companyService.getList(companySearch);
 
         //then
-        assertEquals(10L,result.size());
-        assertEquals("여보소수산30",result.get(0).getCompanyName());
-        assertEquals("30",result.get(0).getRegistrationNumber());
+        assertEquals(10, result.size());
+        assertEquals("여보소수산30", result.get(0).getCompanyName());
+        assertEquals("30", result.get(0).getRegistrationNumber());
     }
 
     @Test
     @DisplayName("회사 정보 페이지 1페이지 조회 시 0이 들어가는 회사만 테스트")
     void test5() throws Exception {
         //given
-        List<CompanyEntity> requestCompanies = IntStream.range(1,31)
+        List<CompanyEntity> requestCompanies = IntStream.range(1, 31)
                 .mapToObj(i -> CompanyEntity.builder()
                         .companyName("여보소수산" + i)
-                        .registrationNumber("" + i)
+                        .registrationNumber(String.valueOf(i))
                         .build())
                 .collect(Collectors.toList());
 
@@ -155,8 +159,8 @@ class CompanyServiceImplTest {
         List<CompanyResponse> result = companyService.getList(companySearch);
 
         //then
-        assertEquals(1L,result.size());
-        assertEquals("여보소수산10",result.get(0).getCompanyName());
-        assertEquals("10",result.get(0).getRegistrationNumber());
+        assertEquals(1, result.size());
+        assertEquals("여보소수산10", result.get(0).getCompanyName());
+        assertEquals("10", result.get(0).getRegistrationNumber());
     }
 }
