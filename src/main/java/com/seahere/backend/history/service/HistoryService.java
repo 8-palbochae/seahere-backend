@@ -37,7 +37,7 @@ public class HistoryService {
         return outgoingRepository.findByOutgoingStateIsNotPendingAndDate(companyId,outgoingDate,search);
     }
 
-    public List<AdjustEntity> findByAdjustList(long companyId, LocalDate date) {
-        return adjustRepository.findByCompanyIdAndDate(companyId, date);
+    public List<AdjustEntity> findByAdjustList(long companyId, LocalDate adjustDate) {
+        return adjustRepository.findByCompanyIdAndDate(companyId, adjustDate);
     }
 }

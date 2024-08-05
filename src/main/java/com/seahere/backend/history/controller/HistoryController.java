@@ -31,19 +31,16 @@ public class HistoryController {
     }
     @GetMapping("/outgoings/{date}")
     public ResponseEntity<List<HistoryOutgoingResponse>> outgoingList(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam("search") String search) {
-        log.info("date = {} search = {}",date,search);
         List<HistoryOutgoingResponse> result = historyService.findByOutgoingList(1L, date,search).stream().map(HistoryOutgoingResponse::from).collect(Collectors.toList());
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/incomings/{date}")
     public ResponseEntity<List<HistoryIncomingResponse>> incomingList(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-        log.info("날짜는 = {}",date);
         List<HistoryIncomingResponse> result = historyService.findByIncomingList(1L, date)
                 .stream()
                 .map(HistoryIncomingResponse::from)
                 .collect(Collectors.toList());
-        log.info("size = {}",result.size());
         return ResponseEntity.ok(result);
     }
 
