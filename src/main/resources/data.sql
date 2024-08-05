@@ -132,5 +132,8 @@ INSERT INTO inventories (inventory_id, company_id, quantity, category, product_i
     (18, 101, 60, '활어', 5, '일본', '2024-07-23', '자연'),
     (19, 101, 60, '활어', 1, '국산', '2024-07-31', '자연'),
     (20, 101, 40, '활어', 6, '국산', '2024-07-03', '자연'),
-    (21, 101, 23, '활어', 5, '국산', '2024-07-03', '양식');
+    (21, 101, 23, '활어', 5, '국산', '2024-07-03', '양식'),
+    (22, 1, 60, '활어', 1, '국산', '2024-07-23', '자연');
 
+insert into adjust (ADJUST_ID,ADJUST_DATE,AFTER_QUANTITY,BEFORE_QUANTITY,REASON,INVENTORY_ID)
+values (1,'2024-07-27',500,100,'어디서 주워옴',22);

@@ -1,5 +1,6 @@
 package com.seahere.backend.history.service;
 
+import com.seahere.backend.adjust.entity.AdjustEntity;
 import com.seahere.backend.adjust.repository.AdjustRepository;
 import com.seahere.backend.history.dto.HistoryListDto;
 import com.seahere.backend.history.repository.HistoryRepository;
@@ -21,7 +22,7 @@ public class HistoryService {
 
     private final HistoryRepository historyRepository;
     private final IncomingRepository incomingRepository;
-    private final AdjustRepository ajAdjustRepository;
+    private final AdjustRepository adjustRepository;
     private final OutgoingRepository outgoingRepository;
 
     public List<HistoryListDto> findByHistoryList(Long companyId,LocalDate startDate, LocalDate endDate){
@@ -36,4 +37,7 @@ public class HistoryService {
         return outgoingRepository.findByOutgoingStateIsNotPendingAndDate(companyId,outgoingDate,search);
     }
 
+    public List<AdjustEntity> findByAdjustList(long companyId, LocalDate date) {
+        return adjustRepository.findByCompanyIdAndDate(companyId, date);
+    }
 }

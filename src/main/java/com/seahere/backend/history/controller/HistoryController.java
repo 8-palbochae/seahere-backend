@@ -1,6 +1,7 @@
 package com.seahere.backend.history.controller;
 
 import com.seahere.backend.history.controller.request.HistoryGetReq;
+import com.seahere.backend.history.controller.response.HistoryAdjustResponse;
 import com.seahere.backend.history.controller.response.HistoryOutgoingResponse;
 import com.seahere.backend.history.controller.response.HistoryResponse;
 import com.seahere.backend.history.service.HistoryService;
@@ -23,6 +24,11 @@ public class HistoryController {
 
     private final HistoryService historyService;
 
+    @GetMapping("/adjusts/{date}")
+    public ResponseEntity<List<HistoryAdjustResponse>> adjustsList(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        List<HistoryAdjustResponse> result = historyService.findByAdjustList(1L, date).stream().map(HistoryAdjustResponse::from).collect(Collectors.toList());
+        return ResponseEntity.ok(result);
+    }
     @GetMapping("/outgoings/{date}")
     public ResponseEntity<List<HistoryOutgoingResponse>> outgoingList(@PathVariable("date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date, @RequestParam("search") String search) {
         log.info("date = {} search = {}",date,search);

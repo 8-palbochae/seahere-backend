@@ -1,16 +1,14 @@
 package com.seahere.backend.history.controller.response;
 
 import com.seahere.backend.history.dto.HistoryListDto;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class HistoryResponse {
     LocalDate date;
     private long incomingCount;

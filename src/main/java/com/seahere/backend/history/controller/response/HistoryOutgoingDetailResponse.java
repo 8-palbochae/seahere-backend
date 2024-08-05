@@ -9,7 +9,7 @@ import lombok.Getter;
 public class HistoryOutgoingDetailResponse {
     private Long outgoingId;
     private Long outgoingDetailId;
-    private String imgSrc;
+    private String productImg;
     private String productName;
     private float outgoingQuantity;
     private int price;
@@ -18,7 +18,7 @@ public class HistoryOutgoingDetailResponse {
     private String naturalStatus;
     public static HistoryOutgoingDetailResponse from(OutgoingDetailEntity outgoingDetail){
         return HistoryOutgoingDetailResponse.builder()
-                .imgSrc(outgoingDetail.getProduct().getProductImg())
+                .productImg(outgoingDetail.getProduct().getProductImg())
                 .outgoingId(outgoingDetail.getOutgoing().getOutgoingId())
                 .price(outgoingDetail.getPrice().intValue())
                 .category(outgoingDetail.getCategory())

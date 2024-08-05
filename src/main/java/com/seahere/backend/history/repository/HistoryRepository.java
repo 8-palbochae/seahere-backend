@@ -3,7 +3,9 @@ package com.seahere.backend.history.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.seahere.backend.company.entity.QCompanyEntity;
 import com.seahere.backend.history.dto.HistoryListDto;
+import com.seahere.backend.inventory.entity.QInventoryEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +15,9 @@ import java.time.LocalDate;
 import java.util.*;
 
 import static com.seahere.backend.adjust.entity.QAdjustEntity.adjustEntity;
+import static com.seahere.backend.company.entity.QCompanyEntity.companyEntity;
 import static com.seahere.backend.incoming.entity.QIncomingEntity.incomingEntity;
+import static com.seahere.backend.inventory.entity.QInventoryEntity.inventoryEntity;
 import static com.seahere.backend.outgoing.entity.QOutgoingEntity.outgoingEntity;
 
 @RequiredArgsConstructor
@@ -61,7 +65,6 @@ public class HistoryRepository {
             map.put(dto.getDate(), dto);
         }
 
-
         List<HistoryListDto> adjustResults = queryFactory
                 .select(Projections.bean(HistoryListDto.class,
                         adjustEntity.adjustDate.as("date"),
@@ -69,6 +72,8 @@ public class HistoryRepository {
                         Expressions.ZERO.longValue().as("outgoingCount"),
                         adjustEntity.adjustId.count().as("adjustCount")))
                 .from(adjustEntity)
+                .leftJoin(adjustEntity.inventory, inventoryEntity)
+                .leftJoin(inventoryEntity.company, companyEntity)
                 .where(adjustEntity.adjustDate.goe(startDate).and(adjustEntity.adjustDate.loe(endDate).and(adjustEntity.inventory.company.id.eq(companyId))))
                 .groupBy(adjustEntity.adjustDate)
                 .fetch();
@@ -77,7 +82,9 @@ public class HistoryRepository {
             if (map.containsKey(dto.getDate())) {
                 HistoryListDto historyListDto = map.get(dto.getDate());
                 historyListDto.setAdjustCount(dto.getAdjustCount());
+                continue;
             }
+            map.put(dto.getDate(), dto);
         }
         ArrayList<HistoryListDto> results = new ArrayList<>(map.values());
         results.sort(Comparator.comparing(HistoryListDto::getDate));
