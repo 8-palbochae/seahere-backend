@@ -1,7 +1,7 @@
 package com.seahere.backend.company.entity;
 
 import com.seahere.backend.common.entity.Address;
-import com.seahere.backend.company.request.CompanyCreateReq;
+import com.seahere.backend.company.controller.request.CompanyCreateReq;
 import com.seahere.backend.user.domain.UserEntity;
 import lombok.AccessLevel;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.seahere.backend.company.request;
+package com.seahere.backend.company.controller.request;
 
 import com.seahere.backend.common.entity.Address;
 import lombok.Builder;
