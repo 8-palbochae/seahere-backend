@@ -21,7 +21,7 @@ public class AdjustService {
 
     public void save(AdjustRequest adjustRequest) {
         InventoryEntity inventoryEntity = inventoryJpaRepository.findById(adjustRequest.getInventoryId())
-                .orElseThrow(() -> new InventoryNotFoundException("Inventory not found for id: " + adjustRequest.getInventoryId()));
+                .orElseThrow(InventoryNotFoundException::new);
 
         AdjustEntity adjustEntity = adjustRequest.toEntity(inventoryEntity);
         inventoryEntity.updateQuantity(adjustRequest.getAfterQuantity());
