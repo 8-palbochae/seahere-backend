@@ -44,11 +44,4 @@ public class AdjustReqController {
         }
     }
 
-//    @GetMapping
-//    public ResponseEntity<AdjustEntity> adjustReqList(AdjustListRequest searchRequest) {
-//        PageRequest pageRequest = PageRequest.of(searchRequest.getPage(), searchRequest.getSize(), Sort.by(Sort.Direction.ASC, "name"));
-//        Slice<InventoryResponse> results = inventoryService.findPagedInventoryByCompanyId(searchRequest.getCompanyId(), pageRequest, searchRequest.getSearch());
-//        InventoryReqListResponse inventoryReqListResponse = new InventoryReqListResponse(results);
-//        return ResponseEntity.ok(inventoryReqListResponse);
-//    }
 }
