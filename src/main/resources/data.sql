@@ -55,7 +55,7 @@ INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, pa
                                                                                                     (22, 1, '2024-08-17', 'PENDING', false,2),
                                                                                                     (23, 1, '2024-08-18', 'PENDING', true,2),
                                                                                                     (24, 1, '2024-08-19', 'READY', false,2),
-                                                                                                    (25, 1, '2024-08-20', 'COMPLATE', true,2),
+                                                                                                    (25, 1, '2024-08-20', 'COMPLETE', true,2),
                                                                                                     (26, 1, '2024-08-21', 'PENDING', false,2),
                                                                                                     (27, 1, '2024-08-22', 'PENDING', true,2),
                                                                                                     (28, 1, '2024-08-23', 'PENDING', false,2),

@@ -24,6 +24,8 @@ public enum OutgoingState {
                 return READY;
             case "reject":
                 return REJECT;
+            case "complete":
+                return COMPLETE;
             default:
                 throw new InvalidOutgoingStateException();
         }

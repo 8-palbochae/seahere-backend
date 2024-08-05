@@ -1,5 +1,7 @@
-package com.seahere.backend.outgoing.dto;
+package com.seahere.backend.history.controller.response;
 
+import com.seahere.backend.outgoing.controller.response.OutgoingDetailResponse;
+import com.seahere.backend.outgoing.dto.OutgoingDetailDto;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
@@ -8,11 +10,11 @@ import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Getter
 @Builder
-public class OutgoingCallDto {
-
+@Getter
+public class HistoryOutgoingResponse {
     private Long outgoingId;
     private Long companyId;
     private String customerName;
@@ -22,8 +24,8 @@ public class OutgoingCallDto {
     private boolean partialOutgoing;
     private String title;
 
-    public static OutgoingCallDto from(OutgoingEntity outgoingEntity) {
-        return OutgoingCallDto.builder()
+    public static HistoryOutgoingResponse from(OutgoingEntity outgoingEntity) {
+        return HistoryOutgoingResponse.builder()
                 .companyId(outgoingEntity.getCompany().getId())
                 .customerName(outgoingEntity.getCustomer().getUsername())
                 .outgoingDate(outgoingEntity.getOutgoingDate())
