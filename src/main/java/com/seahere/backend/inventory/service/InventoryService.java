@@ -1,16 +1,19 @@
 package com.seahere.backend.inventory.service;
 
 import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
 import com.seahere.backend.inventory.controller.request.InventoryRequest;
 import com.seahere.backend.inventory.controller.response.InventoryDetailResponse;
 import com.seahere.backend.inventory.controller.response.InventoryResponse;
 import com.seahere.backend.inventory.entity.InventoryEntity;
+import com.seahere.backend.inventory.exception.InventoryNotFoundException;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
-import com.seahere.backend.product.entity.ProductEntity;
-import com.seahere.backend.product.repository.ProductRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
+import com.seahere.backend.product.entity.ProductEntity;
+import com.seahere.backend.product.exception.ProductNotFoundException;
+import com.seahere.backend.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -37,24 +40,33 @@ public class InventoryService {
         return inventoryRepository.findPagedProductsByCompanyId(companyId, name, category, pageable);
     }
 
-    //todo 나중에 뜯어 고쳐야함
     private boolean isInventory(Long companyId, IncomingDataRequest incomingDataRequest) {
-        ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
-        return inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNatural(),incomingDataRequest.getCountry()).isPresent();
+        ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId())
+                .orElseThrow(ProductNotFoundException::new);
+        return inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(
+                incomingDataRequest.getCategory(),
+                productEntity.getProductName(),
+                companyId,
+                incomingDataRequest.getNatural(),
+                incomingDataRequest.getCountry()
+        ).isPresent();
     }
-    
-    //todo 필요여부따라 반환형 결정하기
-    public InventoryEntity inventoryUpdateEnroll(Long companyId, IncomingDataRequest incomingDataRequest){
 
-        ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).get();
+    public InventoryEntity inventoryUpdateEnroll(Long companyId, IncomingDataRequest incomingDataRequest) {
+        ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId())
+                .orElseThrow(ProductNotFoundException::new);
 
-        if(isInventory(companyId, incomingDataRequest)){
-            InventoryEntity inventoryEntity = inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(incomingDataRequest.getCategory(),productEntity.getProductName(),companyId,incomingDataRequest.getNatural(),incomingDataRequest.getCountry()).get();
+        if (isInventory(companyId, incomingDataRequest)) {
+            InventoryEntity inventoryEntity = inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(
+                    incomingDataRequest.getCategory(),
+                    productEntity.getProductName(),
+                    companyId,
+                    incomingDataRequest.getNatural(),
+                    incomingDataRequest.getCountry()
+            ).orElseThrow(InventoryNotFoundException::new);
             inventoryEntity.addQuantity(incomingDataRequest.getQuantity());
             return inventoryEntity;
-        }
-        else{
-
+        } else {
             InventoryRequest inventoryRequest = InventoryRequest.builder()
                     .companyId(companyId)
                     .quantity(incomingDataRequest.getQuantity())
@@ -67,12 +79,11 @@ public class InventoryService {
 
             InventoryEntity inventoryEntity = inventoryRequest.toEntity();
             inventoryEntity.registProduct(productEntity);
-            CompanyEntity company = companyRepository.findById(companyId).get();
+            CompanyEntity company = companyRepository.findById(companyId)
+                    .orElseThrow(CompanyNotFound::new);
             inventoryEntity.assignCompany(company);
             inventoryJpaRepository.save(inventoryEntity);
             return inventoryEntity;
         }
     }
-
-
 }
