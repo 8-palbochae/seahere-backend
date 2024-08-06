@@ -95,18 +95,18 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 
-    public void saveAuthentication(UserEntity myUser) {
-        String password = myUser.getPassword();
-        if (password == null) {
-            password = PasswordUtil.generateRandomPassword();
-        }
-
-        UserDetails userDetailsUser = new CustomUserDetails(myUser);
-
-        Authentication authentication =
-                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-                authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
-
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-    }
+//    public void saveAuthentication(UserEntity myUser) {
+//        String password = myUser.getPassword();
+//        if (password == null) {
+//            password = PasswordUtil.generateRandomPassword();
+//        }
+//
+//        UserDetails userDetailsUser = new CustomUserDetails(myUser);
+//
+//        Authentication authentication =
+//                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
+//                authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+//
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//    }
 }

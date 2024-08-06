@@ -1,5 +1,6 @@
 package com.seahere.backend.auth.login;
 
+import com.seahere.backend.common.dto.UserLogin;
 import com.seahere.backend.user.domain.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,9 +11,9 @@ import java.util.Collections;
 
 public class CustomUserDetails implements UserDetails {
 
-    private final UserEntity user;
+    private final UserLogin user;
 
-    public CustomUserDetails(UserEntity user) {
+    public CustomUserDetails(UserLogin user) {
         this.user = user;
     }
 
@@ -51,7 +52,7 @@ public class CustomUserDetails implements UserDetails {
         return true;
     }
 
-    public UserEntity getUser() {
+    public UserLogin getUser() {
         return user;
     }
 }
