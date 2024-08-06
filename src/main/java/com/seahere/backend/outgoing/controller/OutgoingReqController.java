@@ -1,5 +1,6 @@
 package com.seahere.backend.outgoing.controller;
 
+import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.outgoing.controller.request.OutgoingReqSearchRequest;
 import com.seahere.backend.outgoing.controller.request.OutgoingStateChangeRequest;
 import com.seahere.backend.outgoing.controller.response.OutgoingCallListResponse;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,10 +32,10 @@ public class OutgoingReqController {
     private final OutgoingDetailService outgoingDetailService;
 
     @GetMapping()
-    public ResponseEntity<OutgoingCallListResponse> outgoingReqList(OutgoingReqSearchRequest request){
+    public ResponseEntity<OutgoingCallListResponse> outgoingReqList(OutgoingReqSearchRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
         log.info("size = {} page = {}",request.getSize(),request.getPage());
         PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Direction.DESC, "outgoingId"));
-        Slice<OutgoingEntity> results = outgoingService.findByOutgoingStateIsPending(1L, pageRequest
+        Slice<OutgoingEntity> results = outgoingService.findByOutgoingStateIsPending(userDetails.getUser().getCompanyId(), pageRequest
                 , request.getStartDate(), request.getEndDate(), request.getSearch());
         OutgoingCallListResponse outgoingCallListResponse = new OutgoingCallListResponse(results);
         return ResponseEntity.ok(outgoingCallListResponse);
