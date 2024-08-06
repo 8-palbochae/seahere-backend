@@ -54,7 +54,6 @@ public class IncomingEntity {
         this.user = user;
         this.incomingDate = incomingDate;
     }
-
     public void edit(int incomingPrice){
         this.incomingPrice = (int) (incomingPrice * quantity);
     }

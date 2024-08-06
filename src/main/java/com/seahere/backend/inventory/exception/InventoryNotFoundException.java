@@ -9,16 +9,8 @@ public class InventoryNotFoundException extends SeaHereException {
         super(MESSAGE);
     }
 
-    public InventoryNotFoundException(String message) {
-        super(message);
-    }
-
-    public InventoryNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
     @Override
     public int getStatusCode() {
-        return 500;
+        return 404;
     }
 }

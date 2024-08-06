@@ -1,7 +1,7 @@
 DELETE FROM inventories;
 DELETE FROM company;
 DELETE FROM product;
--- product 테이블 데이터 삽입
+-- product 테이블 데이터
 INSERT INTO product (product_id, product_name, qr, product_img) VALUES
                                                                     (1, '광어', 'qr1', 'img1'),
                                                                     (2, '우럭', 'qr2', 'img2'),
@@ -9,6 +9,7 @@ INSERT INTO product (product_id, product_name, qr, product_img) VALUES
                                                                     (4, '민어', 'qr4', 'img4'),
                                                                     (5, '장어', 'qr5', 'img5'),
                                                                     (6, '문어', 'qr6', 'img6');
+
 insert into USERS(user_id,username) values(1,'스리랑'),
                                           (2,'아리랑');
 INSERT INTO company(company_id) VALUES (101);
@@ -109,8 +110,7 @@ INSERT INTO outgoing_detail (detail_id, price, product_id, outgoing_id, quantity
                                                                                                                          (5,10000,6,2,70,'활어','국산','양식'),
                                                                                                                          (6,10000,5,2,80,'활어','국산','양식'),
                                                                                                                          (7,10000,3,2,90,'선어','국산','양식'),
-                                                                                                                         (8,10000,1,2,100,'선어','국산','양식'),
-                                                                                                                         (9,10000,3,24,90,'선어','국산','양식');
+                                                                                                                         (8,10000,1,2,100,'선어','국산','양식');
 INSERT INTO inventories (inventory_id, company_id, quantity, category, product_id, country, incoming_date, natural_status) VALUES
     (1, 101, 60, '활어', 1, '국산', '2024-07-23', '자연'),
     (2, 101, 60, '활어', 2, '국산', '2024-07-03', '양식'),
@@ -137,3 +137,25 @@ INSERT INTO inventories (inventory_id, company_id, quantity, category, product_i
 
 insert into adjust (ADJUST_ID,ADJUST_DATE,AFTER_QUANTITY,BEFORE_QUANTITY,REASON,INVENTORY_ID)
 values (1,'2024-07-27',500,100,'어디서 주워옴',22);
+INSERT INTO inventory_detail(inventory_detail_id,inventory_id,company_id,warning_quantity, outgoing_price) VALUES
+      (1, 1, 101, 5, 10000),
+      (2, 2, 101, 5, 10000),
+      (3, 3, 101, 5, 10000),
+      (4, 4, 101, 5, 10000),
+      (5, 5, 101, 5, 10000),
+      (6, 6, 101, 5, 10000),
+      (7, 7, 101, 5, 10000),
+      (8, 8, 101, 5, 10000),
+      (9, 9, 101, 5, 10000),
+      (10, 10, 101, 5, 10000),
+      (11, 11, 101, 5, 10000),
+      (12, 12, 101, 5, 10000),
+      (13, 13, 101, 5, 10000),
+      (14, 14, 101, 5, 10000),
+      (15, 15, 101, 5, 10000),
+      (16, 16, 101, 5, 10000),
+      (17, 17, 101, 5, 10000),
+      (18, 18, 101, 5, 10000),
+      (19, 19, 101, 5, 10000),
+      (20, 20, 101, 5, 10000),
+      (21, 21, 101, 5, 10000);

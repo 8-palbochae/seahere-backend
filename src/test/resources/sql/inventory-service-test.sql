@@ -1,4 +1,5 @@
-DELETE FROM adjust WHERE INVENTORY_ID IN (SELECT INVENTORY_ID FROM inventories);
+DELETE FROM inventory_detail;
+DELETE FROM adjust;
 DELETE FROM inventories;
 DELETE FROM company;
 DELETE FROM product;
@@ -11,7 +12,8 @@ INSERT INTO product (product_id, product_name, qr, product_img) VALUES
                                                                     (3, '숭어', 'qr3', 'img3'),
                                                                     (4, '민어', 'qr4', 'img4'),
                                                                     (5, '장어', 'qr5', 'img5'),
-                                                                    (6, '문어', 'qr6', 'img6');
+                                                                    (6, '문어', 'qr6', 'img6'),
+                                                                    (7, '연어', 'qr7', 'img7');
 
 -- inventories 테이블 데이터 삽입
 INSERT INTO inventories (inventory_id, company_id, quantity, category, product_id, country, incoming_date, natural_status) VALUES
@@ -36,3 +38,27 @@ INSERT INTO inventories (inventory_id, company_id, quantity, category, product_i
                                                                                                                                (19, 101, 60, '활어', 1, '국산', '2024-07-31', '자연'),
                                                                                                                                (20, 101, 40, '활어', 6, '국산', '2024-07-03', '자연'),
                                                                                                                                (21, 101, 23, '활어', 5, '국산', '2024-07-03', '양식');
+
+
+INSERT INTO inventory_detail(inventory_detail_id,inventory_id,company_id,warning_quantity, outgoing_price) VALUES
+                                                                                                      (1, 1, 101, 5, 10000),
+                                                                                                      (2, 2, 101, 5, 10000),
+                                                                                                      (3, 3, 101, 5, 10000),
+                                                                                                      (4, 4, 101, 5, 10000),
+                                                                                                      (5, 5, 101, 5, 10000),
+                                                                                                      (6, 6, 101, 5, 10000),
+                                                                                                      (7, 7, 101, 5, 10000),
+                                                                                                      (8, 8, 101, 5, 10000),
+                                                                                                      (9, 9, 101, 5, 10000),
+                                                                                                      (10, 10, 101, 5, 10000),
+                                                                                                      (11, 11, 101, 5, 10000),
+                                                                                                      (12, 12, 101, 5, 10000),
+                                                                                                      (13, 13, 101, 5, 10000),
+                                                                                                      (14, 14, 101, 5, 10000),
+                                                                                                      (15, 15, 101, 5, 10000),
+                                                                                                      (16, 16, 101, 5, 10000),
+                                                                                                      (17, 17, 101, 5, 10000),
+                                                                                                      (18, 18, 101, 5, 10000),
+                                                                                                      (19, 19, 101, 5, 10000),
+                                                                                                      (20, 20, 101, 5, 10000),
+                                                                                                      (21, 21, 101, 5, 10000);
