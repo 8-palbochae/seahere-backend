@@ -55,8 +55,8 @@ INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, pa
                                                                                                     (21, 1, '2024-08-16', 'PENDING', true,2),
                                                                                                     (22, 1, '2024-08-17', 'PENDING', false,2),
                                                                                                     (23, 1, '2024-08-18', 'PENDING', true,2),
-                                                                                                    (24, 1, '2024-08-19', 'PENDING', false,2),
-                                                                                                    (25, 1, '2024-08-20', 'PENDING', true,2),
+                                                                                                    (24, 1, '2024-08-19', 'READY', false,2),
+                                                                                                    (25, 1, '2024-08-20', 'COMPLETE', true,2),
                                                                                                     (26, 1, '2024-08-21', 'PENDING', false,2),
                                                                                                     (27, 1, '2024-08-22', 'PENDING', true,2),
                                                                                                     (28, 1, '2024-08-23', 'PENDING', false,2),
@@ -132,8 +132,11 @@ INSERT INTO inventories (inventory_id, company_id, quantity, category, product_i
     (18, 101, 60, '활어', 5, '일본', '2024-07-23', '자연'),
     (19, 101, 60, '활어', 1, '국산', '2024-07-31', '자연'),
     (20, 101, 40, '활어', 6, '국산', '2024-07-03', '자연'),
-    (21, 101, 23, '활어', 5, '국산', '2024-07-03', '양식');
+    (21, 101, 23, '활어', 5, '국산', '2024-07-03', '양식'),
+    (22, 1, 60, '활어', 1, '국산', '2024-07-23', '자연');
 
+insert into adjust (ADJUST_ID,ADJUST_DATE,AFTER_QUANTITY,BEFORE_QUANTITY,REASON,INVENTORY_ID)
+values (1,'2024-07-27',500,100,'어디서 주워옴',22);
 INSERT INTO inventory_detail(inventory_detail_id,inventory_id,company_id,warning_quantity, outgoing_price) VALUES
       (1, 1, 101, 5, 10000),
       (2, 2, 101, 5, 10000),
