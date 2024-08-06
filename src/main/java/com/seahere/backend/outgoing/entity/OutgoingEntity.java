@@ -16,7 +16,8 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 public class OutgoingEntity {
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long outgoingId;
 
     @ManyToOne

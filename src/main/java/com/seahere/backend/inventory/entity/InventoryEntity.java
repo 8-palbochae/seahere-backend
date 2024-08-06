@@ -46,7 +46,7 @@ public class InventoryEntity {
     @Column(name = "natural_status")
     private String naturalStatus;
 
-    @OneToOne(mappedBy = "inventory", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private InventoryDetailEntity inventoryDetail;
 
     @PostPersist

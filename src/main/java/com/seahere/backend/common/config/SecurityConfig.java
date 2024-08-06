@@ -50,6 +50,7 @@ public class SecurityConfig implements WebMvcConfigurer {
             .headers().frameOptions().disable()
             .and()
                  .authorizeRequests()
+                 .antMatchers("/h2-console/**").permitAll()
                  .antMatchers(HttpMethod.POST, "/login").permitAll()
                  .antMatchers(HttpMethod.POST,"/companies").permitAll()
                  .antMatchers(HttpMethod.POST,"/users/**").permitAll()
