@@ -24,7 +24,7 @@ public class LoginService implements UserDetailsService {
     @Transactional(readOnly = true)
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByEmail(email)
+        UserEntity user = userRepository.findWithCompanyByEmail(email)
                 .orElseThrow(UserNotFound::new);
         CompanyEntity company = user.getCompany();
         if (user.getStatus() == UserStatus.PENDING || user.getStatus() == UserStatus.REJECTED) {

@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.seahere.backend.auth.jwt.service.JwtService;
 import com.seahere.backend.auth.jwt.util.PasswordUtil;
 import com.seahere.backend.auth.login.CustomUserDetails;
+import com.seahere.backend.common.dto.UserLogin;
 import com.seahere.backend.common.exception.SeaHereException;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.repository.UserRepository;
@@ -91,22 +92,26 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
         optionalAccessToken
                 .filter(jwtService::isAccessTokenValid)
-                .ifPresent(accessToken -> jwtService.extractEmail(accessToken));
+                .ifPresent(accessToken -> jwtService.extractEmail(accessToken)
+                .ifPresent(email -> userRepository.findWithCompanyByEmail(email)
+                        .ifPresent(user -> saveAuthentication(user))
+                )
+        );
         filterChain.doFilter(request, response);
     }
 
-//    public void saveAuthentication(UserEntity myUser) {
-//        String password = myUser.getPassword();
-//        if (password == null) {
-//            password = PasswordUtil.generateRandomPassword();
-//        }
-//
-//        UserDetails userDetailsUser = new CustomUserDetails(myUser);
-//
-//        Authentication authentication =
-//                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
-//                authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
-//
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//    }
+    public void saveAuthentication(UserEntity myUser) {
+        String password = myUser.getPassword();
+        if (password == null) {
+            password = PasswordUtil.generateRandomPassword();
+        }
+
+        UserDetails userDetailsUser = new CustomUserDetails(UserLogin.from(myUser,myUser.getCompany()));
+
+        Authentication authentication =
+                new UsernamePasswordAuthenticationToken(userDetailsUser, null,
+                authoritiesMapper.mapAuthorities(userDetailsUser.getAuthorities()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+    }
 }

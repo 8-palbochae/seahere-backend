@@ -12,8 +12,10 @@ import com.seahere.backend.auth.oauth.handler.OAuth2LoginSuccessHandler;
 import com.seahere.backend.auth.oauth.service.CustomOAuth2UserService;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -39,7 +41,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http, ServletRegistrationBean h2Console) throws Exception {
          http
             .csrf().disable()
             .formLogin().disable()
@@ -47,8 +49,13 @@ public class SecurityConfig implements WebMvcConfigurer {
             .cors().and()
             .headers().frameOptions().disable()
             .and()
-            .authorizeHttpRequests().anyRequest().permitAll()
-            .and()
+                 .authorizeRequests()
+                 .antMatchers(HttpMethod.POST, "/login").permitAll()
+                 .antMatchers(HttpMethod.POST,"/companies").permitAll()
+                 .antMatchers(HttpMethod.POST,"/users/**").permitAll()
+                 .antMatchers("/authentication/protected").permitAll()// 모든 메서드 허용
+                 .anyRequest().authenticated()
+                 .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .oauth2Login()
