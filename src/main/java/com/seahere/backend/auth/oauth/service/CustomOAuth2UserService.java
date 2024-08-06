@@ -35,7 +35,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private static final String NAVER = "naver";
     private static final String KAKAO = "kakao";
 
-    @Transactional(readOnly = true)
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("CustomOAuth2UserService.loadUser() 실행 - OAuth2 로그인 요청 진입");
@@ -74,7 +73,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     }
 
     private UserEntity getUser(OAuthAttributes attributes, SocialType socialType) {
-        UserEntity findUser = userRepository.findBySocialTypeAndSocialId(socialType,
+        UserEntity findUser = userRepository.findWithCompanyBySocialTypeAndSocialId(socialType,
                 attributes.getOauth2UserInfo().getId())
                 .orElse(null);
 

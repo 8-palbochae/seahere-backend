@@ -31,11 +31,23 @@ public class UserLogin {
     }
 
     public static UserLogin from(UserEntity user, CompanyEntity company){
+        if(company != null){
+            return UserLogin.builder()
+                    .userId(user.getId())
+                    .email(user.getEmail())
+                    .password(user.getPassword())
+                    .companyId(company.getId())
+                    .companyName(company.getCompanyName())
+                    .username(user.getUsername())
+                    .status(user.getStatus())
+                    .role(user.getRole())
+                    .build();
+        }
+
         return UserLogin.builder()
                 .userId(user.getId())
+                .email(user.getEmail())
                 .password(user.getPassword())
-                .companyId(company.getId())
-                .companyName(company.getCompanyName())
                 .username(user.getUsername())
                 .status(user.getStatus())
                 .role(user.getRole())
