@@ -8,7 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 public class InventoryReqDetailSearchRequest {
-    private Long companyId;
     private int size;
     private int page;
     private String name;
