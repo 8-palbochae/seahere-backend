@@ -1,5 +1,7 @@
-package com.seahere.backend.outgoing.dto;
+package com.seahere.backend.history.controller.response;
 
+import com.seahere.backend.outgoing.controller.response.OutgoingDetailResponse;
+import com.seahere.backend.outgoing.dto.OutgoingDetailDto;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
@@ -7,12 +9,13 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Getter
 @Builder
-public class OutgoingCallDto {
-
+@Getter
+public class HistoryOutgoingResponse {
     private Long outgoingId;
     private Long companyId;
     private String customerName;
@@ -21,9 +24,10 @@ public class OutgoingCallDto {
     private String status;
     private boolean partialOutgoing;
     private String title;
+    private List<HistoryOutgoingDetailResponse> details;
 
-    public static OutgoingCallDto from(OutgoingEntity outgoingEntity) {
-        return OutgoingCallDto.builder()
+    public static HistoryOutgoingResponse from(OutgoingEntity outgoingEntity) {
+        return HistoryOutgoingResponse.builder()
                 .companyId(outgoingEntity.getCompany().getId())
                 .customerName(outgoingEntity.getCustomer().getUsername())
                 .outgoingDate(outgoingEntity.getOutgoingDate())
@@ -31,6 +35,7 @@ public class OutgoingCallDto {
                 .status(outgoingEntity.getOutgoingState().printState())
                 .partialOutgoing(outgoingEntity.isPartialOutgoing())
                 .title(calcTitle(outgoingEntity.getOutgoingDetails()))
+                .details(outgoingEntity.getOutgoingDetails().stream().map(HistoryOutgoingDetailResponse::from).collect(Collectors.toList()))
                 .outgoingId(outgoingEntity.getOutgoingId()).build();
     }
 

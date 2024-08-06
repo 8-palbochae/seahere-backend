@@ -1,4 +1,4 @@
-package com.seahere.backend.incoming.controller.response;
+package com.seahere.backend.history.controller.response;
 
 import com.seahere.backend.incoming.entity.IncomingEntity;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 @Getter
 @NoArgsConstructor
-public class IncomingResponse {
+public class HistoryIncomingResponse {
     private Long incomingId;
     private Long companyId;
     private String productName;
@@ -25,7 +25,7 @@ public class IncomingResponse {
     private String productImg;
 
     @Builder
-    public IncomingResponse(Long incomingId, Long companyId, String productName, float quantity, LocalDate incomingDate, int incomingPrice, String memo, String countryDetail, String country, String naturalStatus, String category, Long userId, String productImg) {
+    public HistoryIncomingResponse(Long incomingId, Long companyId, String productName, float quantity, LocalDate incomingDate, int incomingPrice, String memo, String countryDetail, String country, String naturalStatus, String category, Long userId, String productImg) {
         this.incomingId = incomingId;
         this.companyId = companyId;
         this.productName = productName;
@@ -41,8 +41,8 @@ public class IncomingResponse {
         this.productImg = productImg;
     }
 
-    public static IncomingResponse from(IncomingEntity incomingEntity) {
-        return IncomingResponse.builder()
+    public static HistoryIncomingResponse from(IncomingEntity incomingEntity) {
+        return HistoryIncomingResponse.builder()
                 .companyId(incomingEntity.getCompany().getId())
                 .incomingId(incomingEntity.getIncomingId())
                 .productName(incomingEntity.getProduct().getProductName())
