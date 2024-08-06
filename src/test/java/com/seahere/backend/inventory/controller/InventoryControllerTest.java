@@ -1,6 +1,9 @@
 package com.seahere.backend.inventory.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seahere.backend.auth.login.CustomUserDetails;
+import com.seahere.backend.common.entity.Role; // Role 클래스 임포트
+import com.seahere.backend.common.dto.UserLogin; // UserLogin 클래스 임포트
 import com.seahere.backend.inventory.controller.request.InventoryReqDetailSearchRequest;
 import com.seahere.backend.inventory.controller.request.InventoryReqSearchRequest;
 import com.seahere.backend.inventory.repository.InventoryRepository;
@@ -13,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,12 +38,21 @@ public class InventoryControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    private CustomUserDetails getCustomUserDetails() {
+        UserLogin userLogin = UserLogin.builder()
+                .companyId(101L)
+                .username("testUser")
+                .password("testPass")
+                .role(Role.EMPLOYEE) // Role Enum 값을 EMPLOYEE로 설정
+                .build();
+        return new CustomUserDetails(userLogin);
+    }
+
     @Test
     @DisplayName("InventoryReqSearchRequest 클래스로 GET 요청시 CompanyId에 따른 전체 재고 목록이 반환된다.")
     public void test1() throws Exception {
         //given
         InventoryReqSearchRequest inventoryReqSearchRequest = InventoryReqSearchRequest.builder()
-                .companyId(101L)
                 .size(10)
                 .page(0)
                 .search("")
@@ -47,10 +60,10 @@ public class InventoryControllerTest {
 
         //expect
         mockMvc.perform(get("/inventories")
-                        .param("companyId", String.valueOf(inventoryReqSearchRequest.getCompanyId()))
                         .param("size", String.valueOf(inventoryReqSearchRequest.getSize()))
                         .param("page", String.valueOf(inventoryReqSearchRequest.getPage()))
-                        .param("search", inventoryReqSearchRequest.getSearch()))
+                        .param("search", inventoryReqSearchRequest.getSearch())
+                        .with(user(getCustomUserDetails())))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -60,7 +73,6 @@ public class InventoryControllerTest {
     public void test2() throws Exception {
         //given
         InventoryReqDetailSearchRequest inventoryReqDetailSearchRequest = InventoryReqDetailSearchRequest.builder()
-                .companyId(101L)
                 .size(10)
                 .page(0)
                 .name("광어")
@@ -69,11 +81,11 @@ public class InventoryControllerTest {
 
         //expect
         mockMvc.perform(get("/inventories/details")
-                        .param("companyId", String.valueOf(inventoryReqDetailSearchRequest.getCompanyId()))
                         .param("size", String.valueOf(inventoryReqDetailSearchRequest.getSize()))
                         .param("page", String.valueOf(inventoryReqDetailSearchRequest.getPage()))
                         .param("name", inventoryReqDetailSearchRequest.getName())
-                        .param("category", inventoryReqDetailSearchRequest.getCategory()))
+                        .param("category", inventoryReqDetailSearchRequest.getCategory())
+                        .with(user(getCustomUserDetails())))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -83,7 +95,6 @@ public class InventoryControllerTest {
     public void test3() throws Exception {
         //given
         InventoryReqSearchRequest inventoryReqSearchRequest = InventoryReqSearchRequest.builder()
-                .companyId(101L)
                 .size(10)
                 .page(0)
                 .search("광어")
@@ -91,10 +102,10 @@ public class InventoryControllerTest {
 
         //expect
         mockMvc.perform(get("/inventories")
-                        .param("companyId", String.valueOf(inventoryReqSearchRequest.getCompanyId()))
                         .param("size", String.valueOf(inventoryReqSearchRequest.getSize()))
                         .param("page", String.valueOf(inventoryReqSearchRequest.getPage()))
-                        .param("search", inventoryReqSearchRequest.getSearch()))
+                        .param("search", inventoryReqSearchRequest.getSearch())
+                        .with(user(getCustomUserDetails())))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -104,7 +115,6 @@ public class InventoryControllerTest {
     public void test4() throws Exception {
         //given
         InventoryReqSearchRequest inventoryReqSearchRequest = InventoryReqSearchRequest.builder()
-                .companyId(102L)
                 .size(10)
                 .page(0)
                 .search("")
@@ -112,10 +122,10 @@ public class InventoryControllerTest {
 
         //expect
         mockMvc.perform(get("/inventories")
-                        .param("companyId", String.valueOf(inventoryReqSearchRequest.getCompanyId()))
                         .param("size", String.valueOf(inventoryReqSearchRequest.getSize()))
                         .param("page", String.valueOf(inventoryReqSearchRequest.getPage()))
-                        .param("search", inventoryReqSearchRequest.getSearch()))
+                        .param("search", inventoryReqSearchRequest.getSearch())
+                        .with(user(getCustomUserDetails())))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
@@ -125,7 +135,6 @@ public class InventoryControllerTest {
     public void test5() throws Exception {
         //given
         InventoryReqSearchRequest inventoryReqSearchRequest = InventoryReqSearchRequest.builder()
-                .companyId(102L)
                 .size(10)
                 .page(3)
                 .search("")
@@ -133,10 +142,10 @@ public class InventoryControllerTest {
 
         //expect
         mockMvc.perform(get("/inventories")
-                        .param("companyId", String.valueOf(inventoryReqSearchRequest.getCompanyId()))
                         .param("size", String.valueOf(inventoryReqSearchRequest.getSize()))
                         .param("page", String.valueOf(inventoryReqSearchRequest.getPage()))
-                        .param("search", inventoryReqSearchRequest.getSearch()))
+                        .param("search", inventoryReqSearchRequest.getSearch())
+                        .with(user(getCustomUserDetails())))
                 .andExpect(status().isOk())
                 .andDo(print());
     }
