@@ -13,4 +13,5 @@ public class HistoryGetReq {
     private LocalDate startDate = LocalDate.now();
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate = LocalDate.now();
+    private int page;
 }

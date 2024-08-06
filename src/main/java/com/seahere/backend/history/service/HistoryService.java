@@ -9,6 +9,8 @@ import com.seahere.backend.incoming.repository.IncomingRepository;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.repository.OutgoingRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +27,8 @@ public class HistoryService {
     private final AdjustRepository adjustRepository;
     private final OutgoingRepository outgoingRepository;
 
-    public List<HistoryListDto> findByHistoryList(Long companyId,LocalDate startDate, LocalDate endDate){
-        return historyRepository.findByHistoryDate(companyId,startDate,endDate);
+    public Slice<HistoryListDto> findByHistoryList(Long companyId, LocalDate startDate, LocalDate endDate, Pageable pageable){
+        return historyRepository.findByHistoryDate(companyId,startDate,endDate,pageable);
     }
 
     public List<IncomingEntity> findByIncomingList(Long companyId, LocalDate incomingDate) {

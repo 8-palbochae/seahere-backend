@@ -3,12 +3,13 @@ package com.seahere.backend.history.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.seahere.backend.company.entity.QCompanyEntity;
 import com.seahere.backend.history.dto.HistoryListDto;
-import com.seahere.backend.inventory.entity.QInventoryEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -27,9 +28,8 @@ public class HistoryRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public List<HistoryListDto> findByHistoryDate(Long companyId,LocalDate startDate, LocalDate endDate) {
+    public Slice<HistoryListDto> findByHistoryDate(Long companyId, LocalDate startDate, LocalDate endDate, Pageable pageable) {
         Map<LocalDate, HistoryListDto> map = new HashMap<>();
-
         List<HistoryListDto> incomingResults = queryFactory
                 .select(Projections.bean(HistoryListDto.class,
                         incomingEntity.incomingDate.as("date"),
@@ -88,6 +88,10 @@ public class HistoryRepository {
         }
         ArrayList<HistoryListDto> results = new ArrayList<>(map.values());
         results.sort(Comparator.comparing(HistoryListDto::getDate));
-        return results;
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), results.size());
+        List<HistoryListDto> output = results.subList(start, end);
+        boolean hasNext = end < results.size();
+        return new SliceImpl<>(output, pageable, hasNext);
     }
 }

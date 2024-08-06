@@ -1,13 +1,13 @@
 package com.seahere.backend.history.controller;
 
 import com.seahere.backend.history.controller.request.HistoryGetReq;
-import com.seahere.backend.history.controller.response.HistoryAdjustResponse;
-import com.seahere.backend.history.controller.response.HistoryOutgoingResponse;
-import com.seahere.backend.history.controller.response.HistoryResponse;
+import com.seahere.backend.history.controller.response.*;
+import com.seahere.backend.history.dto.HistoryListDto;
 import com.seahere.backend.history.service.HistoryService;
-import com.seahere.backend.history.controller.response.HistoryIncomingResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,9 +45,10 @@ public class HistoryController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<HistoryResponse>> historyList(HistoryGetReq historyGetReq){
+    public ResponseEntity<HistoryListResponse> historyList(HistoryGetReq historyGetReq){
         log.info("historyGetReq  startDate= {}, endDate = {}",historyGetReq.getStartDate(),historyGetReq.getEndDate());
-        List<HistoryResponse> result = historyService.findByHistoryList(1L,historyGetReq.getStartDate(), historyGetReq.getEndDate()).stream().map(HistoryResponse::from).collect(Collectors.toList());
+        PageRequest pageRequest = PageRequest.of(historyGetReq.getPage(), 10);
+        HistoryListResponse result = new HistoryListResponse(historyService.findByHistoryList(1L, historyGetReq.getStartDate(), historyGetReq.getEndDate(), pageRequest));
         return ResponseEntity.ok(result);
     }
 }
