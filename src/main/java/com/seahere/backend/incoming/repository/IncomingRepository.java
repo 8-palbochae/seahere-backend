@@ -38,7 +38,6 @@ public class IncomingRepository {
                 .and(incomingEntity.incomingDate.goe(startDate))
                 .and(incomingEntity.incomingDate.loe(endDate));
     }
-
     public List<IncomingEntity> findIncomingList(Long companyId, LocalDate incomingDate){
         return queryFactory.selectFrom(incomingEntity)
                 .leftJoin(incomingEntity.company, companyEntity).fetchJoin()

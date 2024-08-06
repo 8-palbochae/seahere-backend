@@ -2,8 +2,6 @@ package com.seahere.backend.outgoing.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.seahere.backend.company.entity.CompanyEntity;
-import com.seahere.backend.company.entity.QCompanyEntity;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import lombok.RequiredArgsConstructor;
@@ -52,4 +50,19 @@ public class OutgoingRepository {
                 .and(userEntity.username.contains(search).or(productEntity.productName.contains(search)));
     }
 
+    public List<OutgoingEntity> findByOutgoingStateIsNotPendingAndDate(Long companyId, LocalDate date,String search){
+        return queryFactory.selectFrom(outgoingEntity).distinct()
+                .leftJoin(outgoingEntity.outgoingDetails, outgoingDetailEntity)
+                .leftJoin(outgoingEntity.customer, userEntity).fetchJoin()
+                .leftJoin(outgoingEntity.company, companyEntity).fetchJoin()
+                .leftJoin(outgoingDetailEntity.product,productEntity)
+                .where(outgoingStateIsNotPendingAndDate(companyId,date,search))
+                .fetch();
+    }
+    private BooleanExpression outgoingStateIsNotPendingAndDate(Long companyId, LocalDate date, String search) {
+        return outgoingEntity.outgoingState.ne(OutgoingState.PENDING)
+                .and(outgoingEntity.company.id.eq(companyId))
+                .and(outgoingEntity.outgoingDate.eq(date))
+                .and(userEntity.username.contains(search).or(productEntity.productName.contains(search)));
+    }
 }

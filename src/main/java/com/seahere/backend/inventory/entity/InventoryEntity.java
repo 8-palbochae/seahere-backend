@@ -6,6 +6,7 @@ import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Entity
@@ -44,6 +45,21 @@ public class InventoryEntity {
 
     @Column(name = "natural_status")
     private String naturalStatus;
+
+    @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private InventoryDetailEntity inventoryDetail;
+
+    @PostPersist
+    private void createInventoryDetail() {
+        if (this.inventoryDetail == null) {
+            this.inventoryDetail = InventoryDetailEntity.builder()
+                    .inventory(this)
+                    .company(this.company)
+                    .outgoingPrice(BigDecimal.ZERO)
+                    .warningQuantity(0)
+                    .build();
+        }
+    }
 
     public void addQuantity(float quantity){
         this.quantity += quantity;

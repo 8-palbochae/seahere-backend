@@ -17,7 +17,7 @@ import java.time.LocalDate;
 @Builder
 public class IncomingEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long incomingId;
 
     @ManyToOne(fetch = FetchType.LAZY)

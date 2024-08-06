@@ -3,8 +3,10 @@ package com.seahere.backend.company.controller.request;
 import com.seahere.backend.common.entity.Address;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
+@NoArgsConstructor
 public class CompanyCreateReq {
     private String registrationNumber;
     private String representativeName;

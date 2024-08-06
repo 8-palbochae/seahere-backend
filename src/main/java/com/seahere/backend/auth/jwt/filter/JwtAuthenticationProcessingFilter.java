@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.seahere.backend.auth.jwt.service.JwtService;
 import com.seahere.backend.auth.jwt.util.PasswordUtil;
 import com.seahere.backend.auth.login.CustomUserDetails;
+import com.seahere.backend.common.dto.UserLogin;
 import com.seahere.backend.common.exception.SeaHereException;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.repository.UserRepository;
@@ -88,10 +89,16 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response,
                                                   FilterChain filterChain) throws ServletException, IOException, TokenExpiredException {
         Optional<String> optionalAccessToken = jwtService.extractAccessToken(request);
+        if (optionalAccessToken.filter(jwtService::isAccessTokenValid).isPresent()) {
+            String accessToken = optionalAccessToken.get();
+            String email = jwtService.extractEmail(accessToken).orElse(null);
 
-        optionalAccessToken
-                .filter(jwtService::isAccessTokenValid)
-                .ifPresent(accessToken -> jwtService.extractEmail(accessToken));
+            if (email != null) {
+                userRepository.findWithCompanyByEmail(email).ifPresent(user -> {
+                    saveAuthentication(user); // 인증 정보 저장
+                });
+            }
+        }
         filterChain.doFilter(request, response);
     }
 
@@ -101,7 +108,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             password = PasswordUtil.generateRandomPassword();
         }
 
-        UserDetails userDetailsUser = new CustomUserDetails(myUser);
+        UserDetails userDetailsUser = new CustomUserDetails(UserLogin.from(myUser,myUser.getCompany()));
 
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(userDetailsUser, null,

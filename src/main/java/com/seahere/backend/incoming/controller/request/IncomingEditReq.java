@@ -3,11 +3,13 @@ package com.seahere.backend.incoming.controller.request;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor
+@ToString
 public class IncomingEditReq {
     private Long incomingId;
 

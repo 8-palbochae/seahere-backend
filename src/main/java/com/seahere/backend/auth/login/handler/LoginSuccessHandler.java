@@ -1,6 +1,7 @@
 package com.seahere.backend.auth.login.handler;
 
 import com.seahere.backend.auth.jwt.service.JwtService;
+import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +44,7 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     }
 
     private String extractUsername(Authentication authentication) {
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return userDetails.getUsername();
+        CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+        return userDetails.getUser().getEmail();
     }
 }
