@@ -59,4 +59,11 @@ public class OutgoingDetailEntity {
     public boolean isLackInventory(float inventoryQuantity){
         return inventoryQuantity < this.quantity;
     }
+
+    public boolean isNotDelete(){
+        return this.state != OutgoingDetailState.DELETE;
+    }
+    public boolean isDelete(){
+        return this.state == OutgoingDetailState.DELETE;
+    }
 }

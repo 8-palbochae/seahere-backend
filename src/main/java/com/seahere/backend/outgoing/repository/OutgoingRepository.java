@@ -51,7 +51,7 @@ public class OutgoingRepository {
     }
 
     public List<OutgoingEntity> findByOutgoingStateIsNotPendingAndDate(Long companyId, LocalDate date,String search){
-        return queryFactory.selectFrom(outgoingEntity)
+        return queryFactory.selectFrom(outgoingEntity).distinct()
                 .leftJoin(outgoingEntity.outgoingDetails, outgoingDetailEntity)
                 .leftJoin(outgoingEntity.customer, userEntity).fetchJoin()
                 .leftJoin(outgoingEntity.company, companyEntity).fetchJoin()

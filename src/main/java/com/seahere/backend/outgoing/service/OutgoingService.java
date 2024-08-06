@@ -19,7 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-
+import java.util.List;
+import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -53,7 +54,9 @@ public class OutgoingService {
         OutgoingEntity outgoingCall = outgoingJpaRepository.findByIdFetchCompany(outgoingId).orElseThrow(OutgoingNotFoundException::new);
         CompanyEntity company = outgoingCall.getCompany();
 
-        for(OutgoingDetailEntity detail : outgoingCall.getOutgoingDetails()){
+        List<OutgoingDetailEntity> details = outgoingCall.getOutgoingDetails().stream().filter(OutgoingDetailEntity::isNotDelete).collect(Collectors.toList());
+
+        for(OutgoingDetailEntity detail : details){
              InventoryEntity inventory= inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(detail.getCategory(), detail.getProduct().getProductName(), company.getId(), detail.getNaturalStatus(), detail.getCountry())
                     .orElseThrow(InventoryNotFoundException::new);
              if(detail.isLackInventory(inventory.getQuantity())) throw new LackInventoryException();

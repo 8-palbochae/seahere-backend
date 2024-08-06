@@ -16,6 +16,7 @@ public class HistoryOutgoingDetailResponse {
     private String category;
     private String country;
     private String naturalStatus;
+    private boolean isDelete;
     public static HistoryOutgoingDetailResponse from(OutgoingDetailEntity outgoingDetail){
         return HistoryOutgoingDetailResponse.builder()
                 .productImg(outgoingDetail.getProduct().getProductImg())
@@ -26,6 +27,7 @@ public class HistoryOutgoingDetailResponse {
                 .naturalStatus(outgoingDetail.getNaturalStatus())
                 .outgoingQuantity(outgoingDetail.getQuantity())
                 .productName(outgoingDetail.getProduct().getProductName())
+                .isDelete(outgoingDetail.isDelete())
                 .outgoingDetailId(outgoingDetail.getDetailId()).build();
     }
 }
