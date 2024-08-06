@@ -50,7 +50,7 @@ public class SecurityConfig implements WebMvcConfigurer {
             .headers().frameOptions().disable()
             .and()
                  .authorizeRequests()
-                 .antMatchers(HttpMethod.POST, "/login").permitAll()
+                 .antMatchers("/h2-console/**").permitAll()                 .antMatchers(HttpMethod.POST, "/login").permitAll()
                  .antMatchers(HttpMethod.POST,"/companies").permitAll()
                  .antMatchers(HttpMethod.POST,"/users/**").permitAll()
                  .antMatchers("/authentication/protected").permitAll()// 모든 메서드 허용
