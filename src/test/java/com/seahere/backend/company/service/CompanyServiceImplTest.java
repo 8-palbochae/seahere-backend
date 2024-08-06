@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -28,11 +29,6 @@ class CompanyServiceImplTest {
 
     @Autowired
     CompanyRepository companyRepository;
-
-    @BeforeEach
-    void clear() {
-        companyRepository.deleteAll();
-    }
 
     @Test
     @DisplayName("CompanyCreateReq를 통해서 회사 등록이 가능하다.")
