@@ -1,16 +1,13 @@
 package com.seahere.backend.inventory.controller;
 
 import com.seahere.backend.auth.login.CustomUserDetails;
+import com.seahere.backend.inventory.controller.request.CustomerInventorySearch;
 import com.seahere.backend.inventory.controller.request.InventoryReqDetailSearchRequest;
 import com.seahere.backend.inventory.controller.request.InventoryReqSearchRequest;
-import com.seahere.backend.inventory.controller.response.InventoryDetailResponse;
-import com.seahere.backend.inventory.controller.response.InventoryReqDetailListResponse;
-import com.seahere.backend.inventory.controller.response.InventoryResponse;
-import com.seahere.backend.inventory.controller.response.InventoryReqListResponse;
+import com.seahere.backend.inventory.controller.response.*;
 import com.seahere.backend.inventory.service.InventoryService;
 import com.seahere.backend.product.controller.response.IncomingSearchResponse;
 import com.seahere.backend.product.dto.ProductDto;
-import com.seahere.backend.product.entity.ProductEntity;
 import com.seahere.backend.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,9 +16,9 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,6 +45,13 @@ public class InventoryReqController {
         Slice<InventoryDetailResponse> results = inventoryService.findPagedProductsByCompanyId(customUserDetails.getUser().getCompanyId(), detailSearchRequest.getName(), detailSearchRequest.getCategory(), pageRequest);
         InventoryReqDetailListResponse inventoryReqDetailListResponse = new InventoryReqDetailListResponse(results);
         return ResponseEntity.ok(inventoryReqDetailListResponse);
+    }
+
+    @GetMapping("/{companyId}")
+    public ResponseEntity<List<CustomerInventoryRes>> customerInventoryListGet(@PathVariable Long companyId,
+                                                                               @RequestBody CustomerInventorySearch customerInventorySearch) {
+        List<CustomerInventoryRes> brokerInventoryList = inventoryService.getBrokerInventoryList(companyId, customerInventorySearch);
+        return ResponseEntity.ok(brokerInventoryList);
     }
 
     @GetMapping("/product-search-inventories")

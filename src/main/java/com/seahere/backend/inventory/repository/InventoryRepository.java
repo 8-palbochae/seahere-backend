@@ -2,9 +2,13 @@ package com.seahere.backend.inventory.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.seahere.backend.inventory.controller.request.CustomerInventorySearch;
 import com.seahere.backend.inventory.controller.response.InventoryDetailResponse;
 import com.seahere.backend.inventory.controller.response.InventoryResponse;
+import com.seahere.backend.inventory.entity.InventoryEntity;
+import com.seahere.backend.inventory.entity.QInventoryDetailEntity;
 import com.seahere.backend.inventory.entity.QInventoryEntity;
+import com.seahere.backend.product.entity.QProductEntity;
 import com.seahere.backend.product.dto.ProductDto;
 import com.seahere.backend.product.entity.ProductEntity;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +87,20 @@ public class InventoryRepository {
         return new SliceImpl<>(results, pageable, hasNext);
     }
 
+    public List<InventoryEntity> findByCompanyIdWithDetail(Long companyId, CustomerInventorySearch customerInventorySearch) {
+        return queryFactory.selectFrom(QInventoryEntity.inventoryEntity)
+                .leftJoin(QInventoryEntity.inventoryEntity.product, QProductEntity.productEntity).fetchJoin()
+                .leftJoin(QInventoryEntity.inventoryEntity.inventoryDetail, QInventoryDetailEntity.inventoryDetailEntity).fetchJoin()
+                .where(
+                        QInventoryEntity.inventoryEntity.company.id.eq(companyId)
+                                .and(QInventoryEntity.inventoryEntity.quantity.ne(0F))
+                )
+                .limit(customerInventorySearch.getSize())
+                .offset(customerInventorySearch.getOffset())
+                .orderBy(QInventoryEntity.inventoryEntity.inventoryId.asc())
+                .fetch();
+    }
+
     public List<ProductDto> findAllDistinctProductNamesByCompanyId(Long companyId) {
         return queryFactory
                 .select(Projections.constructor(ProductDto.class,
@@ -96,5 +114,4 @@ public class InventoryRepository {
                 .where(inventory.company.id.eq(companyId))
                 .fetch();
     }
-
 }
