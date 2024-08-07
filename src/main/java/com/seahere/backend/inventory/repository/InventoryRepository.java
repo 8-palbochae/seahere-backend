@@ -9,12 +9,15 @@ import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.entity.QInventoryDetailEntity;
 import com.seahere.backend.inventory.entity.QInventoryEntity;
 import com.seahere.backend.product.entity.QProductEntity;
+import com.seahere.backend.product.dto.ProductDto;
+import com.seahere.backend.product.entity.ProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 
 import static com.seahere.backend.company.entity.QCompanyEntity.companyEntity;
@@ -95,6 +98,20 @@ public class InventoryRepository {
                 .limit(customerInventorySearch.getSize())
                 .offset(customerInventorySearch.getOffset())
                 .orderBy(QInventoryEntity.inventoryEntity.inventoryId.asc())
+                .fetch();
+    }
+
+    public List<ProductDto> findAllDistinctProductNamesByCompanyId(Long companyId) {
+        return queryFactory
+                .select(Projections.constructor(ProductDto.class,
+                        productEntity.productId,
+                        productEntity.productName,
+                        productEntity.qr,
+                        productEntity.productImg))
+                .distinct()
+                .from(inventory)
+                .leftJoin(inventory.product, productEntity)
+                .where(inventory.company.id.eq(companyId))
                 .fetch();
     }
 }

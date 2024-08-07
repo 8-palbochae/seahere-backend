@@ -11,6 +11,7 @@ import com.seahere.backend.inventory.entity.InventoryDetailEntity;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
+import com.seahere.backend.product.dto.ProductDto;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Assertions;
@@ -106,11 +107,20 @@ class InventoryServiceTest {
         List<CustomerInventoryRes> result = inventoryService.getBrokerInventoryList(companyId, search);
 
         //then
-        Assertions.assertEquals(10L,result.size());
-        Assertions.assertEquals("광어",result.get(0).getName());
-        Assertions.assertEquals("활어",result.get(0).getCategory());
-        Assertions.assertEquals("국산",result.get(0).getCountry());
-        Assertions.assertEquals("자연",result.get(0).getNaturalStatus());
+        Assertions.assertEquals(10L, result.size());
+        Assertions.assertEquals("광어", result.get(0).getName());
+        Assertions.assertEquals("활어", result.get(0).getCategory());
+        Assertions.assertEquals("국산", result.get(0).getCountry());
+        Assertions.assertEquals("자연", result.get(0).getNaturalStatus());
         Assertions.assertEquals(new BigDecimal("10000.00").setScale(2, RoundingMode.DOWN), result.get(0).getPrice().setScale(2, RoundingMode.DOWN));
+    }
+
+    @DisplayName("companyId를 통한 보유 상품 목록 조회")
+    void test3() throws Exception {
+        // when
+        Long companyId = 101L;
+        List<ProductDto> inventoryReqList = inventoryRepository.findAllDistinctProductNamesByCompanyId(companyId);
+        // then
+        inventoryReqList.forEach(productDto -> log.info("Inventory: {}", productDto.toString()));
     }
 }

@@ -1,11 +1,13 @@
 package com.seahere.backend.product.controller;
 
+import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.product.controller.response.IncomingSearchResponse;
 import com.seahere.backend.product.dto.ProductDto;
 import com.seahere.backend.product.entity.ProductEntity;
 import com.seahere.backend.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,5 +27,6 @@ public class ProductController {
         List<IncomingSearchResponse> productResponses = products.stream().map(ProductDto::from).map(IncomingSearchResponse::from).collect(Collectors.toList());
         return ResponseEntity.ok(productResponses);
     }
+
 
 }

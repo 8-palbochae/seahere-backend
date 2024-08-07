@@ -13,6 +13,7 @@ import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.exception.InventoryNotFoundException;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
+import com.seahere.backend.product.dto.ProductDto;
 import com.seahere.backend.product.entity.ProductEntity;
 import com.seahere.backend.product.exception.ProductNotFoundException;
 import com.seahere.backend.product.repository.ProductRepository;
@@ -96,5 +97,9 @@ public class InventoryService {
             inventoryJpaRepository.save(inventoryEntity);
             return inventoryEntity;
         }
+    }
+
+    public List<ProductDto> getAllDistinctProductNamesByCompanyId(Long companyId) {
+        return inventoryRepository.findAllDistinctProductNamesByCompanyId(companyId);
     }
 }
