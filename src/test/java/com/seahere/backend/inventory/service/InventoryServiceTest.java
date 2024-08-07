@@ -4,12 +4,15 @@ import com.seahere.backend.common.entity.ProductCountry;
 import com.seahere.backend.common.entity.ProductSource;
 import com.seahere.backend.common.entity.ProductStatus;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
+import com.seahere.backend.inventory.controller.request.CustomerInventorySearch;
+import com.seahere.backend.inventory.controller.response.CustomerInventoryRes;
 import com.seahere.backend.inventory.controller.response.InventoryResponse;
 import com.seahere.backend.inventory.entity.InventoryDetailEntity;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +23,10 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -83,5 +90,27 @@ class InventoryServiceTest {
 
         //then
         Assertions.assertNotNull(inventoryDetail);
+    }
+
+    @Test
+    @DisplayName("CustomerInventorySearch 객체로 현재 CompanyId 가 일치하는 재고를 페이지 조회 가능하다.")
+    void getInventoryByCustomer() throws Exception {
+        //given
+        CustomerInventorySearch search = CustomerInventorySearch.builder()
+                .size(10)
+                .page(1)
+                .build();
+        Long companyId = 101L;
+
+        //when
+        List<CustomerInventoryRes> result = inventoryService.getBrokerInventoryList(companyId, search);
+
+        //then
+        Assertions.assertEquals(10L,result.size());
+        Assertions.assertEquals("광어",result.get(0).getName());
+        Assertions.assertEquals("활어",result.get(0).getCategory());
+        Assertions.assertEquals("국산",result.get(0).getCountry());
+        Assertions.assertEquals("자연",result.get(0).getNaturalStatus());
+        Assertions.assertEquals(new BigDecimal("10000.00").setScale(2, RoundingMode.DOWN), result.get(0).getPrice().setScale(2, RoundingMode.DOWN));
     }
 }
