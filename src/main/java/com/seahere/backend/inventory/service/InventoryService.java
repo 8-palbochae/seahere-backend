@@ -4,7 +4,9 @@ import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
+import com.seahere.backend.inventory.controller.request.CustomerInventorySearch;
 import com.seahere.backend.inventory.controller.request.InventoryRequest;
+import com.seahere.backend.inventory.controller.response.CustomerInventoryRes;
 import com.seahere.backend.inventory.controller.response.InventoryDetailResponse;
 import com.seahere.backend.inventory.controller.response.InventoryResponse;
 import com.seahere.backend.inventory.entity.InventoryEntity;
@@ -22,6 +24,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +54,13 @@ public class InventoryService {
                 incomingDataRequest.getNatural(),
                 incomingDataRequest.getCountry()
         ).isPresent();
+    }
+
+    public List<CustomerInventoryRes> getBrokerInventoryList(Long companyId, CustomerInventorySearch customerInventorySearch){
+        return inventoryRepository.findByCompanyIdWithDetail(companyId, customerInventorySearch)
+                .stream()
+                .map(CustomerInventoryRes::from)
+                .collect(Collectors.toList());
     }
 
     public InventoryEntity inventoryUpdateEnroll(Long companyId, IncomingDataRequest incomingDataRequest) {
