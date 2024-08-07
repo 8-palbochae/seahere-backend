@@ -9,6 +9,7 @@ import com.seahere.backend.inventory.entity.InventoryDetailEntity;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
+import com.seahere.backend.product.dto.ProductDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -20,6 +21,8 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -83,5 +86,15 @@ class InventoryServiceTest {
 
         //then
         Assertions.assertNotNull(inventoryDetail);
+    }
+
+    @Test
+    @DisplayName("companyId를 통한 보유 상품 목록 조회")
+    void test3() throws Exception {
+        // when
+        Long companyId = 101L;
+        List<ProductDto> inventoryReqList = inventoryRepository.findAllDistinctProductNamesByCompanyId(companyId);
+        // then
+        inventoryReqList.forEach(productDto -> log.info("Inventory: {}", productDto.toString()));
     }
 }
