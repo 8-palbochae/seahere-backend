@@ -97,7 +97,7 @@ public class InventoryRepository {
                 )
                 .limit(customerInventorySearch.getSize())
                 .offset(customerInventorySearch.getOffset())
-                .orderBy(QInventoryEntity.inventoryEntity.inventoryId.asc())
+                .orderBy(QInventoryEntity.inventoryEntity.product.productName.asc(),QInventoryEntity.inventoryEntity.inventoryId.asc())
                 .fetch();
     }
 
