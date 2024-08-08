@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static com.seahere.backend.company.entity.QCompanyEntity.companyEntity;
 import static com.seahere.backend.product.entity.QProductEntity.productEntity;
@@ -99,6 +100,16 @@ public class InventoryRepository {
                 .offset(customerInventorySearch.getOffset())
                 .orderBy(QInventoryEntity.inventoryEntity.product.productName.asc(),QInventoryEntity.inventoryEntity.inventoryId.asc())
                 .fetch();
+    }
+
+    public Optional<InventoryEntity> findByIdWithProduct(Long id) {
+        InventoryEntity inventory = queryFactory.selectFrom(QInventoryEntity.inventoryEntity)
+                .leftJoin(QInventoryEntity.inventoryEntity.product, productEntity).fetchJoin()
+                .where(
+                        QInventoryEntity.inventoryEntity.inventoryId.eq(id)
+                )
+                .fetchOne();
+        return Optional.ofNullable(inventory);
     }
 
     public List<ProductDto> findAllDistinctProductNamesByCompanyId(Long companyId) {
