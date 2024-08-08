@@ -1,16 +1,26 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.common.dto.UserLogin;
 import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.company.exception.CompanyNotFound;
+import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.exception.InventoryNotFoundException;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
+import com.seahere.backend.inventory.repository.InventoryRepository;
+import com.seahere.backend.outgoing.controller.request.OutgoingCreateDetailReq;
+import com.seahere.backend.outgoing.controller.request.OutgoingCreateReq;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
+import com.seahere.backend.outgoing.entity.OutgoingDetailState;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.outgoing.exception.LackInventoryException;
 import com.seahere.backend.outgoing.exception.OutgoingNotFoundException;
 import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
 import com.seahere.backend.outgoing.repository.OutgoingRepository;
+import com.seahere.backend.user.domain.UserEntity;
+import com.seahere.backend.user.exception.UserNotFound;
+import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -29,15 +39,41 @@ public class OutgoingService {
 
     private final OutgoingJpaRepository outgoingJpaRepository;
     private final InventoryJpaRepository inventoryJpaRepository;
+    private final InventoryRepository inventoryRepository;
     private final OutgoingRepository outgoingRepository;
+    private final CompanyRepository companyRepository;
+    private final UserRepository userRepository;
 
     public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable, LocalDate startDate, LocalDate endDate, String search){
         return outgoingRepository.findByOutgoingStateIsPending(companyId,pageable, startDate, endDate, search);
     }
     @Transactional
-    public void save(OutgoingEntity outgoingEntity){
-        outgoingJpaRepository.save(outgoingEntity);
+    public Long save(OutgoingCreateReq outgoingCreateReq, Long userId){
+        UserEntity customer = userRepository.findById(userId)
+                .orElseThrow(UserNotFound::new);
+
+        CompanyEntity company = companyRepository.findById(outgoingCreateReq.getCompanyId())
+                .orElseThrow(CompanyNotFound::new);
+
+        OutgoingEntity outgoing = OutgoingEntity.builder()
+                .company(company)
+                .partialOutgoing(outgoingCreateReq.isPartialOutgoing())
+                .outgoingState(OutgoingState.PENDING)
+                .customer(customer)
+                .outgoingDate(LocalDate.now())
+                .build();
+
+        outgoingCreateReq.getDetails()
+                .forEach(detail -> {
+                    OutgoingDetailEntity outgoingDetail = createOutgoingDetail(detail);
+                    outgoing.addOutgoingDetail(outgoingDetail);
+                });
+
+        outgoingJpaRepository.save(outgoing);
+
+        return outgoing.getOutgoingId();
     }
+
     @Transactional
     public OutgoingEntity changeOutgoingState(Long outgoingId, OutgoingState state){
         if(OutgoingState.READY.equals(state)){
@@ -63,5 +99,20 @@ public class OutgoingService {
              inventory.minusQuantity(detail.getQuantity());
         }
         return outgoingCall;
+    }
+
+    private OutgoingDetailEntity createOutgoingDetail(OutgoingCreateDetailReq detailReq){
+        InventoryEntity inventory = inventoryRepository.findByIdWithProduct(detailReq.getInventoryId())
+                .orElseThrow(InventoryNotFoundException::new);
+
+        return OutgoingDetailEntity.builder()
+                .price(detailReq.getPrice())
+                .quantity(detailReq.getQuantity())
+                .naturalStatus(inventory.getNaturalStatus())
+                .country(inventory.getCountry())
+                .category(inventory.getCategory())
+                .product(inventory.getProduct())
+                .state(OutgoingDetailState.ACTIVE)
+                .build();
     }
 }
