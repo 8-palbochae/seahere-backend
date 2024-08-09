@@ -17,9 +17,9 @@ public class CustomerInventoryRes {
     private String country;
     private String naturalStatus;
     private BigDecimal price;
-
+    private float quantity;
     @Builder
-    public CustomerInventoryRes(Long inventoryId, String name, String imgUrl, String category, String country, String naturalStatus, BigDecimal price) {
+    public CustomerInventoryRes(Long inventoryId, String name, String imgUrl, String category, String country, String naturalStatus, BigDecimal price, float quantity) {
         this.inventoryId = inventoryId;
         this.name = name;
         this.imgUrl = imgUrl;
@@ -27,6 +27,7 @@ public class CustomerInventoryRes {
         this.country = country;
         this.naturalStatus = naturalStatus;
         this.price = price;
+        this.quantity = quantity;
     }
 
     public static CustomerInventoryRes from(InventoryEntity inventory){
@@ -38,6 +39,7 @@ public class CustomerInventoryRes {
                 .country(inventory.getCountry())
                 .category(inventory.getCategory())
                 .naturalStatus(inventory.getNaturalStatus())
+                .quantity(inventory.getQuantity())
                 .build();
     }
 }
