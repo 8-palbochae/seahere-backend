@@ -55,7 +55,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                  .antMatchers(HttpMethod.POST,"/companies").permitAll()
                  .antMatchers(HttpMethod.POST,"/users/**").permitAll()
                  .antMatchers("/authentication/protected").permitAll()// 모든 메서드 허용
-                 .anyRequest().authenticated()
+                 .anyRequest().permitAll()
                  .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
