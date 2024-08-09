@@ -2,6 +2,7 @@ package com.seahere.backend.auth.oauth.handler;
 
 import com.seahere.backend.user.exception.BrokerPermissionException;
 import com.seahere.backend.user.exception.UserNotFound;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.AuthenticationException;
@@ -16,9 +17,9 @@ import java.net.URLEncoder;
 
 @Slf4j
 @Component
+@Getter
 public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
-    @Value("${client.server.address}")
-    private String CLIENT_SERVER_ADDRESS;
+    private String responseServer;
 
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
@@ -36,6 +37,10 @@ public class OAuth2LoginFailureHandler implements AuthenticationFailureHandler {
             errorMessage = "로그인 실패! 이메일이나 비밀번호를 확인해주세요.";
         }
 
-        response.sendRedirect(CLIENT_SERVER_ADDRESS + "/login?error=" + URLEncoder.encode(errorMessage, "UTF-8"));
+        response.sendRedirect(responseServer + "/login?error=" + URLEncoder.encode(errorMessage, "UTF-8"));
+    }
+
+    public void editResponseServer(String responseServer){
+        this.responseServer = responseServer;
     }
 }

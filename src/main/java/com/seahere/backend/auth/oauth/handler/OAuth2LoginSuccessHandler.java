@@ -6,6 +6,7 @@ import com.seahere.backend.common.entity.Role;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,10 +25,20 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 @Transactional
+@Getter
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
-    @Value("${client.server.address}")
-    private String CLIENT_SERVER_ADDRESS;
+    @Value("${client.broker.port}")
+    private String BROKER_PORT;
+    @Value("${client.customer.port}")
+    private String CUSTOMER_PORT;
+    @Value("${client.broker.redirect}")
+    private String BROKER_REDIRECT;
+    @Value("${client.customer.redirect}")
+    private String CUSTOMER_REDIRECT;
+
+
+    private String responseServer;
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
@@ -42,7 +53,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 UserEntity findUser = userRepository.findByEmail(oAuth2User.getUser().getEmail())
                         .orElseThrow(UserNotFound::new);
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-                response.sendRedirect(CLIENT_SERVER_ADDRESS + "/signup/choice?guest="+findUser.getId());
+
+                if(responseServer.contains(CUSTOMER_PORT)){
+                    response.sendRedirect(responseServer + CUSTOMER_REDIRECT + "?guest=" + findUser.getId());
+                }
+                else{
+                    response.sendRedirect(responseServer + BROKER_REDIRECT + "?guest=" + findUser.getId());
+                }
 
                 jwtService.sendAccessAndRefreshToken(response, accessToken, null);
             } else {
@@ -74,6 +91,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         jwtService.updateRefreshToken(oAuth2User.getUser().getEmail(), refreshToken);
         jwtService.sendAccessAndRefreshToken(response, accessToken, refreshToken);
 
-        response.sendRedirect(CLIENT_SERVER_ADDRESS + "/loading");
+        response.sendRedirect(responseServer + "loading");
+    }
+
+    public void editResponseServer(String responseServer){
+        this.responseServer = responseServer;
     }
 }
