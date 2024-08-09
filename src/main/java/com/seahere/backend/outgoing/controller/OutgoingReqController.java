@@ -1,6 +1,7 @@
 package com.seahere.backend.outgoing.controller;
 
 import com.seahere.backend.auth.login.CustomUserDetails;
+import com.seahere.backend.outgoing.controller.request.OutgoingCreateReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingReqSearchRequest;
 import com.seahere.backend.outgoing.controller.request.OutgoingStateChangeRequest;
 import com.seahere.backend.outgoing.controller.response.OutgoingCallListResponse;
@@ -12,6 +13,7 @@ import com.seahere.backend.outgoing.service.OutgoingDetailService;
 import com.seahere.backend.outgoing.service.OutgoingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.coyote.Response;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
@@ -30,6 +32,12 @@ public class OutgoingReqController {
 
     private final OutgoingService outgoingService;
     private final OutgoingDetailService outgoingDetailService;
+
+    @PostMapping("/outgoings")
+    public ResponseEntity<Void> outgoingCreate(@RequestBody OutgoingCreateReq outgoingCreateReq, @AuthenticationPrincipal CustomUserDetails userDetails){
+        outgoingService.save(outgoingCreateReq,userDetails.getUser().getUserId());
+        return ResponseEntity.ok(null);
+    }
 
     @GetMapping()
     public ResponseEntity<OutgoingCallListResponse> outgoingReqList(OutgoingReqSearchRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
