@@ -17,7 +17,7 @@ import javax.persistence.Table;
 public class AlarmHistoryEntity {
 
     @Id @GeneratedValue
-    private Long id;
+    private Long alarmHistoryId;
     private Long userId;
     private String title;
     private String body;
