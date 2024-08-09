@@ -1,4 +1,4 @@
-package com.seahere.backend.alarm;
+package com.seahere.backend.alarm.service;
 
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MulticastMessage;

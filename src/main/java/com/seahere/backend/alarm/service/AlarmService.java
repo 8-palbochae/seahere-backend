@@ -1,4 +1,4 @@
-package com.seahere.backend.alarm;
+package com.seahere.backend.alarm.service;
 
 import java.util.List;
 

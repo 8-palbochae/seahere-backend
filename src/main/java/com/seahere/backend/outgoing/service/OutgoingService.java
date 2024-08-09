@@ -1,5 +1,6 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.alarm.dto.AlarmToCustomerEvent;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.exception.InventoryNotFoundException;
@@ -13,6 +14,7 @@ import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
 import com.seahere.backend.outgoing.repository.OutgoingRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,7 @@ public class OutgoingService {
     private final OutgoingJpaRepository outgoingJpaRepository;
     private final InventoryJpaRepository inventoryJpaRepository;
     private final OutgoingRepository outgoingRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public Slice<OutgoingEntity> findByOutgoingStateIsPending(Long companyId, Pageable pageable, LocalDate startDate, LocalDate endDate, String search){
         return outgoingRepository.findByOutgoingStateIsPending(companyId,pageable, startDate, endDate, search);
@@ -38,15 +41,20 @@ public class OutgoingService {
     public void save(OutgoingEntity outgoingEntity){
         outgoingJpaRepository.save(outgoingEntity);
     }
+
     @Transactional
     public OutgoingEntity changeOutgoingState(Long outgoingId, OutgoingState state){
+
         if(OutgoingState.READY.equals(state)){
             OutgoingEntity outgoingCall = acceptOutgoingCall(outgoingId);
             outgoingCall.changeState(state);
+            eventPublisher.publishEvent(new AlarmToCustomerEvent(outgoingCall.getCustomer().getId(),"출고 상태 변경","주문이 "+ state.printState() +"상태로 변경되었습니다."));
             return outgoingCall;
         }
+
         OutgoingEntity outgoingCall = outgoingJpaRepository.findById(outgoingId).orElseThrow(OutgoingNotFoundException::new);
         outgoingCall.changeState(state);
+        eventPublisher.publishEvent(new AlarmToCustomerEvent(outgoingCall.getCustomer().getId(),"출고 상태 변경","주문이 "+ state.printState() +"상태로 변경되었습니다."));
         return outgoingCall;
     }
 
