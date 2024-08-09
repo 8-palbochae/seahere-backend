@@ -8,7 +8,15 @@ INSERT INTO product (product_id, product_name, qr, product_img) VALUES
                                                                     (3, '숭어', 'qr3', 'img3'),
                                                                     (4, '민어', 'qr4', 'img4'),
                                                                     (5, '장어', 'qr5', 'img5'),
-                                                                    (6, '문어', 'qr6', 'img6');
+                                                                    (6, '문어', 'qr6', 'img6'),
+                                                                    (7, '연어', 'qr7', 'img7'),
+                                                                    (8, '참치', 'qr8', 'img8'),
+                                                                    (9, '고등어', 'qr9', 'img9'),
+                                                                    (10, '갈치', 'qr10', 'img10'),
+                                                                    (11, '조기', 'qr11', 'img11'),
+                                                                    (12, '삼치', 'qr12', 'img12'),
+                                                                    (13, '꽁치', 'qr13', 'img13');
+
 
 insert into USERS(user_id,username) values(1,'스리랑'),
                                           (2,'아리랑');
