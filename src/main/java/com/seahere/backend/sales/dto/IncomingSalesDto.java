@@ -12,4 +12,5 @@ import java.time.LocalDate;
 public class IncomingSalesDto {
     private LocalDate incomingDate;
     private int incomingPrice;
+    private int week;
 }
