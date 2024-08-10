@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public Long signupCustomer(CustomerSignupReq customerSignupReq) {
 
-        UserEntity user = customerSignupReq.to();
+        UserEntity user = customerSignupReq.toEntity();
         user.passwordEncode(passwordEncoder);
         userRepository.save(user);
         return user.getId();
@@ -37,7 +37,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Long signupBroker(BrokerSignupReq brokerSignupReq) {
-        UserEntity user = brokerSignupReq.to();
+        UserEntity user = brokerSignupReq.toEntity();
         user.passwordEncode(passwordEncoder);
         userRepository.save(user);
         return user.getId();
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public Long signupCeo(CeoSignupReq ceoSignupReq) {
-        UserEntity user = ceoSignupReq.to();
+        UserEntity user = ceoSignupReq.toEntity();
         user.passwordEncode(passwordEncoder);
 
         CompanyEntity company = companyRepository.findById(ceoSignupReq.getCompanyId())
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService{
     public Long signupOauth(OAuthSignupReq oauthSignupReq) {
         UserEntity user = userRepository.findById(oauthSignupReq.getUserId())
                 .orElseThrow(UserNotFound::new);
-        user.signupOAuth(oauthSignupReq.getUsername(),oauthSignupReq.getAddress());
+        user.signupOAuth(oauthSignupReq.getUsername(),oauthSignupReq.getAddress(),oauthSignupReq.getTelNumber());
 
         if (oauthSignupReq.getCompanyId() != null && oauthSignupReq.isCeo()){
             CompanyEntity company = companyRepository.findById(oauthSignupReq.getCompanyId())
