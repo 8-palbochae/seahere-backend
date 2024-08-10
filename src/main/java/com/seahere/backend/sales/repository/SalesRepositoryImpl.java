@@ -3,7 +3,6 @@ package com.seahere.backend.sales.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberTemplate;
-import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.seahere.backend.incoming.entity.QIncomingEntity;
 import com.seahere.backend.sales.dto.IncomingSalesDto;
