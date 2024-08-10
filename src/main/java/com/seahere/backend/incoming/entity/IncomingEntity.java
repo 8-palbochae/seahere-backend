@@ -4,6 +4,7 @@ import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.product.entity.ProductEntity;
 import com.seahere.backend.user.domain.UserEntity;
 import lombok.*;
+import org.hibernate.annotations.Formula;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -57,4 +58,11 @@ public class IncomingEntity {
     public void edit(int incomingPrice){
         this.incomingPrice = (int) (incomingPrice * quantity);
     }
+
+//    @Formula("TO_CHAR(incoming_date, 'yyyy-MM-dd')")
+//    private String formattedDate;
+//
+//    @Formula("EXTRACT(ISO_WEEK FROM incoming_date)")
+//    private Integer week;
+
 }
