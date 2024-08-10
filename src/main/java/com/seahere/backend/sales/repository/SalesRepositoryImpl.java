@@ -22,10 +22,6 @@ public class SalesRepositoryImpl implements SalesRepository {
     public List<IncomingSalesDto> incomingWeekList(Long companyId, LocalDate startDate, LocalDate endDate) {
         QIncomingEntity incoming = QIncomingEntity.incomingEntity;
 
-        // H2에 맞는 SQL 함수 사용
-//        StringTemplate formattedDateTemplate = Expressions.stringTemplate(
-//                "DATE_FORMAT({0}, 'yyyy-MM-dd')", incoming.incomingDate
-//        );
 
         NumberTemplate<Integer> weekNumberTemplate = Expressions.numberTemplate(
                 Integer.class, "EXTRACT(WEEK FROM {0})", incoming.incomingDate

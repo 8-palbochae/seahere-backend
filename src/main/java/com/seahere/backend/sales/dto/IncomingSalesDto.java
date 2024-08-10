@@ -17,7 +17,7 @@ public class IncomingSalesDto {
     private int incomingPrice;
 
     public IncomingSalesDto(String incomingDate, Integer week, Integer incomingPrice) {
-        this.incomingDate = LocalDate.parse(incomingDate); // String을 LocalDate로 변환
+        this.incomingDate = LocalDate.parse(incomingDate);
         this.week = week;
         this.incomingPrice = incomingPrice;
     }

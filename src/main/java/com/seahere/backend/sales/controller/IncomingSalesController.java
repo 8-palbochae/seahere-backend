@@ -33,7 +33,6 @@ public class IncomingSalesController {
                 userDetails.getUser().getCompanyId()
         );
 
-        // Dto를 response로 변환
         List<IncomingWeekRes> responseList = result.stream()
                 .map(dto -> IncomingWeekRes.builder()
                         .incomingDate(dto.getIncomingDate())
