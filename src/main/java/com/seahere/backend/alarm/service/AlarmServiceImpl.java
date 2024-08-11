@@ -5,6 +5,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.seahere.backend.alarm.dto.AlarmToCustomerEvent;
 import com.seahere.backend.alarm.entity.AlarmHistoryEntity;
 import com.seahere.backend.alarm.entity.AlarmTokenEntity;
+import com.seahere.backend.alarm.exception.TokenNotFoundException;
 import com.seahere.backend.alarm.repository.AlarmHistoryJpaRepository;
 import com.seahere.backend.alarm.repository.AlarmJapRepository;
 import com.seahere.backend.user.domain.UserEntity;
@@ -36,8 +37,9 @@ public class AlarmServiceImpl implements AlarmService{
     @TransactionalEventListener
     public void createAlarmHistory(AlarmToCustomerEvent event) throws FirebaseMessagingException {
         log.info("이벤트 구독확인 ");
-        String token = "e1PgMuaRf2r_3G1OTnRALj:APA91bGcjxQqL4Lj_7ZlynD6L23Y-DsV02kJTdiC5Lu-Z7DuyoWIUocXfC994XC0A2PNBfNSAgySwHVpVBn8hn1zjP_X8cdkXteXJ6hihix0JEk__hXjvkAHNiK6cKW6Hs9A1xOsbrPM";
-        sendMessage(token,event.getTitle(),event.getBody());
+        UserEntity user = userRepository.findById(event.getUserId()).orElseThrow(UserNotFound::new);
+        AlarmTokenEntity token = alarmJapRepository.findByUser(user).orElseThrow(TokenNotFoundException::new);
+        sendMessage(token.getToken(),event.getTitle(),event.getBody());
         alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
                         .userId(event.getUserId())
                         .title(event.getTitle())

@@ -61,9 +61,7 @@ public class OutgoingService {
     private OutgoingEntity acceptOutgoingCall(Long outgoingId){
         OutgoingEntity outgoingCall = outgoingJpaRepository.findByIdFetchCompany(outgoingId).orElseThrow(OutgoingNotFoundException::new);
         CompanyEntity company = outgoingCall.getCompany();
-
         List<OutgoingDetailEntity> details = outgoingCall.getOutgoingDetails().stream().filter(OutgoingDetailEntity::isNotDelete).collect(Collectors.toList());
-
         for(OutgoingDetailEntity detail : details){
              InventoryEntity inventory= inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(detail.getCategory(), detail.getProduct().getProductName(), company.getId(), detail.getNaturalStatus(), detail.getCountry())
                     .orElseThrow(InventoryNotFoundException::new);

@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface OutgoingJpaRepository extends JpaRepository<OutgoingEntity, Long> {
 
-    @Query("select o from OutgoingEntity o join fetch o.company c join o.outgoingDetails where o.outgoingId = :outgoingId")
+    @Query("select o from OutgoingEntity o join fetch o.company c where o.outgoingId = :outgoingId")
     Optional<OutgoingEntity> findByIdFetchCompany(@Param("outgoingId") Long outgoingId);
 }

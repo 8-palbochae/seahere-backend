@@ -71,7 +71,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://localhost:3000","https://10.10.10.140:3000")
+                .allowedOrigins("http://localhost:3000","https://6fe0-183-103-184-149.ngrok-free.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(true)
