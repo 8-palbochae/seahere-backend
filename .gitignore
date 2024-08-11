@@ -5,6 +5,10 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 !**/src/test/**/generated/
+# FCM
+certification.json
+#https
+src/main/resources/keystore.p12
 
 ### STS ###
 .apt_generated
