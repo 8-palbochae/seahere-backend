@@ -1,5 +1,6 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.alarm.dto.AlarmToCustomerEvent;
 import com.seahere.backend.common.dto.UserLogin;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
@@ -23,6 +24,7 @@ import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,7 @@ public class OutgoingService {
     private final InventoryJpaRepository inventoryJpaRepository;
     private final InventoryRepository inventoryRepository;
     private final OutgoingRepository outgoingRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
 
@@ -76,22 +79,24 @@ public class OutgoingService {
 
     @Transactional
     public OutgoingEntity changeOutgoingState(Long outgoingId, OutgoingState state){
+
         if(OutgoingState.READY.equals(state)){
             OutgoingEntity outgoingCall = acceptOutgoingCall(outgoingId);
             outgoingCall.changeState(state);
+            eventPublisher.publishEvent(new AlarmToCustomerEvent(outgoingCall.getCustomer().getId(),"출고 상태 변경","주문이 "+ state.printState() +"상태로 변경되었습니다."));
             return outgoingCall;
         }
+
         OutgoingEntity outgoingCall = outgoingJpaRepository.findById(outgoingId).orElseThrow(OutgoingNotFoundException::new);
         outgoingCall.changeState(state);
+        eventPublisher.publishEvent(new AlarmToCustomerEvent(outgoingCall.getCustomer().getId(),"출고 상태 변경","주문이 "+ state.printState() +"상태로 변경되었습니다."));
         return outgoingCall;
     }
 
     private OutgoingEntity acceptOutgoingCall(Long outgoingId){
         OutgoingEntity outgoingCall = outgoingJpaRepository.findByIdFetchCompany(outgoingId).orElseThrow(OutgoingNotFoundException::new);
         CompanyEntity company = outgoingCall.getCompany();
-
         List<OutgoingDetailEntity> details = outgoingCall.getOutgoingDetails().stream().filter(OutgoingDetailEntity::isNotDelete).collect(Collectors.toList());
-
         for(OutgoingDetailEntity detail : details){
              InventoryEntity inventory= inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(detail.getCategory(), detail.getProduct().getProductName(), company.getId(), detail.getNaturalStatus(), detail.getCountry())
                     .orElseThrow(InventoryNotFoundException::new);
