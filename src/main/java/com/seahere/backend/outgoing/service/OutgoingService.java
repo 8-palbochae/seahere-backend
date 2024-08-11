@@ -10,6 +10,8 @@ import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
 import com.seahere.backend.outgoing.controller.request.OutgoingCreateDetailReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingCreateReq;
+import com.seahere.backend.outgoing.controller.request.OutgoingSearchReq;
+import com.seahere.backend.outgoing.controller.response.OutgoingRes;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingDetailState;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
@@ -86,6 +88,12 @@ public class OutgoingService {
         return outgoingCall;
     }
 
+    public List<OutgoingRes> getList(OutgoingSearchReq outgoingSearchReq, Long userId){
+         return outgoingRepository.findByOutgoingByCustomerId(outgoingSearchReq, userId)
+                .stream().map(OutgoingRes::from)
+                .collect(Collectors.toList());
+    }
+
     private OutgoingEntity acceptOutgoingCall(Long outgoingId){
         OutgoingEntity outgoingCall = outgoingJpaRepository.findByIdFetchCompany(outgoingId).orElseThrow(OutgoingNotFoundException::new);
         CompanyEntity company = outgoingCall.getCompany();
@@ -101,7 +109,7 @@ public class OutgoingService {
         return outgoingCall;
     }
 
-    private OutgoingDetailEntity createOutgoingDetail(OutgoingCreateDetailReq detailReq){
+    private OutgoingDetailEntity createOutgoingDetail(OutgoingCreateDetailReq detailReq) {
         InventoryEntity inventory = inventoryRepository.findByIdWithProduct(detailReq.getInventoryId())
                 .orElseThrow(InventoryNotFoundException::new);
 
