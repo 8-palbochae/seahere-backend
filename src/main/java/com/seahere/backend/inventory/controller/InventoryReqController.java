@@ -49,7 +49,7 @@ public class InventoryReqController {
 
     @GetMapping("/{companyId}")
     public ResponseEntity<List<CustomerInventoryRes>> customerInventoryListGet(@PathVariable Long companyId,
-                                                                               @RequestBody CustomerInventorySearch customerInventorySearch) {
+                                                                               @ModelAttribute CustomerInventorySearch customerInventorySearch) {
         List<CustomerInventoryRes> brokerInventoryList = inventoryService.getBrokerInventoryList(companyId, customerInventorySearch);
         return ResponseEntity.ok(brokerInventoryList);
     }
