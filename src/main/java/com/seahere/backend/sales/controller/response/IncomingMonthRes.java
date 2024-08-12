@@ -4,12 +4,13 @@ import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
+import java.time.Month;
 
 @Builder
 @Getter
-public class IncomingWeekRes {
-    private LocalDate incomingDate;
+public class IncomingMonthRes {
+
+    private int month;
     private int incomingPrice;
-    private  int week;
 
 }
