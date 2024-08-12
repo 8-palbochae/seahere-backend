@@ -69,6 +69,12 @@ public class OutgoingReqController {
         return ResponseEntity.ok(todayInfo);
     }
 
+    @GetMapping("/recent")
+    public ResponseEntity<OutgoingRes> recentlyOutgoingGet(@AuthenticationPrincipal CustomUserDetails userDetails){
+        OutgoingRes recentlyOutgoing = outgoingService.getRecentlyOutgoing(userDetails.getUser().getUserId());
+        return ResponseEntity.ok(recentlyOutgoing);
+    }
+
     @PatchMapping("/{outgoingId}")
     public ResponseEntity<OutgoingCallDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody OutgoingStateChangeRequest request){
         OutgoingState state = OutgoingState.from(request.getState());
