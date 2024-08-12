@@ -14,6 +14,7 @@ import com.seahere.backend.outgoing.controller.request.OutgoingCreateDetailReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingCreateReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingSearchReq;
 import com.seahere.backend.outgoing.controller.response.OutgoingRes;
+import com.seahere.backend.outgoing.controller.response.OutgoingTodayRes;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingDetailState;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
@@ -35,6 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
@@ -100,6 +102,20 @@ public class OutgoingService {
          return outgoingRepository.findByOutgoingByCustomerId(outgoingSearchReq, userId)
                 .stream().map(OutgoingRes::from)
                 .collect(Collectors.toList());
+    }
+
+    public OutgoingTodayRes getTodayInfo(Long customerId){
+        LocalDate now = LocalDate.now();
+        List<OutgoingEntity> customerTodayList = outgoingJpaRepository.findByCustomerIdAndOutgoingDate(customerId, now);
+
+        Map<OutgoingState, Long> statusCounts = customerTodayList.stream()
+                .collect(Collectors.groupingBy(OutgoingEntity::getOutgoingState, Collectors.counting()));
+
+        return OutgoingTodayRes.builder()
+                .pending(statusCounts.getOrDefault(OutgoingState.PENDING,0L))
+                .ready(statusCounts.getOrDefault(OutgoingState.READY,0L))
+                .complete(statusCounts.getOrDefault(OutgoingState.COMPLETE,0L))
+                .build();
     }
 
     private OutgoingEntity acceptOutgoingCall(Long outgoingId){
