@@ -24,7 +24,7 @@ public class OutgoingEntity {
     @JoinColumn(name = "company_id")
     private CompanyEntity company;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "outgoing")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "outgoing", cascade = CascadeType.ALL)
     private final List<OutgoingDetailEntity> outgoingDetails = new ArrayList<>();
 
     private LocalDate outgoingDate;

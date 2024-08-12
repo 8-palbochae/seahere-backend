@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 public class OutgoingDetailEntity {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long detailId;
 
     @ManyToOne(fetch = FetchType.LAZY)
