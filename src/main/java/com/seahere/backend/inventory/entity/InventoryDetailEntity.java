@@ -17,6 +17,8 @@ import java.math.BigDecimal;
 @Table(name="inventory_detail")
 @NoArgsConstructor
 @Getter
+@Builder
+@AllArgsConstructor
 public class InventoryDetailEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,15 +36,6 @@ public class InventoryDetailEntity {
     private int warningQuantity;
 
     private BigDecimal outgoingPrice;
-
-    @Builder
-    public InventoryDetailEntity(Long id, InventoryEntity inventory, CompanyEntity company, int warningQuantity, BigDecimal outgoingPrice) {
-        this.id = id;
-        this.inventory = inventory;
-        this.company = company;
-        this.warningQuantity = warningQuantity;
-        this.outgoingPrice = outgoingPrice;
-    }
 
     public void edit(InventoryEditReq inventoryEditReq){
         this.warningQuantity = inventoryEditReq.getWarningQuantity() != null ? inventoryEditReq.getWarningQuantity() : warningQuantity;
