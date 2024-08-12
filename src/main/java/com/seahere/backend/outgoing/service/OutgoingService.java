@@ -1,5 +1,6 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.alarm.dto.AlarmToCompanyEvent;
 import com.seahere.backend.alarm.dto.AlarmToCustomerEvent;
 import com.seahere.backend.common.dto.UserLogin;
 import com.seahere.backend.company.entity.CompanyEntity;
@@ -73,7 +74,7 @@ public class OutgoingService {
                 });
 
         outgoingJpaRepository.save(outgoing);
-
+        eventPublisher.publishEvent(new AlarmToCompanyEvent(company.getId(), "출고 요청","새로운 출고 요청이 있습니다."));
         return outgoing.getOutgoingId();
     }
 

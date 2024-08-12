@@ -32,7 +32,8 @@ INSERT INTO company(company_id,registration_number,company_name,post_code,main_a
                                                                                                         (116,'1234', '여보소 수산','1234','부산광역시 중구','자갈치 시장 1번'),
                                                                                                         (117,'1234', '여보소 수산','1234','부산광역시 중구','자갈치 시장 1번'),
                                                                                                         (118,'1234', '여보소 수산','1234','부산광역시 중구','자갈치 시장 1번');
-INSERT INTO company(company_id) VALUES (1);
+INSERT INTO company(company_id,registration_number,company_name,post_code,main_address,sub_address)
+VALUES (1,1234,'알람받기수산',1234,'부산시','어딘가');
 
 INSERT INTO company(company_id) VALUES (4);
 INSERT INTO USERS(user_id) VALUES (5);
