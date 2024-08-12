@@ -3,9 +3,11 @@ package com.seahere.backend.outgoing.controller;
 import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.outgoing.controller.request.OutgoingCreateReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingReqSearchRequest;
+import com.seahere.backend.outgoing.controller.request.OutgoingSearchReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingStateChangeRequest;
 import com.seahere.backend.outgoing.controller.response.OutgoingCallListResponse;
 import com.seahere.backend.outgoing.controller.response.OutgoingDetailResponse;
+import com.seahere.backend.outgoing.controller.response.OutgoingRes;
 import com.seahere.backend.outgoing.dto.OutgoingCallDto;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
@@ -47,6 +49,12 @@ public class OutgoingReqController {
                 , request.getStartDate(), request.getEndDate(), request.getSearch());
         OutgoingCallListResponse outgoingCallListResponse = new OutgoingCallListResponse(results);
         return ResponseEntity.ok(outgoingCallListResponse);
+    }
+
+    @GetMapping("/customer")
+    public ResponseEntity<List<OutgoingRes>> outgoingReqList(OutgoingSearchReq outgoingSearchReq, @AuthenticationPrincipal CustomUserDetails userDetails){
+        List<OutgoingRes> outgoingResList = outgoingService.getList(outgoingSearchReq, userDetails.getUser().getUserId());
+        return ResponseEntity.ok(outgoingResList);
     }
 
     @GetMapping("/{outgoingId}")
