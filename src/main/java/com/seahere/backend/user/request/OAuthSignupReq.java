@@ -13,14 +13,15 @@ public class OAuthSignupReq {
     private Long companyId;
     private String type;
     private Address address;
-
+    private String telNumber;
     @Builder
-    public OAuthSignupReq(Long userId, String username, Long companyId, String type, Address address) {
+    public OAuthSignupReq(Long userId, String username, Long companyId, String type, Address address, String telNumber) {
         this.userId = userId;
         this.username = username;
         this.companyId = companyId;
         this.type = type;
         this.address = address;
+        this.telNumber = telNumber;
     }
 
     public Boolean isCeo(){

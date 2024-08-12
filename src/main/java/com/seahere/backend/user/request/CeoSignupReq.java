@@ -29,27 +29,31 @@ public class CeoSignupReq {
 
     private Address address;
 
+    private String telNumber;
+
     private SocialType socialType;
 
     private String socialId;
 
     @Builder
-    public CeoSignupReq(String email, String password, String username, Long companyId, Address address, SocialType socialType, String socialId) {
+    public CeoSignupReq(String email, String password, String username, Long companyId, Address address, String telNumber, SocialType socialType, String socialId) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.companyId = companyId;
         this.address = address;
+        this.telNumber = telNumber;
         this.socialType = socialType;
         this.socialId = socialId;
     }
 
-    public UserEntity to(){
+    public UserEntity toEntity(){
         return UserEntity.builder()
                 .email(email)
                 .password(password)
                 .username(username)
                 .address(address)
+                .telNumber(telNumber)
                 .socialType(socialType)
                 .socialId(socialId)
                 .role(Role.ADMIN)

@@ -1,6 +1,7 @@
 package com.seahere.backend.common.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seahere.backend.auth.filter.CustomClientBranchFilter;
 import com.seahere.backend.auth.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.seahere.backend.auth.jwt.service.JwtService;
 import com.seahere.backend.auth.login.filter.CustomJsonUsernamePasswordAuthenticationFilter;
@@ -24,6 +25,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -55,7 +57,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                  .antMatchers(HttpMethod.POST,"/companies").permitAll()
                  .antMatchers(HttpMethod.POST,"/users/**").permitAll()
                  .antMatchers("/authentication/protected").permitAll()// 모든 메서드 허용
-                 .anyRequest().permitAll()
+                 .anyRequest().authenticated()
                  .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
@@ -63,15 +65,17 @@ public class SecurityConfig implements WebMvcConfigurer {
             .successHandler(oAuth2LoginSuccessHandler)
             .failureHandler(oAuth2LoginFailureHandler)
             .userInfoEndpoint().userService(customOAuth2UserService);
-        http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
-        http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
+
+         http.addFilterBefore(customClientFilter(), OAuth2AuthorizationRequestRedirectFilter.class);
+         http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
+         http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://localhost:3000","https://10.10.10.158:3000")
+                .allowedOrigins("http://localhost:3000","http://localhost:5173","http://172.18.117.115:3000")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(true)
@@ -109,6 +113,12 @@ public class SecurityConfig implements WebMvcConfigurer {
         customJsonUsernamePasswordLoginFilter.setAuthenticationSuccessHandler(loginSuccessHandler());
         customJsonUsernamePasswordLoginFilter.setAuthenticationFailureHandler(loginFailureHandler());
         return customJsonUsernamePasswordLoginFilter;
+    }
+
+    @Bean
+    public CustomClientBranchFilter customClientFilter(){
+        CustomClientBranchFilter customClientFilter = new CustomClientBranchFilter(oAuth2LoginSuccessHandler,oAuth2LoginFailureHandler);
+        return customClientFilter;
     }
 
     @Bean

@@ -33,7 +33,7 @@ public class OutgoingReqController {
     private final OutgoingService outgoingService;
     private final OutgoingDetailService outgoingDetailService;
 
-    @PostMapping("/outgoings")
+    @PostMapping("")
     public ResponseEntity<Void> outgoingCreate(@RequestBody OutgoingCreateReq outgoingCreateReq, @AuthenticationPrincipal CustomUserDetails userDetails){
         outgoingService.save(outgoingCreateReq,userDetails.getUser().getUserId());
         return ResponseEntity.ok(null);
