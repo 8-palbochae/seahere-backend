@@ -118,6 +118,16 @@ public class OutgoingService {
                 .build();
     }
 
+    public OutgoingRes getRecentlyOutgoing(Long customerId){
+        OutgoingEntity recentlyOutgoing = outgoingRepository.findByCustomerRecently(customerId);
+
+        if(recentlyOutgoing == null){
+            return OutgoingRes.builder().build();
+        }
+
+        return OutgoingRes.from(recentlyOutgoing);
+    }
+
     private OutgoingEntity acceptOutgoingCall(Long outgoingId){
         OutgoingEntity outgoingCall = outgoingJpaRepository.findByIdFetchCompany(outgoingId).orElseThrow(OutgoingNotFoundException::new);
         CompanyEntity company = outgoingCall.getCompany();
