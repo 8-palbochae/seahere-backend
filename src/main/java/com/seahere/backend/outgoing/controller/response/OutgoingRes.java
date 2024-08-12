@@ -27,7 +27,13 @@ public class OutgoingRes {
     }
 
     public static OutgoingRes from(OutgoingEntity outgoingEntity){
-        String outgoingTitle = outgoingEntity.getOutgoingDetails().get(0).getProduct().getProductName() + (outgoingEntity.getOutgoingDetails().size()-1);
+        String outgoingTitle = outgoingEntity.getOutgoingDetails().get(0).getProduct().getProductName() 
+                + " 외" + (outgoingEntity.getOutgoingDetails().size()-1)
+                + "개";
+
+        if (outgoingEntity.getOutgoingDetails().size() <=1){
+            outgoingTitle = outgoingEntity.getOutgoingDetails().get(0).getProduct().getProductName();
+        }
 
         return OutgoingRes.builder()
                 .company(CompanyResponse.from(outgoingEntity.getCompany()))
