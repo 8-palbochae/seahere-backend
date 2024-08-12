@@ -5,6 +5,7 @@ import com.seahere.backend.outgoing.controller.request.OutgoingCreateReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingReqSearchRequest;
 import com.seahere.backend.outgoing.controller.request.OutgoingSearchReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingStateChangeRequest;
+import com.seahere.backend.outgoing.controller.response.CustomerOutgoingDetailRes;
 import com.seahere.backend.outgoing.controller.response.OutgoingCallListResponse;
 import com.seahere.backend.outgoing.controller.response.OutgoingDetailResponse;
 import com.seahere.backend.outgoing.controller.response.OutgoingRes;
@@ -23,6 +24,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.swing.plaf.IconUIResource;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,7 +59,13 @@ public class OutgoingReqController {
         return ResponseEntity.ok(outgoingResList);
     }
 
-    @GetMapping("/{outgoingId}")
+    @GetMapping("/customer/{outgoingId}")
+    public ResponseEntity<List<CustomerOutgoingDetailRes>> getOutgoingDetail(@PathVariable("outgoingId") Long outgoingId) {
+        List<CustomerOutgoingDetailRes> customerOutgoingList = outgoingDetailService.getCustomerOutgoingList(outgoingId);
+        return ResponseEntity.ok(customerOutgoingList);
+    }
+
+        @GetMapping("/{outgoingId}")
     public List<OutgoingDetailResponse> outgoingReqDetailList(@PathVariable("outgoingId") Long outgoingId){
         return outgoingDetailService.findByOutgoingAndStateIsAcitve(outgoingId).stream().map(OutgoingDetailResponse::from).collect(Collectors.toList());
     }
