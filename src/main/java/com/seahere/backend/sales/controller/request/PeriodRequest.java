@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class IncomingWeekRequest {
+public class PeriodRequest {
 
     private LocalDate startDate;
     private LocalDate endDate;

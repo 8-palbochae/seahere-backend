@@ -1,6 +1,7 @@
 package com.seahere.backend.sales.service;
 
-import com.seahere.backend.sales.dto.IncomingSalesDto;
+import com.seahere.backend.sales.dto.IncomingMonthDto;
+import com.seahere.backend.sales.dto.IncomingWeekDto;
 import com.seahere.backend.sales.repository.SalesRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,12 @@ public class SalesServiceImpl implements SalesService {
     private final SalesRepository salesRepository;
 
     @Override
-    public List<IncomingSalesDto> findIncomingWeek(LocalDate startDate, LocalDate endDate, Long companyId) {
+    public List<IncomingWeekDto> findIncomingWeek(LocalDate startDate, LocalDate endDate, Long companyId) {
         return salesRepository.incomingWeekList(companyId, startDate, endDate);
+    }
+
+    @Override
+    public List<IncomingMonthDto> findIncomingMonth(LocalDate startDate, LocalDate endDate, Long companyId) {
+        return salesRepository.incomingMonthList(companyId, startDate, endDate);
     }
 }
