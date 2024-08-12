@@ -6,8 +6,14 @@ import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.seahere.backend.inventory.entity.QInventoryDetailEntity;
+import com.seahere.backend.inventory.entity.QInventoryEntity;
 import com.seahere.backend.outgoing.dto.OutgoingDetailDto;
+import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingDetailState;
+import com.seahere.backend.outgoing.entity.OutgoingEntity;
+import com.seahere.backend.outgoing.entity.QOutgoingDetailEntity;
+import com.seahere.backend.product.entity.QProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -50,6 +56,15 @@ public class OutgoingDetailRepository {
                         .and(inventoryEntity.country.eq(outgoingDetailEntity.country)))
                 .where(outgoingEntity.outgoingId.eq(outgoingId)
                         .and(outgoingDetailEntity.state.eq(OutgoingDetailState.ACTIVE)))
+                .fetch();
+    }
+
+    public List<OutgoingDetailEntity> findByOutgoingId(Long outgoingId){
+        return queryFactory.selectFrom(outgoingDetailEntity)
+                .leftJoin(outgoingDetailEntity.product, productEntity).fetchJoin()
+                .where(
+                        outgoingDetailEntity.outgoing.outgoingId.eq(outgoingId)
+                )
                 .fetch();
     }
 }
