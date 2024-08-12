@@ -1,5 +1,7 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.common.entity.Role;
+import com.seahere.backend.common.entity.SocialType;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.inventory.entity.InventoryEntity;
@@ -9,6 +11,7 @@ import com.seahere.backend.outgoing.controller.request.OutgoingCreateDetailReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingCreateReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingSearchReq;
 import com.seahere.backend.outgoing.controller.response.OutgoingRes;
+import com.seahere.backend.outgoing.controller.response.OutgoingTodayRes;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.outgoing.exception.LackInventoryException;
@@ -238,5 +241,48 @@ class OutgoingServiceTest {
 
         //then
         assertEquals(10L,results.size());
+    }
+
+    @Test
+    @DisplayName("커스터머는 일일 출고 요청 목록 조회가 가능하다.")
+    void customerTodayInfo() throws Exception {
+        //given
+        UserEntity user = UserEntity.builder()
+                .role(Role.CUSTOMER)
+                .email("test@test.com")
+                .leave(false)
+                .password(null)
+                .profileImage(null)
+                .build();
+        userRepository.save(user);
+
+        OutgoingEntity pending = OutgoingEntity.builder()
+                .customer(user)
+                .outgoingDate(LocalDate.now())
+                .outgoingState(OutgoingState.PENDING)
+                .build();
+        outgoingJpaRepository.save(pending);
+
+        OutgoingEntity ready = OutgoingEntity.builder()
+                .customer(user)
+                .outgoingDate(LocalDate.now())
+                .outgoingState(OutgoingState.READY)
+                .build();
+        outgoingJpaRepository.save(ready);
+
+        OutgoingEntity complete = OutgoingEntity.builder()
+                .customer(user)
+                .outgoingDate(LocalDate.now())
+                .outgoingState(OutgoingState.COMPLETE)
+                .build();
+        outgoingJpaRepository.save(complete);
+
+        //when
+        OutgoingTodayRes result = outgoingService.getTodayInfo(user.getId());
+
+        //then
+        assertEquals(1L,result.getReady());
+        assertEquals(1L,result.getComplete());
+        assertEquals(1L,result.getPending());
     }
 }
