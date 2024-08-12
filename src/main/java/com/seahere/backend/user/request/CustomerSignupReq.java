@@ -25,26 +25,30 @@ public class CustomerSignupReq {
 
     private Address address;
 
+    private String telNumber;
+
     private SocialType socialType;
 
     private String socialId;
 
     @Builder
-    public CustomerSignupReq(String email, String password, String username, Address address, SocialType socialType, String socialId) {
+    public CustomerSignupReq(String email, String password, String username, Address address, String telNumber, SocialType socialType, String socialId) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.address = address;
+        this.telNumber = telNumber;
         this.socialType = socialType;
         this.socialId = socialId;
     }
 
-    public UserEntity to(){
+    public UserEntity toEntity(){
         return UserEntity.builder()
                 .email(email)
                 .password(password)
                 .username(username)
                 .address(address)
+                .telNumber(telNumber)
                 .socialType(socialType)
                 .socialId(socialId)
                 .role(Role.CUSTOMER)
