@@ -35,9 +35,9 @@ public class SalesController {
 
         List<SalesWeekRes> responseList = result.stream()
                 .map(dto -> SalesWeekRes.builder()
-                        .incomingDate(dto.getIncomingDate())
+                        .commonDate(dto.getCommonDate())
                         .week(dto.getWeek())
-                        .incomingPrice(dto.getIncomingPrice())
+                        .commonPrice(dto.getCommonPrice())
                         .build())
                 .collect(Collectors.toList());
 
@@ -53,7 +53,7 @@ public class SalesController {
     List<SalesMonthRes> responseList = result.stream()
             .map(dto-> SalesMonthRes.builder()
                     .month(dto.getMonth())
-                    .incomingPrice(dto.getIncomingPrice())
+                    .commonPrice(dto.getCommonPrice())
                     .build()).collect(Collectors.toList());
     return ResponseEntity.ok(responseList);
     }
@@ -68,9 +68,9 @@ public class SalesController {
 
         List<SalesWeekRes> responseList = result.stream()
                 .map(dto -> SalesWeekRes.builder()
-                        .incomingDate(dto.getIncomingDate())
+                        .commonDate(dto.getCommonDate())
                         .week(dto.getWeek())
-                        .incomingPrice(dto.getIncomingPrice())
+                        .commonPrice(dto.getCommonPrice())
                         .build())
                 .collect(Collectors.toList());
 
@@ -87,7 +87,7 @@ public class SalesController {
         List<SalesMonthRes> responseList = result.stream()
                 .map(dto-> SalesMonthRes.builder()
                         .month(dto.getMonth())
-                        .incomingPrice(dto.getIncomingPrice())
+                        .commonPrice(dto.getCommonPrice())
                         .build()).collect(Collectors.toList());
         return ResponseEntity.ok(responseList);
 

@@ -12,14 +12,14 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class SalesWeekDto {
 
-    private LocalDate incomingDate;
+    private LocalDate commonDate;
     private int week;
-    private int incomingPrice;
+    private int commonPrice;
 
     public SalesWeekDto(String incomingDate, Integer week, Integer incomingPrice) {
-        this.incomingDate = LocalDate.parse(incomingDate);
+        this.commonDate = LocalDate.parse(incomingDate);
         this.week = week;
-        this.incomingPrice = incomingPrice;
+        this.commonPrice = incomingPrice;
     }
 }
 

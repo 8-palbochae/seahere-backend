@@ -8,6 +8,6 @@ import lombok.Getter;
 public class SalesMonthRes {
 
     private int month;
-    private int incomingPrice;
+    private int commonPrice;
 
 }

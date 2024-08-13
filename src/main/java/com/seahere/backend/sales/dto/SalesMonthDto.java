@@ -9,11 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 public class SalesMonthDto {
 
-    private int incomingPrice;
+    private int commonPrice;
     private int month;
 
     public SalesMonthDto(int month, int incomingPrice) {
-        this.incomingPrice = incomingPrice;
+        this.commonPrice = incomingPrice;
         this.month = month;
     }
 }

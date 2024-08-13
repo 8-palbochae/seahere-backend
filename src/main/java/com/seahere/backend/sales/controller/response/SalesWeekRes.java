@@ -8,8 +8,8 @@ import java.time.LocalDate;
 @Builder
 @Getter
 public class SalesWeekRes {
-    private LocalDate incomingDate;
-    private int incomingPrice;
+    private LocalDate commonDate;
+    private int commonPrice;
     private  int week;
 
 }
