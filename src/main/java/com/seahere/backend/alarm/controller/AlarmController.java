@@ -1,14 +1,18 @@
 package com.seahere.backend.alarm.controller;
 
 import com.seahere.backend.alarm.controller.request.TokenRequest;
+import com.seahere.backend.alarm.controller.response.InventoryRes;
 import com.seahere.backend.alarm.service.AlarmService;
 import com.seahere.backend.auth.login.CustomUserDetails;
-import com.seahere.backend.inventory.controller.response.CustomerInventoryRes;
+import com.seahere.backend.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -18,6 +22,7 @@ import java.util.List;
 public class AlarmController {
 
     private final AlarmService alarmService;
+    private final InventoryService inventoryService;
 
     @PostMapping("/firebase-token")
     public void tokenSave(@RequestBody TokenRequest tokenRequest, @AuthenticationPrincipal CustomUserDetails userDetails){
@@ -26,5 +31,8 @@ public class AlarmController {
     }
 
     @GetMapping("/alarm/inventories")
-    public ResponseEntity<List<CustomerInventoryRes>> customerInventoryListGet(@PathVariable Long companyId,
+    public ResponseEntity<List<InventoryRes>> customerInventoryListGet(@AuthenticationPrincipal CustomUserDetails userDetails){
+        List<InventoryRes> results = inventoryService.getBrokerInventoryList(userDetails.getUser().getCompanyId());
+        return ResponseEntity.ok(results);
+    }
 }

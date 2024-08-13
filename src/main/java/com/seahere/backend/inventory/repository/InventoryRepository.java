@@ -102,6 +102,17 @@ public class InventoryRepository {
                 .fetch();
     }
 
+    public List<InventoryEntity> findByCompanyIdWithDetail(Long companyId) {
+        return queryFactory.selectFrom(QInventoryEntity.inventoryEntity)
+                .leftJoin(QInventoryEntity.inventoryEntity.product, QProductEntity.productEntity).fetchJoin()
+                .leftJoin(QInventoryEntity.inventoryEntity.inventoryDetail, QInventoryDetailEntity.inventoryDetailEntity).fetchJoin()
+                .where(
+                        QInventoryEntity.inventoryEntity.company.id.eq(companyId)
+                                .and(QInventoryEntity.inventoryEntity.quantity.ne(0F))
+                )
+                .fetch();
+    }
+
     public Optional<InventoryEntity> findByIdWithProduct(Long id) {
         InventoryEntity inventory = queryFactory.selectFrom(QInventoryEntity.inventoryEntity)
                 .leftJoin(QInventoryEntity.inventoryEntity.product, productEntity).fetchJoin()

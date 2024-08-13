@@ -1,5 +1,6 @@
 package com.seahere.backend.inventory.service;
 
+import com.seahere.backend.alarm.controller.response.InventoryRes;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
@@ -61,6 +62,13 @@ public class InventoryService {
         return inventoryRepository.findByCompanyIdWithDetail(companyId, customerInventorySearch)
                 .stream()
                 .map(CustomerInventoryRes::from)
+                .collect(Collectors.toList());
+    }
+
+    public List<InventoryRes> getBrokerInventoryList(Long companyId){
+        return inventoryRepository.findByCompanyIdWithDetail(companyId)
+                .stream()
+                .map(InventoryRes::from)
                 .collect(Collectors.toList());
     }
 
