@@ -1,18 +1,27 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.common.entity.Role;
+import com.seahere.backend.common.entity.SocialType;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
+import com.seahere.backend.outgoing.controller.request.OutgoingCreateDetailReq;
+import com.seahere.backend.outgoing.controller.request.OutgoingCreateReq;
+import com.seahere.backend.outgoing.controller.request.OutgoingSearchReq;
+import com.seahere.backend.outgoing.controller.response.OutgoingRes;
+import com.seahere.backend.outgoing.controller.response.OutgoingTodayRes;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.outgoing.exception.LackInventoryException;
 import com.seahere.backend.outgoing.exception.OutgoingNotFoundException;
 import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
+import com.seahere.backend.outgoing.repository.OutgoingRepository;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +32,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
@@ -39,6 +51,8 @@ class OutgoingServiceTest {
     private CompanyRepository companyRepository;
     @Autowired
     private OutgoingJpaRepository outgoingJpaRepository;
+    @Autowired
+    private OutgoingRepository outgoingRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -169,5 +183,106 @@ class OutgoingServiceTest {
                 .hasMessage("보유 재고가 요청 재고보다 부족합니다.");
         assertThat(outgoing.getOutgoingState()).isEqualTo(OutgoingState.PENDING);
 
+    }
+
+    @Test
+    @DisplayName("출고 요청 재고 목록을 담은 요청 DTO를 통해서 출고 요청을 생성할 수 있다.")
+    void createOutgoing() throws Exception {
+        //given
+        Long userId = 101L;
+
+        OutgoingCreateDetailReq detailOne = OutgoingCreateDetailReq.builder()
+                .inventoryId(101L)
+                .price(BigDecimal.valueOf(10000L))
+                .quantity(3F)
+                .build();
+
+        OutgoingCreateDetailReq detailTwo = OutgoingCreateDetailReq.builder()
+                .inventoryId(201L)
+                .price(BigDecimal.valueOf(20000L))
+                .quantity(1F)
+                .build();
+        List<OutgoingCreateDetailReq> outgoingDetails = List.of(detailOne,detailTwo);
+
+        OutgoingCreateReq request = OutgoingCreateReq.builder()
+                .details(outgoingDetails)
+                .companyId(101L)
+                .partialOutgoing(true)
+                .build();
+
+        //when
+        Long saveId = outgoingService.save(request, userId);
+
+        OutgoingEntity result = outgoingJpaRepository.findById(saveId)
+                .orElseThrow(OutgoingNotFoundException::new);
+
+        //then
+        assertTrue(result.isPartialOutgoing());
+        assertEquals(OutgoingState.PENDING,result.getOutgoingState());
+        assertEquals(2L,result.getOutgoingDetails().size());
+        assertEquals(BigDecimal.valueOf(10000L),result.getOutgoingDetails().get(0).getPrice());
+        assertEquals(3F,result.getOutgoingDetails().get(0).getQuantity());
+        assertEquals(BigDecimal.valueOf(20000L),result.getOutgoingDetails().get(1).getPrice());
+        assertEquals(1F,result.getOutgoingDetails().get(1).getQuantity());
+    }
+
+    @Test
+    @DisplayName("커스터머는 페이지와 사이즈로 출고 요청 목록을 조회가 가능하다")
+    public void customerSelectOutgoingList() throws Exception{
+        //given
+        OutgoingSearchReq searchReq = OutgoingSearchReq.builder()
+                .page(1)
+                .size(10)
+                .build();
+        Long userId = 101L;
+
+        //when
+        List<OutgoingRes> results = outgoingService.getList(searchReq, userId);
+
+        //then
+        assertEquals(10L,results.size());
+    }
+
+    @Test
+    @DisplayName("커스터머는 일일 출고 요청 목록 조회가 가능하다.")
+    void customerTodayInfo() throws Exception {
+        //given
+        UserEntity user = UserEntity.builder()
+                .role(Role.CUSTOMER)
+                .email("test@test.com")
+                .leave(false)
+                .password(null)
+                .profileImage(null)
+                .build();
+        userRepository.save(user);
+
+        OutgoingEntity pending = OutgoingEntity.builder()
+                .customer(user)
+                .outgoingDate(LocalDate.now())
+                .outgoingState(OutgoingState.PENDING)
+                .build();
+        outgoingJpaRepository.save(pending);
+
+        OutgoingEntity ready = OutgoingEntity.builder()
+                .customer(user)
+                .outgoingDate(LocalDate.now())
+                .outgoingState(OutgoingState.READY)
+                .build();
+        outgoingJpaRepository.save(ready);
+
+        OutgoingEntity complete = OutgoingEntity.builder()
+                .customer(user)
+                .outgoingDate(LocalDate.now())
+                .outgoingState(OutgoingState.COMPLETE)
+                .build();
+        outgoingJpaRepository.save(complete);
+
+        //when
+        OutgoingTodayRes result = outgoingService.getTodayInfo(user.getId());
+
+        //then
+        assertEquals(1L,result.getReady());
+        assertEquals(1L,result.getComplete());
+        assertEquals(1L,result.getPending());
     }
 }

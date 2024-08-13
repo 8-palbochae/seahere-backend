@@ -14,7 +14,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @Table(name = "users")
 public class UserEntity {
     @Id
@@ -35,6 +35,8 @@ public class UserEntity {
     @Embedded
     private Address address;
 
+    private String telNumber;
+
     private Boolean leave;
 
     @Enumerated(EnumType.STRING)
@@ -52,13 +54,14 @@ public class UserEntity {
     private String refreshToken;
 
     @Builder
-    public UserEntity(Long id, CompanyEntity company, String username, String email, String password, Address address, Boolean leave, Role role, SocialType socialType, String socialId, UserStatus status, String profileImage, String refreshToken) {
+    public UserEntity(Long id, CompanyEntity company, String username, String email, String password, Address address, String telNumber, Boolean leave, Role role, SocialType socialType, String socialId, UserStatus status, String profileImage, String refreshToken) {
         this.id = id;
         this.company = company;
         this.username = username;
         this.email = email;
         this.password = password;
         this.address = address;
+        this.telNumber = telNumber;
         this.leave = leave;
         this.role = role;
         this.socialType = socialType;
@@ -80,9 +83,10 @@ public class UserEntity {
         this.role = Role.EMPLOYEE;
     }
 
-    public void signupOAuth(String username, Address address){
+    public void signupOAuth(String username, Address address,String telNumber){
         this.username=username;
         this.address=address;
+        this.telNumber = telNumber;
     }
 
     public void passwordEncode(PasswordEncoder passwordEncoder) {

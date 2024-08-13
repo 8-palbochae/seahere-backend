@@ -28,4 +28,16 @@ public class CompanyController {
         List<CompanyResponse> companyResponses = companyService.getList(companySearch);
         return ResponseEntity.ok(companyResponses);
     }
+
+    @GetMapping("/companies/{companyId}")
+    public ResponseEntity<CompanyResponse> getCompany(@PathVariable Long companyId){
+        CompanyResponse companyResponse = companyService.getCompanyById(companyId);
+        return ResponseEntity.ok(companyResponse);
+    }
+
+    @GetMapping("/companies/best")
+    public ResponseEntity<CompanyResponse> getBestCompany(){
+        CompanyResponse mostOutgoingCompany = companyService.getMostOutgoingCompany();
+        return ResponseEntity.ok(mostOutgoingCompany);
+    }
 }

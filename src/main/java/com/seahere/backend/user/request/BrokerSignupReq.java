@@ -26,26 +26,30 @@ public class BrokerSignupReq {
 
     private Address address;
 
+    private String telNumber;
+
     private SocialType socialType;
 
     private String socialId;
 
     @Builder
-    public BrokerSignupReq(String email, String password, String username, Address address, SocialType socialType, String socialId, Long companyId, String ceoName) {
+    public BrokerSignupReq(String email, String password, String username, Address address, SocialType socialType, String socialId, Long companyId, String ceoName, String telNumber) {
         this.email = email;
         this.password = password;
         this.username = username;
         this.address = address;
         this.socialType = socialType;
         this.socialId = socialId;
+        this.telNumber = telNumber;
     }
 
-    public UserEntity to(){
+    public UserEntity toEntity(){
         return UserEntity.builder()
                 .email(email)
                 .password(password)
                 .username(username)
                 .address(address)
+                .telNumber(telNumber)
                 .socialType(socialType)
                 .socialId(socialId)
                 .role(Role.EMPLOYEE)
