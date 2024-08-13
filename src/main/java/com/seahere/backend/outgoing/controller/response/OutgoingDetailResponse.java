@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDate;
+
 @Getter
 @Builder
 @AllArgsConstructor
@@ -14,6 +16,10 @@ public class OutgoingDetailResponse {
     private Long outgoingDetailId;
     private String productImg;
     private String productName;
+    private String naturalStatus;
+    private String country;
+    private String category;
+    private LocalDate outgoingDate;
     private float outgoingQuantity;
     private float beforeCount;
     private float afterCount;
@@ -29,6 +35,10 @@ public class OutgoingDetailResponse {
                 .afterCount(outgoingDetailDto.getInventoryQuantity() - outgoingDetailDto.getOutgoingQuantity())
                 .price(outgoingDetailDto.getPrice().intValue())
                 .productName(outgoingDetailDto.getProductName())
+                .naturalStatus(outgoingDetailDto.getNaturalStatus())
+                .country(outgoingDetailDto.getCountry())
+                .category(outgoingDetailDto.getCategory())
+                .outgoingDate(outgoingDetailDto.getOutgoingDate())
                 .build();
     }
 }

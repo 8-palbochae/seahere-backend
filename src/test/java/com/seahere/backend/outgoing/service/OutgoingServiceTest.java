@@ -1,5 +1,7 @@
 package com.seahere.backend.outgoing.service;
 
+import com.seahere.backend.common.entity.Role;
+import com.seahere.backend.common.entity.SocialType;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.inventory.entity.InventoryEntity;
@@ -7,11 +9,15 @@ import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import com.seahere.backend.inventory.repository.InventoryRepository;
 import com.seahere.backend.outgoing.controller.request.OutgoingCreateDetailReq;
 import com.seahere.backend.outgoing.controller.request.OutgoingCreateReq;
+import com.seahere.backend.outgoing.controller.request.OutgoingSearchReq;
+import com.seahere.backend.outgoing.controller.response.OutgoingRes;
+import com.seahere.backend.outgoing.controller.response.OutgoingTodayRes;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.outgoing.exception.LackInventoryException;
 import com.seahere.backend.outgoing.exception.OutgoingNotFoundException;
 import com.seahere.backend.outgoing.repository.OutgoingJpaRepository;
+import com.seahere.backend.outgoing.repository.OutgoingRepository;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +51,8 @@ class OutgoingServiceTest {
     private CompanyRepository companyRepository;
     @Autowired
     private OutgoingJpaRepository outgoingJpaRepository;
+    @Autowired
+    private OutgoingRepository outgoingRepository;
     @Autowired
     private UserRepository userRepository;
     @Autowired
@@ -216,5 +224,65 @@ class OutgoingServiceTest {
         assertEquals(3F,result.getOutgoingDetails().get(0).getQuantity());
         assertEquals(BigDecimal.valueOf(20000L),result.getOutgoingDetails().get(1).getPrice());
         assertEquals(1F,result.getOutgoingDetails().get(1).getQuantity());
+    }
+
+    @Test
+    @DisplayName("커스터머는 페이지와 사이즈로 출고 요청 목록을 조회가 가능하다")
+    public void customerSelectOutgoingList() throws Exception{
+        //given
+        OutgoingSearchReq searchReq = OutgoingSearchReq.builder()
+                .page(1)
+                .size(10)
+                .build();
+        Long userId = 101L;
+
+        //when
+        List<OutgoingRes> results = outgoingService.getList(searchReq, userId);
+
+        //then
+        assertEquals(10L,results.size());
+    }
+
+    @Test
+    @DisplayName("커스터머는 일일 출고 요청 목록 조회가 가능하다.")
+    void customerTodayInfo() throws Exception {
+        //given
+        UserEntity user = UserEntity.builder()
+                .role(Role.CUSTOMER)
+                .email("test@test.com")
+                .leave(false)
+                .password(null)
+                .profileImage(null)
+                .build();
+        userRepository.save(user);
+
+        OutgoingEntity pending = OutgoingEntity.builder()
+                .customer(user)
+                .outgoingDate(LocalDate.now())
+                .outgoingState(OutgoingState.PENDING)
+                .build();
+        outgoingJpaRepository.save(pending);
+
+        OutgoingEntity ready = OutgoingEntity.builder()
+                .customer(user)
+                .outgoingDate(LocalDate.now())
+                .outgoingState(OutgoingState.READY)
+                .build();
+        outgoingJpaRepository.save(ready);
+
+        OutgoingEntity complete = OutgoingEntity.builder()
+                .customer(user)
+                .outgoingDate(LocalDate.now())
+                .outgoingState(OutgoingState.COMPLETE)
+                .build();
+        outgoingJpaRepository.save(complete);
+
+        //when
+        OutgoingTodayRes result = outgoingService.getTodayInfo(user.getId());
+
+        //then
+        assertEquals(1L,result.getReady());
+        assertEquals(1L,result.getComplete());
+        assertEquals(1L,result.getPending());
     }
 }

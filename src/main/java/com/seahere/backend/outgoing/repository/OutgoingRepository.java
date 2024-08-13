@@ -2,6 +2,7 @@ package com.seahere.backend.outgoing.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.seahere.backend.outgoing.controller.request.OutgoingSearchReq;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,27 @@ public class OutgoingRepository {
         }
         return new SliceImpl<>(results,pageable, hasNext);
     }
+
+    public List<OutgoingEntity> findByOutgoingByCustomerId(OutgoingSearchReq searchReq, Long customerId){
+        return queryFactory.selectFrom(outgoingEntity).distinct()
+                .leftJoin(outgoingEntity.outgoingDetails, outgoingDetailEntity)
+                .leftJoin(outgoingEntity.company,companyEntity).fetchJoin()
+                .leftJoin(outgoingEntity.customer, userEntity).fetchJoin()
+                .leftJoin(outgoingDetailEntity.product,productEntity)
+                .where(outgoingEntity.customer.id.eq(customerId))
+                .offset(searchReq.getOffset())
+                .limit(searchReq.getSize())
+                .fetch();
+    }
+
+    public OutgoingEntity findByCustomerRecently(Long customerId){
+        return queryFactory.selectFrom(outgoingEntity)
+                .where(outgoingEntity.customer.id.eq(customerId))
+                .orderBy(outgoingEntity.outgoingDate.desc())
+                .limit(1)
+                .fetchOne();
+    }
+
 
     private BooleanExpression outgoingStateIsPending(Long companyId,LocalDate startDate, LocalDate endDate, String search) {
         return outgoingEntity.outgoingState.eq(OutgoingState.PENDING)

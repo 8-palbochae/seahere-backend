@@ -34,4 +34,10 @@ public class CompanyController {
         CompanyResponse companyResponse = companyService.getCompanyById(companyId);
         return ResponseEntity.ok(companyResponse);
     }
+
+    @GetMapping("/companies/best")
+    public ResponseEntity<CompanyResponse> getBestCompany(){
+        CompanyResponse mostOutgoingCompany = companyService.getMostOutgoingCompany();
+        return ResponseEntity.ok(mostOutgoingCompany);
+    }
 }
