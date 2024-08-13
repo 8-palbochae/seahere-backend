@@ -1,9 +1,11 @@
 package com.seahere.backend.company.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.seahere.backend.company.controller.response.CompanyResponse;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.entity.QCompanyEntity;
 import com.seahere.backend.company.controller.request.CompanySearch;
+import com.seahere.backend.outgoing.entity.QOutgoingEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -23,5 +25,16 @@ public class CompanySelectRepository {
                 .offset(companySearch.getOffset())
                 .orderBy(QCompanyEntity.companyEntity.id.desc())
                 .fetch();
+    }
+
+    public CompanyEntity  findCompanyWithBestOutgoing() {
+        QOutgoingEntity outgoing = QOutgoingEntity.outgoingEntity;
+        return jpaQueryFactory
+                .select(outgoing.company)
+                .from(outgoing)
+                .groupBy(outgoing.company)
+                .orderBy(outgoing.count().desc())
+                .limit(1)
+                .fetchOne();
     }
 }

@@ -9,6 +9,7 @@ import com.seahere.backend.outgoing.controller.response.CustomerOutgoingDetailRe
 import com.seahere.backend.outgoing.controller.response.OutgoingCallListResponse;
 import com.seahere.backend.outgoing.controller.response.OutgoingDetailResponse;
 import com.seahere.backend.outgoing.controller.response.OutgoingRes;
+import com.seahere.backend.outgoing.controller.response.OutgoingTodayRes;
 import com.seahere.backend.outgoing.dto.OutgoingCallDto;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
@@ -68,6 +69,18 @@ public class OutgoingReqController {
         @GetMapping("/{outgoingId}")
     public List<OutgoingDetailResponse> outgoingReqDetailList(@PathVariable("outgoingId") Long outgoingId){
         return outgoingDetailService.findByOutgoingAndStateIsAcitve(outgoingId).stream().map(OutgoingDetailResponse::from).collect(Collectors.toList());
+    }
+
+    @GetMapping("/customer/today")
+    public ResponseEntity<OutgoingTodayRes> customerTodayInfoGet( @AuthenticationPrincipal CustomUserDetails userDetails){
+        OutgoingTodayRes todayInfo = outgoingService.getTodayInfo(userDetails.getUser().getUserId());
+        return ResponseEntity.ok(todayInfo);
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<OutgoingRes> recentlyOutgoingGet(@AuthenticationPrincipal CustomUserDetails userDetails){
+        OutgoingRes recentlyOutgoing = outgoingService.getRecentlyOutgoing(userDetails.getUser().getUserId());
+        return ResponseEntity.ok(recentlyOutgoing);
     }
 
     @PatchMapping("/{outgoingId}")

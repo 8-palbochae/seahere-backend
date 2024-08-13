@@ -55,6 +55,14 @@ public class OutgoingRepository {
                 .fetch();
     }
 
+    public OutgoingEntity findByCustomerRecently(Long customerId){
+        return queryFactory.selectFrom(outgoingEntity)
+                .where(outgoingEntity.customer.id.eq(customerId))
+                .orderBy(outgoingEntity.outgoingDate.desc())
+                .limit(1)
+                .fetchOne();
+    }
+
 
     private BooleanExpression outgoingStateIsPending(Long companyId,LocalDate startDate, LocalDate endDate, String search) {
         return outgoingEntity.outgoingState.eq(OutgoingState.PENDING)

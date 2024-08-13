@@ -14,4 +14,6 @@ public interface CompanyService {
     CompanyResponse editProfileImage(Long id, String profileImage);
 
     List<CompanyResponse> getList(CompanySearch companySearch);
+
+    CompanyResponse getMostOutgoingCompany();
 }
