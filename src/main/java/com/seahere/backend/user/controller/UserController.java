@@ -1,5 +1,8 @@
 package com.seahere.backend.user.controller;
 
+import com.google.firebase.auth.UserInfo;
+import com.seahere.backend.auth.login.CustomUserDetails;
+import com.seahere.backend.user.controller.response.UserInfoRes;
 import com.seahere.backend.user.exception.DuplicateEmailException;
 import com.seahere.backend.user.request.BrokerSignupReq;
 import com.seahere.backend.user.request.CeoSignupReq;
@@ -8,6 +11,7 @@ import com.seahere.backend.user.request.OAuthSignupReq;
 import com.seahere.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -68,5 +72,11 @@ public class UserController {
         response.put("message", isAvailable ? "이메일을 사용할 수 있습니다." : "이메일이 이미 사용 중입니다.");
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/users/myinfo")
+    public ResponseEntity<UserInfoRes> getMyInfo(@AuthenticationPrincipal CustomUserDetails userDetails){
+        UserInfoRes user = userService.getUser(userDetails.getUser().getUserId());
+        return ResponseEntity.ok(user);
     }
 }
