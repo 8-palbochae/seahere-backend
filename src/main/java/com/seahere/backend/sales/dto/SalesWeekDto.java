@@ -10,13 +10,13 @@ import java.time.LocalDate;
 @ToString
 @Builder
 @NoArgsConstructor
-public class IncomingWeekDto {
+public class SalesWeekDto {
 
     private LocalDate incomingDate;
     private int week;
     private int incomingPrice;
 
-    public IncomingWeekDto(String incomingDate, Integer week, Integer incomingPrice) {
+    public SalesWeekDto(String incomingDate, Integer week, Integer incomingPrice) {
         this.incomingDate = LocalDate.parse(incomingDate);
         this.week = week;
         this.incomingPrice = incomingPrice;
