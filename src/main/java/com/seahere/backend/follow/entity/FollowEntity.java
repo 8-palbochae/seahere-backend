@@ -27,5 +27,5 @@ public class FollowEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
-    private UserEntity customer;
+    private UserEntity user;
 }

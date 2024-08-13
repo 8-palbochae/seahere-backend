@@ -8,7 +8,7 @@ INSERT INTO product (product_id, product_name, qr, product_img) VALUES
                                                                     (3, '숭어', 'qr3', 'img3'),
                                                                     (4, '민어', 'qr4', 'img4'),
                                                                     (5, '장어', 'qr5', 'img5'),
-                                                                    (6, '문어', 'qr6', 'img6'),
+                                                                    (6, '문어', 'qr6', 'https://drive.google.com/uc?export=view&id=1fYedl0jxlIyRDLl9U7IignRllzWeu45c'),
                                                                     (7, '연어', 'qr7', 'img7'),
                                                                     (8, '참치', 'qr8', 'img8'),
                                                                     (9, '고등어', 'qr9', 'img9'),

@@ -14,14 +14,20 @@ public class IncomingSearchResponse {
 
     private Long productId;
     private String productName;
+    private String productImg;
 
     @Builder
-    public IncomingSearchResponse(Long productId, String productName) {
+    public IncomingSearchResponse(Long productId, String productName, String productImg) {
         this.productId = productId;
         this.productName = productName;
+        this.productImg = productImg;
     }
     public static IncomingSearchResponse from(ProductDto dto){
-        return IncomingSearchResponse.builder().productId(dto.getProductId()).productName(dto.getProductName()).build();
+        return IncomingSearchResponse.builder()
+                .productId(dto.getProductId())
+                .productName(dto.getProductName())
+                .productImg(dto.getProductImg())
+                .build();
     }
 
 }

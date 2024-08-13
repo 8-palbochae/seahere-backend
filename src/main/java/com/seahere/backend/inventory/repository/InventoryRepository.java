@@ -8,16 +8,14 @@ import com.seahere.backend.inventory.controller.response.InventoryResponse;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.entity.QInventoryDetailEntity;
 import com.seahere.backend.inventory.entity.QInventoryEntity;
-import com.seahere.backend.product.entity.QProductEntity;
 import com.seahere.backend.product.dto.ProductDto;
-import com.seahere.backend.product.entity.ProductEntity;
+import com.seahere.backend.product.entity.QProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
