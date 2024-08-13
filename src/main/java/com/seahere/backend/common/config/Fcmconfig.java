@@ -27,17 +27,20 @@ public class Fcmconfig {
 
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        Resource resource = resourceLoader.getResource(resourcePath);
-        try (InputStream aboutFirebaseFile = resource.getInputStream()) {
-            FirebaseOptions options = FirebaseOptions
-                    .builder()
-                    .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))
-                    .build();
-            return FirebaseApp.initializeApp(options);
-        } catch (IOException e) {
-            log.error("Error loading Firebase credentials from path: {}", resourcePath, e);
-            throw e;
+        if (FirebaseApp.getApps().isEmpty()) {
+            Resource resource = resourceLoader.getResource(resourcePath);
+            try (InputStream aboutFirebaseFile = resource.getInputStream()) {
+                FirebaseOptions options = FirebaseOptions
+                        .builder()
+                        .setCredentials(GoogleCredentials.fromStream(aboutFirebaseFile))
+                        .build();
+                return FirebaseApp.initializeApp(options);
+            } catch (IOException e) {
+                log.error("Error loading Firebase credentials from path: {}", resourcePath, e);
+                throw e;
+            }
         }
+        return FirebaseApp.getInstance(); // Return existing instance if already initialized
     }
 
     @Bean
