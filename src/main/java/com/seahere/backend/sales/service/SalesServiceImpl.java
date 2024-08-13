@@ -33,4 +33,9 @@ public class SalesServiceImpl implements SalesService {
     public List<SalesWeekDto> findOutgoingWeek(LocalDate startDate, LocalDate endDate, Long companyId) {
         return salesRepository.outgoingWeekList(companyId, startDate, endDate);
     }
+
+    @Override
+    public List<SalesMonthDto> findOutgoingMonth(LocalDate startDate, LocalDate endDate, Long companyId) {
+        return salesRepository.outgoingMonthList(companyId, startDate, endDate);
+    }
 }

@@ -11,4 +11,5 @@ public interface SalesService {
     List<SalesWeekDto> findIncomingWeek(LocalDate startDate, LocalDate endDate, Long companyId);
     List<SalesMonthDto> findIncomingMonth(LocalDate startDate, LocalDate endDate, Long companyId);
     List<SalesWeekDto> findOutgoingWeek(LocalDate startDate, LocalDate endDate, Long companyId);
+    List<SalesMonthDto> findOutgoingMonth(LocalDate startDate, LocalDate endDate, Long companyId);
 }

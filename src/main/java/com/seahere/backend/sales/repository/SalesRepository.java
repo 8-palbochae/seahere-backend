@@ -11,4 +11,5 @@ public interface SalesRepository {
     List<SalesWeekDto> incomingWeekList(Long companyId, LocalDate startDate, LocalDate endDate);
     List<SalesMonthDto> incomingMonthList(Long companyId, LocalDate startDate, LocalDate endDate);
     List<SalesWeekDto> outgoingWeekList(Long companyId, LocalDate startDate, LocalDate endDate);
+    List<SalesMonthDto> outgoingMonthList(Long companyId, LocalDate startDate, LocalDate endDate);
 }

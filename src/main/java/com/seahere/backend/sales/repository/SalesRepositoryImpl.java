@@ -66,9 +66,9 @@ public class SalesRepositoryImpl implements SalesRepository {
 
         return queryFactory
                 .select(Projections.constructor(SalesWeekDto.class,
-                        outgoing.outgoingDate.stringValue(), // String으로 변환
+                        outgoing.outgoingDate.stringValue(),
                         weekNumberTemplate,
-                        outgoingDetail.price.sum().intValue() // Integer로 변환
+                        outgoingDetail.price.sum().intValue()
                 ))
                 .from(outgoingDetail)
                 .join(outgoingDetail.outgoing, outgoing)
@@ -79,6 +79,11 @@ public class SalesRepositoryImpl implements SalesRepository {
                 .groupBy(outgoing.outgoingDate, weekNumberTemplate)
                 .orderBy(outgoing.outgoingDate.asc(), weekNumberTemplate.asc())
                 .fetch();
+    }
+
+    @Override
+    public List<SalesMonthDto> outgoingMonthList(Long companyId, LocalDate startDate, LocalDate endDate) {
+        return List.of();
     }
 
 }
