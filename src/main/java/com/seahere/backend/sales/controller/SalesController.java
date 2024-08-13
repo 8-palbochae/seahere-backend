@@ -77,6 +77,21 @@ public class SalesController {
         return ResponseEntity.ok(responseList);
 
     }
+    @PostMapping("/outgoing/month")
+    public ResponseEntity<List<SalesMonthRes>> findOutgoingMonth(@RequestBody PeriodRequest outgoingMonthRequest, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<SalesMonthDto> result = salesService.findOutgoingMonth(outgoingMonthRequest.getStartDate(),
+                outgoingMonthRequest.getEndDate(),
+                userDetails.getUser().getCompanyId()
+        );
+
+        List<SalesMonthRes> responseList = result.stream()
+                .map(dto-> SalesMonthRes.builder()
+                        .month(dto.getMonth())
+                        .incomingPrice(dto.getIncomingPrice())
+                        .build()).collect(Collectors.toList());
+        return ResponseEntity.ok(responseList);
+
+    }
 
 
 }

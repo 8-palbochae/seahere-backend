@@ -83,7 +83,20 @@ public class SalesRepositoryImpl implements SalesRepository {
 
     @Override
     public List<SalesMonthDto> outgoingMonthList(Long companyId, LocalDate startDate, LocalDate endDate) {
-        return List.of();
+        return queryFactory
+                .select(Projections.constructor(SalesMonthDto.class,
+                        Expressions.numberTemplate(Integer.class, "MONTH({0})", outgoing.outgoingDate),
+                        outgoingDetail.price.sum().intValue()
+                ))
+                .from(outgoingDetail)
+                .join(outgoingDetail.outgoing, outgoing)
+                .where(outgoing.company.id.eq(companyId)
+                        .and(outgoing.outgoingDate.between(startDate, endDate))
+                        .and(outgoing.outgoingState.eq(OutgoingState.COMPLETE))
+                )
+                .groupBy(Expressions.numberTemplate(Integer.class, "MONTH({0})", outgoing.outgoingDate))
+                .orderBy(Expressions.numberTemplate(Integer.class, "MONTH({0})", outgoing.outgoingDate).asc())
+                .fetch();
     }
 
 }

@@ -100,8 +100,8 @@ INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, pa
                                                                                                              (35, 1, '2024-08-30', 'PENDING', true,2),
                                                                                                              (36, 1, '2024-08-31', 'PENDING', false,2),
                                                                                                              (37, 1, '2024-09-01', 'PENDING', true,2),
-                                                                                                             (38, 1, '2024-09-02', 'PENDING', false,2),
-                                                                                                             (39, 1, '2024-09-03', 'PENDING', true,2),
+                                                                                                             (38, 1, '2024-09-02', 'COMPLETE', false,2),
+                                                                                                             (39, 1, '2024-09-03', 'COMPLETE', true,2),
                                                                                                              (40, 1, '2024-09-04', 'PENDING', false,2),
                                                                                                              (41, 1, '2024-09-05', 'PENDING', true,2),
                                                                                                              (42, 1, '2024-09-06', 'PENDING', false,2),
@@ -149,7 +149,10 @@ INSERT INTO outgoing_detail (detail_id, price, product_id, outgoing_id, quantity
                                                                                                                          (13,10000,1,4,100,'선어','국산','양식'),
                                                                                                                          (14,200000,1,5,100,'선어','국산','양식'),
                                                                                                                          (15,500000,1,6,100,'선어','국산','양식'),
-                                                                                                                         (16,300000,1,7,100,'선어','국산','양식');
+                                                                                                                         (16,300000,1,7,100,'선어','국산','양식'),
+                                                                                                                         (17,200000,1,38,100,'선어','국산','양식'),
+                                                                                                                         (18,300000,1,38,100,'선어','국산','양식'),
+                                                                                                                         (19,200000,1,39,100,'선어','국산','양식');
 INSERT INTO inventories (inventory_id, company_id, quantity, category, product_id, country, incoming_date, natural_status) VALUES
                                                                                                                                (1, 1, 60, '활어', 1, '국산', '2024-07-23', '자연'),
                                                                                                                                (2, 1, 60, '활어', 2, '국산', '2024-07-03', '양식'),
