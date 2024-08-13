@@ -4,6 +4,7 @@ import com.seahere.backend.common.entity.Role;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
+import com.seahere.backend.user.controller.response.UserInfoRes;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.domain.UserStatus;
 import com.seahere.backend.user.exception.BrokerPermissionException;
@@ -102,5 +103,12 @@ public class UserServiceImpl implements UserService{
         employee.updateCompany(ceo.getCompany());
 
         userRepository.save(employee);
+    }
+
+    @Override
+    public UserInfoRes getUser(Long userId) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(UserNotFound::new);
+        return UserInfoRes.from(user);
     }
 }
