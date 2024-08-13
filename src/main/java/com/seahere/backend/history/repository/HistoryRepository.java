@@ -90,6 +90,11 @@ public class HistoryRepository {
         results.sort(Comparator.comparing(HistoryListDto::getDate));
         int start = (int) pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), results.size());
+
+        if(results.isEmpty()){
+            return new SliceImpl<>(results, pageable, false);
+        }
+
         List<HistoryListDto> output = results.subList(start, end);
         boolean hasNext = end < results.size();
         return new SliceImpl<>(output, pageable, hasNext);
