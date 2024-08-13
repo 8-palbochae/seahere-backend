@@ -59,6 +59,7 @@ public class OutgoingRepository {
         return queryFactory.selectFrom(outgoingEntity)
                 .where(outgoingEntity.customer.id.eq(customerId))
                 .orderBy(outgoingEntity.outgoingDate.desc())
+                .limit(1)
                 .fetchOne();
     }
 
