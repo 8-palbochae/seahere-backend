@@ -52,7 +52,7 @@ public class OAuthAttributes {
                 .socialType(socialType)
                 .email(oauth2UserInfo.getEmail())
                 .socialId(oauth2UserInfo.getId())
-                .leave(false)
+                .leaves(false)
                 .profileImage(oauth2UserInfo.getImageUrl())
                 .role(Role.GUEST)
                 .status(UserStatus.PENDING)

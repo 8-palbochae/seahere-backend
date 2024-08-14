@@ -37,7 +37,7 @@ public class UserEntity {
 
     private String telNumber;
 
-    private Boolean leave;
+    private Boolean leaves;
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -54,7 +54,7 @@ public class UserEntity {
     private String refreshToken;
 
     @Builder
-    public UserEntity(Long id, CompanyEntity company, String username, String email, String password, Address address, String telNumber, Boolean leave, Role role, SocialType socialType, String socialId, UserStatus status, String profileImage, String refreshToken) {
+    public UserEntity(Long id, CompanyEntity company, String username, String email, String password, Address address, String telNumber, Boolean leaves, Role role, SocialType socialType, String socialId, UserStatus status, String profileImage, String refreshToken) {
         this.id = id;
         this.company = company;
         this.username = username;
@@ -62,7 +62,7 @@ public class UserEntity {
         this.password = password;
         this.address = address;
         this.telNumber = telNumber;
-        this.leave = leave;
+        this.leaves = leaves;
         this.role = role;
         this.socialType = socialType;
         this.socialId = socialId;

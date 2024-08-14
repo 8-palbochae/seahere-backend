@@ -58,7 +58,7 @@ public class CeoSignupReq {
                 .socialId(socialId)
                 .role(Role.ADMIN)
                 .status(UserStatus.APPROVED)
-                .leave(false)
+                .leaves(false)
                 .build();
     }
 }

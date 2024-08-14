@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Table(name = "AlarmToken")
 public class AlarmTokenEntity {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long AlarmTokenId;
 
     @OneToOne(fetch = FetchType.LAZY)
