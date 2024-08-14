@@ -1,5 +1,6 @@
 package com.seahere.backend.alarm.controller;
 
+import com.seahere.backend.alarm.controller.request.SalesRequest;
 import com.seahere.backend.alarm.controller.request.TokenRequest;
 import com.seahere.backend.alarm.controller.response.InventoryRes;
 import com.seahere.backend.alarm.service.AlarmService;
@@ -34,5 +35,10 @@ public class AlarmController {
     public ResponseEntity<List<InventoryRes>> customerInventoryListGet(@AuthenticationPrincipal CustomUserDetails userDetails){
         List<InventoryRes> results = inventoryService.getBrokerInventoryList(userDetails.getUser().getCompanyId());
         return ResponseEntity.ok(results);
+    }
+
+    @PostMapping("/alarm/sales")
+    public void alarmSales(@RequestBody SalesRequest salesRequest, @AuthenticationPrincipal CustomUserDetails userDetails){
+        log.info("salesRequest = {}",salesRequest);
     }
 }
