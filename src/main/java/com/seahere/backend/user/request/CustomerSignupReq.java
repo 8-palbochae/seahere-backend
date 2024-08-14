@@ -53,7 +53,7 @@ public class CustomerSignupReq {
                 .socialId(socialId)
                 .role(Role.CUSTOMER)
                 .status(UserStatus.APPROVED)
-                .leave(false)
+                .leaves(false)
                 .build();
     }
 }

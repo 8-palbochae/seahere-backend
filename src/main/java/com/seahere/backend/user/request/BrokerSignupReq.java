@@ -54,7 +54,7 @@ public class BrokerSignupReq {
                 .socialId(socialId)
                 .role(Role.EMPLOYEE)
                 .status(UserStatus.PENDING)
-                .leave(false)
+                .leaves(false)
                 .build();
     }
 }

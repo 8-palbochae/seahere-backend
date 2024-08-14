@@ -149,7 +149,7 @@ class UserServiceImplTest{
                 .socialType(SocialType.GOOGLE)
                 .socialId("test")
                 .email("test@test.com")
-                .leave(false)
+                .leaves(false)
                 .password(null)
                 .profileImage(null)
                 .build();
@@ -195,7 +195,7 @@ class UserServiceImplTest{
                 .socialType(SocialType.GOOGLE)
                 .socialId("test")
                 .email("test@test.com")
-                .leave(false)
+                .leaves(false)
                 .password(null)
                 .profileImage(null)
                 .build();
@@ -241,7 +241,7 @@ class UserServiceImplTest{
                 .socialType(SocialType.GOOGLE)
                 .socialId("test")
                 .email("test@test.com")
-                .leave(false)
+                .leaves(false)
                 .password(null)
                 .profileImage(null)
                 .build();
@@ -316,7 +316,7 @@ class UserServiceImplTest{
                 .socialId(null)
                 .status(UserStatus.APPROVED)
                 .email("admin@test.com")
-                .leave(false)
+                .leaves(false)
                 .password("1234")
                 .profileImage(null)
                 .build();
@@ -328,7 +328,7 @@ class UserServiceImplTest{
                 .socialId(null)
                 .status(UserStatus.PENDING)
                 .email("emp@test.com")
-                .leave(false)
+                .leaves(false)
                 .password("1234")
                 .profileImage(null)
                 .build();
