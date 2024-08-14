@@ -39,13 +39,14 @@ public class InventoryRepository {
                         inventory.product.productName.as("name"),
                         inventory.category,
                         inventory.incomingDate.max().as("latestIncoming"),
-                        inventory.quantity.sum().as("totalQuantity").floatValue()))
+                        inventory.quantity.sum().as("totalQuantity").floatValue(),
+                        inventory.product.productImg.as("productImg")))
                 .from(inventory)
                 .leftJoin(inventory.company, companyEntity)
                 .leftJoin(inventory.product, productEntity)
                 .where(inventory.company.id.eq(companyId)
                         .and(inventory.product.productName.containsIgnoreCase(search)))
-                .groupBy(inventory.product.productName, inventory.category, inventory.company.id)
+                .groupBy(inventory.product.productName, inventory.category, inventory.company.id,inventory.product.productImg)
                 .orderBy(inventory.product.productName.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)

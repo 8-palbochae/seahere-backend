@@ -17,4 +17,5 @@ public class InventoryResponse {
     private String category;
     private LocalDate latestIncoming;
     private float totalQuantity;
+    private String productImg;
 }
