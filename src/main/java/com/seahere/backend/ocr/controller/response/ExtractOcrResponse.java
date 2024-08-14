@@ -14,5 +14,5 @@ public class ExtractOcrResponse {
     private String representativeName;
     private String businessNumber;
     private String address;
-    private String issueDate;
+    private String openDate;
 }

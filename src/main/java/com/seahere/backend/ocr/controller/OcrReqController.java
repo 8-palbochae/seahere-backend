@@ -21,10 +21,8 @@ public class OcrReqController {
 
     @PostMapping
     public ResponseEntity<ExtractOcrResponse> handleOcrRequest(@RequestPart("file") MultipartFile file) {
-        log.info("Received OCR request for file: {}", file.getOriginalFilename());
-
         ExtractOcrResponse response = ocrService.processOcr(file);
-
+        log.info(response.toString());
         return ResponseEntity.ok(response);
     }
 }
