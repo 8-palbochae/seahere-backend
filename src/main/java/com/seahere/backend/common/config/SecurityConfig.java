@@ -79,7 +79,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:3000","http://localhost:5173","https://172.18.209.87:3000",
                         "http://10.10.10.170:3000",
                         "http://10.10.10.170:5173",
-                        "http://172.18.117.115:3000"
+                        "http://172.18.117.115:3000",
                         "https://e5ca-14-44-120-104.ngrok-free.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
                 .allowedHeaders("*")
