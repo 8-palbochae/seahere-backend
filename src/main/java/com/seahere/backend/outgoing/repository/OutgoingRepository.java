@@ -50,6 +50,7 @@ public class OutgoingRepository {
                 .leftJoin(outgoingEntity.customer, userEntity).fetchJoin()
                 .leftJoin(outgoingDetailEntity.product,productEntity)
                 .where(outgoingEntity.customer.id.eq(customerId))
+                .orderBy(outgoingEntity.outgoingId.desc())
                 .offset(searchReq.getOffset())
                 .limit(searchReq.getSize())
                 .fetch();
