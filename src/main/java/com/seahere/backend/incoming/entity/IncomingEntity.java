@@ -59,10 +59,6 @@ public class IncomingEntity {
         this.incomingPrice = (int) (incomingPrice * quantity);
     }
 
-//    @Formula("TO_CHAR(incoming_date, 'yyyy-MM-dd')")
-//    private String formattedDate;
-//
-//    @Formula("EXTRACT(ISO_WEEK FROM incoming_date)")
-//    private Integer week;
+
 
 }

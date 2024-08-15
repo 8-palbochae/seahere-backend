@@ -1,5 +1,6 @@
 package com.seahere.backend.sales.service;
 
+import com.seahere.backend.sales.dto.FishDto;
 import com.seahere.backend.sales.dto.SalesMonthDto;
 import com.seahere.backend.sales.dto.SalesWeekDto;
 import com.seahere.backend.sales.repository.SalesRepository;
@@ -37,5 +38,10 @@ public class SalesServiceImpl implements SalesService {
     @Override
     public List<SalesMonthDto> findOutgoingMonth(LocalDate startDate, LocalDate endDate, Long companyId) {
         return salesRepository.outgoingMonthList(companyId, startDate, endDate);
+    }
+
+    @Override
+    public List<FishDto> findFish(LocalDate startDate, LocalDate endDate, Long companyId) {
+        return salesRepository.fishList(companyId, startDate, endDate);
     }
 }

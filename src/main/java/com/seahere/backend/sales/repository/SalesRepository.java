@@ -1,5 +1,6 @@
 package com.seahere.backend.sales.repository;
 
+import com.seahere.backend.sales.dto.FishDto;
 import com.seahere.backend.sales.dto.SalesMonthDto;
 import com.seahere.backend.sales.dto.SalesWeekDto;
 
@@ -12,4 +13,5 @@ public interface SalesRepository {
     List<SalesMonthDto> incomingMonthList(Long companyId, LocalDate startDate, LocalDate endDate);
     List<SalesWeekDto> outgoingWeekList(Long companyId, LocalDate startDate, LocalDate endDate);
     List<SalesMonthDto> outgoingMonthList(Long companyId, LocalDate startDate, LocalDate endDate);
+    List<FishDto> fishList(Long companyId, LocalDate startDate, LocalDate endDate);
 }
