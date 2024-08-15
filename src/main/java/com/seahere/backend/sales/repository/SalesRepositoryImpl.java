@@ -8,6 +8,8 @@ import com.seahere.backend.incoming.entity.QIncomingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.outgoing.entity.QOutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.QOutgoingEntity;
+import com.seahere.backend.product.entity.QProductEntity;
+import com.seahere.backend.sales.dto.FishDto;
 import com.seahere.backend.sales.dto.SalesMonthDto;
 import com.seahere.backend.sales.dto.SalesWeekDto;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +26,7 @@ public class SalesRepositoryImpl implements SalesRepository {
     QIncomingEntity incoming = QIncomingEntity.incomingEntity;
     QOutgoingEntity outgoing = QOutgoingEntity.outgoingEntity;
     QOutgoingDetailEntity outgoingDetail = QOutgoingDetailEntity.outgoingDetailEntity;
+    QProductEntity product = QProductEntity.productEntity;
 
     public List<SalesWeekDto> incomingWeekList(Long companyId, LocalDate startDate, LocalDate endDate) {
 
@@ -96,6 +99,24 @@ public class SalesRepositoryImpl implements SalesRepository {
                 )
                 .groupBy(Expressions.numberTemplate(Integer.class, "MONTH({0})", outgoing.outgoingDate))
                 .orderBy(Expressions.numberTemplate(Integer.class, "MONTH({0})", outgoing.outgoingDate).asc())
+                .fetch();
+    }
+
+    @Override
+    public List<FishDto> fishList(Long companyId, LocalDate startDate, LocalDate endDate) {
+        return queryFactory
+                .select(Projections.constructor(FishDto.class,
+                        product.productName,
+                        product.productImg,
+                        outgoingDetail.price.sum().as("totalPrice")
+                ))
+                .from(outgoingDetail)
+                .join(outgoingDetail.product, product)
+                .join(outgoingDetail.outgoing, outgoing)
+                .where(outgoing.outgoingState.eq(OutgoingState.valueOf("COMPLETE")))
+                .groupBy(product.productName, product.productImg)
+                .orderBy(outgoingDetail.price.sum().desc())
+                .limit(5)
                 .fetch();
     }
 
