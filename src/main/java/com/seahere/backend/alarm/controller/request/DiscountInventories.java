@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+import java.math.BigDecimal;
+
 @Getter
 @NoArgsConstructor
 @ToString
@@ -14,7 +16,7 @@ public class DiscountInventories {
     private String category;
     private String country;
     private String naturalStatus;
-    private int price;
-    private int discountPrice;
+    private BigDecimal price;
+    private BigDecimal discountPrice;
     private float quantity;
 }

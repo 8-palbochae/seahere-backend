@@ -3,6 +3,7 @@ package com.seahere.backend.alarm.entity;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class DiscountEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

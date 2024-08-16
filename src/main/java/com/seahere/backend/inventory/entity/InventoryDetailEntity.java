@@ -42,7 +42,7 @@ public class InventoryDetailEntity {
         this.outgoingPrice = inventoryEditReq.getOutgoingPrice() != null ? inventoryEditReq.getOutgoingPrice() : outgoingPrice;
     }
 
-    public void changePrice(int price){
-        this.outgoingPrice = BigDecimal.valueOf(price);
+    public void changePrice(BigDecimal price){
+        this.outgoingPrice = price;
     }
 }

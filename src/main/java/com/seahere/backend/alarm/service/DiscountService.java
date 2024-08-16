@@ -41,8 +41,8 @@ public class DiscountService {
 
             discountJpaRepository.save(DiscountEntity.builder()
                             .inventory(inventoryEntity)
-                            .discountPrice(BigDecimal.valueOf(inventory.getDiscountPrice()))
-                            .originalPrice(BigDecimal.valueOf(inventory.getPrice()))
+                            .discountPrice(inventory.getDiscountPrice())
+                            .originalPrice(inventory.getPrice())
                             .startDate(request.getStartDate())
                             .endDate(request.getEndDate())
                     .build());
