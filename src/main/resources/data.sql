@@ -67,7 +67,8 @@ INSERT INTO incoming(incoming_id,category,country,country_detail,incoming_date,i
                                                                                                                             (18,'선어','국산','호주','2024-08-01',40000,'방금잡은','양식',24.0,1,5,2),
                                                                                                                             (19,'선어','국산','호주','2024-08-01',40000,'방금잡은','양식',24.0,1,5,2),
                                                                                                                             (20,'선어','국산','호주','2024-08-02',40000,'방금잡은','양식',24.0,1,5,2),
-                                                                                                                            (21,'선어','국산','호주','2024-08-02',40000,'방금잡은','양식',24.0,1,5,2);
+                                                                                                                            (21,'선어','국산','호주','2024-08-02',40000,'방금잡은','양식',24.0,1,5,2),
+                                                                                                                            (22,'선어','국산','호주','2024-08-16',50000,'방금잡은','양식',24.0,1,5,2);
 
 
 INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, partial_outgoing, user_id) VALUES
@@ -91,7 +92,7 @@ INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, pa
                                                                                                              (18, 1, '2024-08-13', 'PENDING', false,2),
                                                                                                              (19, 1, '2024-08-14', 'PENDING', true,2),
                                                                                                              (20, 1, '2024-08-15', 'PENDING', false,2),
-                                                                                                             (21, 1, '2024-08-16', 'PENDING', true,2),
+                                                                                                             (21, 1, '2024-08-16', 'COMPLETE', true,2),
                                                                                                              (22, 1, '2024-08-17', 'PENDING', false,2),
                                                                                                              (23, 1, '2024-08-18', 'PENDING', true,2),
                                                                                                              (24, 1, '2024-08-19', 'PENDING', false,2),
@@ -160,7 +161,8 @@ INSERT INTO outgoing_detail (detail_id, price, product_id, outgoing_id, quantity
                                                                                                                          (16,300000,1,7,100,'선어','국산','양식'),
                                                                                                                          (17,200000,1,38,100,'선어','국산','양식'),
                                                                                                                          (18,300000,1,38,100,'선어','국산','양식'),
-                                                                                                                         (19,200000,1,39,100,'선어','국산','양식');
+                                                                                                                         (19,200000,1,39,100,'선어','국산','양식'),
+                                                                                                                         (20,200000,1,21,100,'선어','국산','양식');
 INSERT INTO inventories (inventory_id, company_id, quantity, category, product_id, country, incoming_date, natural_status) VALUES
                                                                                                                                (1, 1, 60, '활어', 1, '국산', '2024-07-23', '자연'),
                                                                                                                                (2, 1, 60, '활어', 2, '국산', '2024-07-03', '양식'),
