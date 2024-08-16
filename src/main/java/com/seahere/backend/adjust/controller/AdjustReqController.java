@@ -1,20 +1,15 @@
 package com.seahere.backend.adjust.controller;
 
-import com.seahere.backend.adjust.controller.request.AdjustListRequest;
 import com.seahere.backend.adjust.controller.request.AdjustRequest;
-import com.seahere.backend.adjust.entity.AdjustEntity;
 import com.seahere.backend.adjust.service.AdjustService;
-import com.seahere.backend.inventory.controller.request.InventoryReqSearchRequest;
-import com.seahere.backend.inventory.controller.response.InventoryReqListResponse;
-import com.seahere.backend.inventory.controller.response.InventoryResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @Slf4j
