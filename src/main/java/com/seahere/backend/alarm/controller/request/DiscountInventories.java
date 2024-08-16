@@ -7,7 +7,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @ToString
-public class SalesRequest {
+public class DiscountInventories {
     private Long inventoryId;
     private String name;
     private String imgUrl;
@@ -15,5 +15,6 @@ public class SalesRequest {
     private String country;
     private String naturalStatus;
     private int price;
+    private int discountPrice;
     private float quantity;
 }

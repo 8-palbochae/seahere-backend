@@ -41,4 +41,8 @@ public class InventoryDetailEntity {
         this.warningQuantity = inventoryEditReq.getWarningQuantity() != null ? inventoryEditReq.getWarningQuantity() : warningQuantity;
         this.outgoingPrice = inventoryEditReq.getOutgoingPrice() != null ? inventoryEditReq.getOutgoingPrice() : outgoingPrice;
     }
+
+    public void changePrice(int price){
+        this.outgoingPrice = BigDecimal.valueOf(price);
+    }
 }

@@ -18,6 +18,7 @@ public class InventoryRes {
     private String naturalStatus;
     private BigDecimal price;
     private float quantity;
+    private BigDecimal discountPrice;
     @Builder
     public InventoryRes(Long inventoryId, String name, String imgUrl, String category, String country, String naturalStatus, BigDecimal price, float quantity) {
         this.inventoryId = inventoryId;
