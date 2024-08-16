@@ -26,8 +26,6 @@ public class OcrService {
 
             String ocrResponseJson = ocrRepository.callOcrApi(imageBytes);
 
-            log.info("OCR Response JSON: {}", ocrResponseJson);
-
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode rootNode = objectMapper.readTree(ocrResponseJson);
 
@@ -43,8 +41,6 @@ public class OcrService {
             } else {
                 log.warn("resultNode is missing in OCR response");
             }
-
-            log.info("Extracted OCR Response: {}", ocrResponse);
 
             return ocrResponse;
 

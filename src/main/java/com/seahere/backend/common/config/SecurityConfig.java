@@ -76,11 +76,10 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000","http://localhost:5173","https://172.18.209.87:3000",
+                .allowedOrigins("http://localhost:3000","http://localhost:5173","https://192.168.0.9:3000",
                         "http://10.10.10.170:3000",
                         "http://10.10.10.170:5173",
-                        "http://172.18.117.115:3000",
-                        "https://e5ca-14-44-120-104.ngrok-free.app")
+                        "http://172.18.117.115:3000")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(true)
