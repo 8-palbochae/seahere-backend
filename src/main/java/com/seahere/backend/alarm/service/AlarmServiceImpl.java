@@ -4,6 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.seahere.backend.alarm.dto.AlarmToCompanyEvent;
 import com.seahere.backend.alarm.dto.AlarmToCustomerEvent;
+import com.seahere.backend.alarm.dto.AlarmToFollowerEvent;
 import com.seahere.backend.alarm.entity.AlarmHistoryEntity;
 import com.seahere.backend.alarm.entity.AlarmTokenEntity;
 import com.seahere.backend.alarm.exception.TokenNotFoundException;
@@ -51,10 +52,30 @@ public class AlarmServiceImpl implements AlarmService{
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
-    public void pushAlarmToCompanyUser(AlarmToCompanyEvent event) throws FirebaseMessagingException {
+    public void pushAlarmToCompanyUser(AlarmToCompanyEvent event){
         log.info("이벤트 구독확인 ");
         List<AlarmTokenEntity> users = alarmRepository.findByCompanyUser(event.getCompanyId());
         for (AlarmTokenEntity user : users) {
+            try {
+                sendMessage(user.getToken(), event.getTitle(), event.getBody());
+                alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
+                        .userId(user.getUser().getId())
+                        .title(event.getTitle())
+                        .body(event.getBody())
+                        .build());
+            } catch (FirebaseMessagingException e) {
+                log.error("Failed to send message to user: " + user.getUser().getId(), e);
+            }
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener
+    public void pushAlarmToFollower(AlarmToFollowerEvent event){
+        log.info("이벤트 구독확인 ");
+        //todo 회사를 팔로워한 유저와 token entity join해서 가져오기
+        List<AlarmTokenEntity> all = alarmJapRepository.findAll();
+        for (AlarmTokenEntity user : all) {
             try {
                 sendMessage(user.getToken(), event.getTitle(), event.getBody());
                 alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
