@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import net.bytebuddy.asm.Advice;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -30,4 +31,11 @@ public class DiscountEntity {
 
     private BigDecimal discountPrice;
     private BigDecimal originalPrice;
+
+    public void updateDiscount(LocalDate startDate, LocalDate endDate, BigDecimal discountPrice, BigDecimal originalPrice){
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.discountPrice = discountPrice;
+        this.originalPrice = originalPrice;
+    }
 }

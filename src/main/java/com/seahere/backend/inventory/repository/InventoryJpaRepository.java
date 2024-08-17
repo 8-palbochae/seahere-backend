@@ -27,6 +27,6 @@ public interface InventoryJpaRepository extends JpaRepository<InventoryEntity, L
             @Param("naturalStatus") String naturalStatus,
             @Param("country") String country);
 
-    @Query("SELECT i FROM InventoryEntity i LEFT JOIN FETCH i.inventoryDetail WHERE i.inventoryId = :inventoryId")
+    @Query("SELECT i FROM InventoryEntity i LEFT JOIN FETCH i.inventoryDetail LEFT JOIN FETCH i.discount WHERE i.inventoryId = :inventoryId")
     InventoryEntity getIdWithDetails(@Param("inventoryId")Long inventoryId);
 }

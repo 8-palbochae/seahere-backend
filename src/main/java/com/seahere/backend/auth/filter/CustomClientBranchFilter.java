@@ -15,6 +15,8 @@ import java.io.IOException;
 public class CustomClientBranchFilter extends OncePerRequestFilter {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+
+    //todo 미들웨어를 통해서 분기 처리
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String refererHeader = request.getHeader("Referer");
