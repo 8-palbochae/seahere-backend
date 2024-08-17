@@ -39,14 +39,18 @@ public class DiscountService {
             InventoryDetailEntity inventoryDetail = inventoryEntity.getInventoryDetail();
             inventoryDetail.changePrice(inventory.getDiscountPrice());
 
-            discountJpaRepository.save(DiscountEntity.builder()
-                            .inventory(inventoryEntity)
-                            .discountPrice(inventory.getDiscountPrice())
-                            .originalPrice(inventory.getPrice())
-                            .startDate(request.getStartDate())
-                            .endDate(request.getEndDate())
-                    .build());
-
+            if(inventoryEntity.getDiscount() != null){
+                DiscountEntity discount = inventoryEntity.getDiscount();
+                discount.updateDiscount(request.getStartDate(),request.getEndDate(),inventory.getDiscountPrice(),inventory.getPrice());
+            }else {
+                discountJpaRepository.save(DiscountEntity.builder()
+                        .inventory(inventoryEntity)
+                        .discountPrice(inventory.getDiscountPrice())
+                        .originalPrice(inventory.getPrice())
+                        .startDate(request.getStartDate())
+                        .endDate(request.getEndDate())
+                        .build());
+            }
             sb.append(inventory.getName()).append(" ");
         }
         sb.append("세일중입니다.");
