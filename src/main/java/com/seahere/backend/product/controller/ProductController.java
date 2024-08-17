@@ -6,14 +6,15 @@ import com.seahere.backend.product.dto.ProductDto;
 import com.seahere.backend.product.entity.ProductEntity;
 import com.seahere.backend.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 public class ProductController {
 
     private final ProductService productService;
+
     @GetMapping("/product-search-incoming")
     public ResponseEntity<List<IncomingSearchResponse>> getProducts() {
         List<ProductEntity> products = productService.getAllProducts();
@@ -28,5 +30,14 @@ public class ProductController {
         return ResponseEntity.ok(productResponses);
     }
 
+    @GetMapping("/product-qr/{productId}")public ResponseEntity<ProductDto> getProductQr(@AuthenticationPrincipal CustomUserDetails customUserDetails, @PathVariable Long productId) {
+        Optional<ProductEntity> productOptional = productService.getProduct(productId);
+        if (productOptional.isPresent()) {
+            ProductDto response= ProductDto.from(productOptional.get());
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
 
 }
