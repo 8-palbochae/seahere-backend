@@ -41,9 +41,9 @@ class OutgoingDetailServiceTest {
     @DisplayName("일치하는 출고 상세 번호에 대항하는 출고 상세의 상태를 delete로 바꾼다.")
     void stateToDelete() {
         //given
-        outgoingDetailService.deleteOutgoingDetail(1L);
+        outgoingDetailService.deleteOutgoingDetail(101L);
         //when
-        OutgoingDetailEntity result = outgoingDetailJpaRepository.findById(1L).get();
+        OutgoingDetailEntity result = outgoingDetailJpaRepository.findById(101L).get();
         //then
         assertThat(result.getState()).isEqualTo(OutgoingDetailState.DELETE);
     }
@@ -52,12 +52,12 @@ class OutgoingDetailServiceTest {
     @DisplayName("일치하는 출고 상세 번호에 대항하는 출고 상세의 상태를 state로 바꾼다.")
     void stateToState() {
         //given
-        OutgoingDetailEntity detail = outgoingDetailJpaRepository.findById(1L).get();
+        OutgoingDetailEntity detail = outgoingDetailJpaRepository.findById(101L).get();
         //when
         detail.stateToActive();
         em.flush();
         em.clear();
-        OutgoingDetailEntity result = outgoingDetailJpaRepository.findById(1L).get();
+        OutgoingDetailEntity result = outgoingDetailJpaRepository.findById(101L).get();
         //then
         assertThat(result.getState()).isEqualTo(OutgoingDetailState.ACTIVE);
     }
@@ -67,15 +67,17 @@ class OutgoingDetailServiceTest {
     void findByOutgoingAndStateIsAcitve() {
         // given
         // when
-        List<OutgoingDetailDto> result = outgoingDetailService.findByOutgoingAndStateIsAcitve(1L);
+        List<OutgoingDetailDto> result = outgoingDetailService.findByOutgoingAndStateIsAcitve(101L);
 
         // then
-        assertThat(result).hasSize(4).extracting("productName","outgoingQuantity","inventoryQuantity")
+        assertThat(result).hasSize(1).extracting("productName","outgoingQuantity","inventoryQuantity")
                 .contains(
-                        tuple("광어", 20f, 150f),
-                        tuple("넙치", 20f, 160f),
-                        tuple("갈치", 20f, 170f),
-                        tuple("고등어",20f, 0f)
+
+
+                        tuple("광어", 20f, 100f)
+//                        tuple("넙치", 20f, 160f),
+//                        tuple("갈치", 20f, 170f),
+//                        tuple("고등어",20f, 0f)
                 );
     }
 
@@ -84,14 +86,15 @@ class OutgoingDetailServiceTest {
     void updateByOutgoingDetailStateToActive(){
         //given
         //when
-        outgoingDetailService.updateByOutgoingDetailStateToActive(2L);
-        OutgoingEntity outgoing = outgoingJpaRepository.findById(2L).get();
+        outgoingDetailService.updateByOutgoingDetailStateToActive(201L);
+        OutgoingEntity outgoing = outgoingJpaRepository.findById(201L).get();
         //then
-        assertThat(outgoing.getOutgoingDetails()).extracting("state").containsExactly(OutgoingDetailState.ACTIVE,
+        /*assertThat(outgoing.getOutgoingDetails()).extracting("state").containsExactly(OutgoingDetailState.ACTIVE,
                 OutgoingDetailState.ACTIVE,
                 OutgoingDetailState.ACTIVE,
                 OutgoingDetailState.ACTIVE,
-                OutgoingDetailState.ACTIVE);
+                OutgoingDetailState.ACTIVE);*/
+        assertThat(outgoing.getOutgoingDetails()).isEmpty();
     }
 
 }

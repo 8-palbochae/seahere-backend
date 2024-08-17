@@ -8,16 +8,14 @@ import com.seahere.backend.inventory.controller.response.InventoryResponse;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.entity.QInventoryDetailEntity;
 import com.seahere.backend.inventory.entity.QInventoryEntity;
-import com.seahere.backend.product.entity.QProductEntity;
 import com.seahere.backend.product.dto.ProductDto;
-import com.seahere.backend.product.entity.ProductEntity;
+import com.seahere.backend.product.entity.QProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,6 +98,17 @@ public class InventoryRepository {
                 .limit(customerInventorySearch.getSize())
                 .offset(customerInventorySearch.getOffset())
                 .orderBy(QInventoryEntity.inventoryEntity.product.productName.asc(),QInventoryEntity.inventoryEntity.inventoryId.asc())
+                .fetch();
+    }
+
+    public List<InventoryEntity> findByCompanyIdWithDetail(Long companyId) {
+        return queryFactory.selectFrom(QInventoryEntity.inventoryEntity)
+                .leftJoin(QInventoryEntity.inventoryEntity.product, QProductEntity.productEntity).fetchJoin()
+                .leftJoin(QInventoryEntity.inventoryEntity.inventoryDetail, QInventoryDetailEntity.inventoryDetailEntity).fetchJoin()
+                .where(
+                        QInventoryEntity.inventoryEntity.company.id.eq(companyId)
+                                .and(QInventoryEntity.inventoryEntity.quantity.ne(0F))
+                )
                 .fetch();
     }
 

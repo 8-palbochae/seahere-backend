@@ -54,6 +54,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                  .authorizeRequests()
                  .antMatchers("/h2-console/**").permitAll()
                  .antMatchers(HttpMethod.POST, "/login").permitAll()
+                 .antMatchers(HttpMethod.POST, "/ocr").permitAll()
                  .antMatchers(HttpMethod.POST,"/companies").permitAll()
                  .antMatchers(HttpMethod.POST,"/users/**").permitAll()
                  .antMatchers("/authentication/protected").permitAll()// 모든 메서드 허용
@@ -75,11 +76,11 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000","https://localhost:3000",
-                        "http://localhost:5173",
+                .allowedOrigins("http://localhost:3000","http://localhost:5173","http://192.168.0.9:3000",
                         "http://10.10.10.170:3000",
                         "http://10.10.10.170:5173",
-                        "http://172.18.117.115:3000")
+                        "http://172.18.117.115:3000",
+                        "https://1e12-203-247-166-251.ngrok-free.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(true)

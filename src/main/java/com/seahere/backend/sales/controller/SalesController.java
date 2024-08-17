@@ -2,8 +2,10 @@ package com.seahere.backend.sales.controller;
 
 import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.sales.controller.request.PeriodRequest;
+import com.seahere.backend.sales.controller.response.FishDataRes;
 import com.seahere.backend.sales.controller.response.SalesMonthRes;
 import com.seahere.backend.sales.controller.response.SalesWeekRes;
+import com.seahere.backend.sales.dto.FishDto;
 import com.seahere.backend.sales.dto.SalesMonthDto;
 import com.seahere.backend.sales.dto.SalesWeekDto;
 import com.seahere.backend.sales.service.SalesService;
@@ -90,8 +92,22 @@ public class SalesController {
                         .commonPrice(dto.getCommonPrice())
                         .build()).collect(Collectors.toList());
         return ResponseEntity.ok(responseList);
-
     }
+    @PostMapping("/fish/chart")
+    public ResponseEntity<List<FishDataRes>> findFishData(@RequestBody PeriodRequest periodRequest, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<FishDto> result = salesService.findFish(periodRequest.getStartDate()
+                ,periodRequest.getEndDate()
+                ,userDetails.getUser().getCompanyId());
+        List<FishDataRes> responseList = result.stream()
+                .map(dto->FishDataRes.builder()
+                        .productName(dto.getProductName())
+                        .productImg(dto.getProductImg())
+                        .price((dto.getPrice()))
+                        .build()).collect(Collectors.toList());
+        return ResponseEntity.ok(responseList);
+    }
+
+
 
 
 }

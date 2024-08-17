@@ -1,5 +1,7 @@
 package com.seahere.backend.alarm.service;
 
+import com.seahere.backend.alarm.controller.request.DiscountRequest;
+
 import java.util.List;
 
 public interface AlarmService {
