@@ -1,5 +1,6 @@
 package com.seahere.backend.inventory.entity;
 
+import com.seahere.backend.alarm.entity.DiscountEntity;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.product.entity.ProductEntity;
 import lombok.*;
@@ -48,6 +49,9 @@ public class InventoryEntity {
 
     @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private InventoryDetailEntity inventoryDetail;
+
+    @OneToOne(mappedBy = "inventory", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private DiscountEntity discount;
 
     @PostPersist
     private void createInventoryDetail() {

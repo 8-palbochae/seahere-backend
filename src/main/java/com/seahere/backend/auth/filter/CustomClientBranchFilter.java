@@ -15,15 +15,22 @@ import java.io.IOException;
 public class CustomClientBranchFilter extends OncePerRequestFilter {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
+
+    //todo 미들웨어를 통해서 분기 처리
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String refererHeader = request.getHeader("Referer");
+
+        if(refererHeader == null ){
+            oAuth2LoginSuccessHandler.editResponseServer("https://localhost:3000/");
+            oAuth2LoginFailureHandler.editResponseServer("https://localhost:3000/");
+        }
+
         if (refererHeader != null) {
             oAuth2LoginSuccessHandler.editResponseServer(refererHeader);
             oAuth2LoginFailureHandler.editResponseServer(refererHeader);// setResponseServer 메서드 호출
         }
 
-        // 다음 필터로 요청을 전달
         filterChain.doFilter(request, response);
     }
 }

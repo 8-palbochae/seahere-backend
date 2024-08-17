@@ -45,3 +45,5 @@ out/
 
 ### Query DSL ###
 /src/main/generated/
+### OcrConfig ###
+/src/main/resources/OcrConfig.properties
