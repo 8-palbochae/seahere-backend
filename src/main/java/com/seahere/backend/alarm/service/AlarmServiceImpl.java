@@ -138,8 +138,8 @@ public class AlarmServiceImpl implements AlarmService{
     private String extractFish(String input, String keyword) {
         int keywordIndex = input.indexOf(keyword);
         if (keywordIndex != -1) {
-            return input.substring(0, keywordIndex).trim(); // 키워드 전까지의 부분을 잘라내어 반환
+            return input.substring(0, keywordIndex).trim();
         }
-        return input; // 키워드가 없으면 원본 문자열 반환
+        return input;
     }
 }
