@@ -76,16 +76,19 @@ public class SecurityConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://localhost:3000","http://localhost:5173","https://10.10.10.37:3000",
-                        "http://10.10.10.37:3000",
+                .allowedOrigins(
+                        "https://localhost:3000",
+                        "http://localhost:5173",
+                        "https://10.10.10.37:3000",
                         "http://10.10.10.170:5173",
-                        "http://172.18.117.115:3000",
-                        "https://2938-58-235-119-39.ngrok-free.app")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH")
+                        "http://172.18.117.115:3000"
+                )
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
                 .allowCredentials(true)
                 .exposedHeaders("Authorization", "Authorization-refresh");
     }
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {
