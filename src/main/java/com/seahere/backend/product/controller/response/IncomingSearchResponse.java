@@ -15,18 +15,21 @@ public class IncomingSearchResponse {
     private Long productId;
     private String productName;
     private String productImg;
+    private String qr;
 
     @Builder
-    public IncomingSearchResponse(Long productId, String productName, String productImg) {
+    public IncomingSearchResponse(Long productId, String productName, String productImg, String qr) {
         this.productId = productId;
         this.productName = productName;
         this.productImg = productImg;
+        this.qr = qr;
     }
     public static IncomingSearchResponse from(ProductDto dto){
         return IncomingSearchResponse.builder()
                 .productId(dto.getProductId())
                 .productName(dto.getProductName())
                 .productImg(dto.getProductImg())
+                .qr(dto.getQr())
                 .build();
     }
 
