@@ -5,9 +5,11 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.seahere.backend.alarm.dto.AlarmToCompanyEvent;
 import com.seahere.backend.alarm.dto.AlarmToCustomerEvent;
 import com.seahere.backend.alarm.dto.AlarmToFollowerEvent;
+import com.seahere.backend.alarm.entity.AlarmCustomerLogEntity;
 import com.seahere.backend.alarm.entity.AlarmHistoryEntity;
 import com.seahere.backend.alarm.entity.AlarmTokenEntity;
 import com.seahere.backend.alarm.exception.TokenNotFoundException;
+import com.seahere.backend.alarm.repository.AlarmCustomerLogJpaRepository;
 import com.seahere.backend.alarm.repository.AlarmHistoryJpaRepository;
 import com.seahere.backend.alarm.repository.AlarmJapRepository;
 import com.seahere.backend.alarm.repository.AlarmRepository;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 import java.util.Optional;
@@ -35,6 +38,7 @@ public class AlarmServiceImpl implements AlarmService{
     private final AlarmJapRepository alarmJapRepository;
     private final UserRepository userRepository;
     private final AlarmRepository alarmRepository;
+    private final AlarmCustomerLogJpaRepository alarmCustomerLogJpaRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
@@ -74,10 +78,14 @@ public class AlarmServiceImpl implements AlarmService{
     public void pushAlarmToFollower(AlarmToFollowerEvent event){
         log.info("이벤트 구독확인 ");
         //todo 회사를 팔로워한 유저와 token entity join해서 가져오기
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        String fish = extractFish(event.getBody(), "세일중입니다.");
+        String url = baseUrl+"/alarm/log?fish="+fish;
+        log.info("baseUrl = {}", url);
         List<AlarmTokenEntity> all = alarmJapRepository.findAll();
         for (AlarmTokenEntity user : all) {
             try {
-                sendMessage(user.getToken(), event.getTitle(), event.getBody());
+                sendMessage(user.getToken(), event.getTitle(), event.getBody(),url);
                 alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
                         .userId(user.getUser().getId())
                         .title(event.getTitle())
@@ -92,6 +100,11 @@ public class AlarmServiceImpl implements AlarmService{
     @Override
     public void sendMessage(String token, String title, String message) throws FirebaseMessagingException {
         firebaseMessaging.send(FcmMessage.makeMessage(token, title, message));
+    }
+
+    @Override
+    public void sendMessage(String token, String title, String message, String url) throws FirebaseMessagingException {
+        firebaseMessaging.send(FcmMessage.makeMessage(token, title, message,url));
     }
 
     @Override
@@ -112,5 +125,21 @@ public class AlarmServiceImpl implements AlarmService{
                         .user(user)
                         .token(token)
                 .build());
+    }
+
+    public void saveAlarmClickLog(String fishLog, Long userId){
+        UserEntity customer = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        alarmCustomerLogJpaRepository.save(AlarmCustomerLogEntity.builder()
+                        .customer(customer)
+                        .log(fishLog)
+                .build());
+    }
+
+    private String extractFish(String input, String keyword) {
+        int keywordIndex = input.indexOf(keyword);
+        if (keywordIndex != -1) {
+            return input.substring(0, keywordIndex).trim(); // 키워드 전까지의 부분을 잘라내어 반환
+        }
+        return input; // 키워드가 없으면 원본 문자열 반환
     }
 }
