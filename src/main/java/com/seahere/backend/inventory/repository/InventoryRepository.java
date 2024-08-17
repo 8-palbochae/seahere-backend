@@ -2,6 +2,7 @@ package com.seahere.backend.inventory.repository;
 
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.seahere.backend.alarm.entity.QDiscountEntity;
 import com.seahere.backend.inventory.controller.request.CustomerInventorySearch;
 import com.seahere.backend.inventory.controller.response.InventoryDetailResponse;
 import com.seahere.backend.inventory.controller.response.InventoryResponse;
@@ -105,6 +106,7 @@ public class InventoryRepository {
         return queryFactory.selectFrom(QInventoryEntity.inventoryEntity)
                 .leftJoin(QInventoryEntity.inventoryEntity.product, QProductEntity.productEntity).fetchJoin()
                 .leftJoin(QInventoryEntity.inventoryEntity.inventoryDetail, QInventoryDetailEntity.inventoryDetailEntity).fetchJoin()
+                .leftJoin(QInventoryEntity.inventoryEntity.discount, QDiscountEntity.discountEntity).fetchJoin()
                 .where(
                         QInventoryEntity.inventoryEntity.company.id.eq(companyId)
                                 .and(QInventoryEntity.inventoryEntity.quantity.ne(0F))
