@@ -40,4 +40,5 @@ public class CompanyController {
         CompanyResponse mostOutgoingCompany = companyService.getMostOutgoingCompany();
         return ResponseEntity.ok(mostOutgoingCompany);
     }
+
 }
