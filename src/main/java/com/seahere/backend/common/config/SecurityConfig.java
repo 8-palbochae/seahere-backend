@@ -81,8 +81,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                         "http://localhost:5173",
                         "https://10.10.10.37:3000",
                         "http://10.10.10.170:5173",
-                        "http://172.18.117.115:3000",
-                        "http://192.168.0.8:3000"
+                        "http://172.18.117.115:3000"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")
