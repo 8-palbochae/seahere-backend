@@ -16,4 +16,5 @@ public interface CompanyService {
     List<CompanyResponse> getList(CompanySearch companySearch);
 
     CompanyResponse getMostOutgoingCompany();
+    List<CompanyResponse> getTradeCompany(CompanySearch companySearch, Long companyId);
 }

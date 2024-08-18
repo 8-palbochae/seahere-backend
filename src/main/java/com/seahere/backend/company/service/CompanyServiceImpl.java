@@ -68,10 +68,16 @@ public class CompanyServiceImpl implements CompanyService{
                 .map(CompanyResponse::from)
                 .collect(Collectors.toList());
     }
-
     @Override
     public CompanyResponse getMostOutgoingCompany() {
         CompanyEntity bestCompany = companySelectRepository.findCompanyWithBestOutgoing();
         return CompanyResponse.from(bestCompany);
+    }
+    @Override
+    public List<CompanyResponse> getTradeCompany(CompanySearch companySearch, Long companyId) {
+        return companySelectRepository.findTradeCompanyList(companySearch, companyId)
+                .stream()
+                .map(CompanyResponse::from)
+                .collect(Collectors.toList());
     }
 }
