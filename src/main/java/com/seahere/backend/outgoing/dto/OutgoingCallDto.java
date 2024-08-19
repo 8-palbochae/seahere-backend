@@ -22,6 +22,7 @@ public class OutgoingCallDto {
     private boolean partialOutgoing;
     private String title;
 
+
     public static OutgoingCallDto from(OutgoingEntity outgoingEntity) {
         return OutgoingCallDto.builder()
                 .companyId(outgoingEntity.getCompany().getId())
