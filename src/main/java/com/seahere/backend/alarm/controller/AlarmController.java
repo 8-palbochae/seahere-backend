@@ -1,6 +1,5 @@
 package com.seahere.backend.alarm.controller;
 
-import com.seahere.backend.alarm.controller.request.DiscountInventories;
 import com.seahere.backend.alarm.controller.request.DiscountRequest;
 import com.seahere.backend.alarm.controller.request.TokenRequest;
 import com.seahere.backend.alarm.controller.response.AlarmHistoryResponse;
@@ -13,7 +12,6 @@ import com.seahere.backend.inventory.service.InventoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -38,8 +37,10 @@ public class AlarmController {
     }
 
     @GetMapping("/alarm/inventories")
-    public ResponseEntity<List<InventoryRes>> customerInventoryListGet(@AuthenticationPrincipal CustomUserDetails userDetails){
-        List<InventoryRes> results = inventoryService.getBrokerInventoryList(userDetails.getUser().getCompanyId());
+    public ResponseEntity<List<InventoryRes>> inventoryListGet(@AuthenticationPrincipal CustomUserDetails userDetails){
+        List<InventoryRes> results = inventoryService.getBrokerInventoryList(userDetails.getUser().getCompanyId()).stream()
+                .map(InventoryRes::from)
+                .collect(Collectors.toList());
         return ResponseEntity.ok(results);
     }
 
@@ -58,6 +59,7 @@ public class AlarmController {
     @GetMapping("/alarm/histories")
     public ResponseEntity<AlarmHistoryResponse> alarmHistories(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("page")int page,
                                                                @RequestParam(name = "size", defaultValue = "10")int size){
+        log.info("size = {} page = {}", size,page);
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createTime"));
         Slice<AlarmHistoryEntity> histories = alarmService.findByUserId(userDetails.getUser().getUserId(), pageRequest);
         return ResponseEntity.ok(new AlarmHistoryResponse(histories));
