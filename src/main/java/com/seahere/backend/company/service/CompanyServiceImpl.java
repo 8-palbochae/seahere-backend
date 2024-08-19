@@ -7,6 +7,7 @@ import com.seahere.backend.company.repository.CompanySelectRepository;
 import com.seahere.backend.company.controller.request.CompanyCreateReq;
 import com.seahere.backend.company.controller.request.CompanySearch;
 import com.seahere.backend.company.controller.response.CompanyResponse;
+import com.seahere.backend.company.controller.response.CompanyFollowResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,21 +17,25 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class CompanyServiceImpl implements CompanyService{
+public class CompanyServiceImpl implements CompanyService {
     private final CompanyRepository companyRepository;
-    private  final CompanySelectRepository companySelectRepository;
+    private final CompanySelectRepository companySelectRepository;
+
     @Override
     public CompanyResponse getCompanyById(Long id) {
         CompanyEntity company = companyRepository.findById(id).orElseThrow(CompanyNotFound::new);
-
         return CompanyResponse.from(company);
+    }
+
+    @Override
+    public CompanyFollowResponse getCompanyByIdForCustomer(Long customerId, Long id) {
+        return companySelectRepository.findCompanyByIdForCustomer(customerId, id);
     }
 
     @Override
     public CompanyResponse getCompanyByRegNumber(String registrationNumber) {
         CompanyEntity company = companyRepository.findByRegistrationNumber(registrationNumber)
                 .orElseThrow(CompanyNotFound::new);
-
         return CompanyResponse.from(company);
     }
 
@@ -47,7 +52,6 @@ public class CompanyServiceImpl implements CompanyService{
     public Long save(CompanyCreateReq companyCreateReq) {
         CompanyEntity company = CompanyEntity.from(companyCreateReq);
         companyRepository.save(company);
-
         return company.getId();
     }
 
@@ -56,7 +60,6 @@ public class CompanyServiceImpl implements CompanyService{
     public CompanyResponse editProfileImage(Long id, String profileImage) {
         CompanyEntity company = companyRepository.findById(id)
                 .orElseThrow(CompanyNotFound::new);
-
         company.editProfileImage(profileImage);
         return CompanyResponse.from(company);
     }
@@ -70,8 +73,25 @@ public class CompanyServiceImpl implements CompanyService{
     }
 
     @Override
+    public List<CompanyFollowResponse> getListForCustomer(Long customerId, CompanySearch companySearch) {
+        return companySelectRepository.getListForCustomer(customerId, companySearch);
+    }
+
+    @Override
+    public List<CompanyFollowResponse> getFollowListForCustomer(Long customerId, CompanySearch companySearch) {
+        return companySelectRepository.getFollowListForCustomer(customerId, companySearch);
+    }
+
+    @Override
     public CompanyResponse getMostOutgoingCompany() {
         CompanyEntity bestCompany = companySelectRepository.findCompanyWithBestOutgoing();
         return CompanyResponse.from(bestCompany);
     }
+
+    @Override
+    public CompanyFollowResponse getMostOutgoingCompanyForCustomer(Long customerId) {
+        return companySelectRepository.findCompanyWithBestOutgoingForCustomer(customerId);
+    }
+
+
 }
