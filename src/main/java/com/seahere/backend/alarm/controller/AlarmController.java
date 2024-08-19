@@ -12,10 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -44,5 +41,11 @@ public class AlarmController {
     public void alarmDiscount(@RequestBody DiscountRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
         log.info("request = {}", request);
         discountService.discountInventory(userDetails.getUser().getCompanyId(),request);
+    }
+
+    @PostMapping("/alarm/log")
+    public void alarmLog(@RequestParam("fish")String fish, @AuthenticationPrincipal CustomUserDetails userDetails){
+        log.info("fish = {}", fish);
+        alarmService.saveAlarmClickLog(fish, userDetails.getUser().getUserId());
     }
 }

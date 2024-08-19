@@ -7,7 +7,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +22,11 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public List<ProductEntity> getAllProducts() {
-        return productRepository.findAll().stream().collect(Collectors.toList());
+        return new ArrayList<>(productRepository.findAll());
+    }
+
+    @Override
+    public Optional<ProductEntity> getProduct(Long productId) {
+        return productRepository.findById(productId);
     }
 }

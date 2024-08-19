@@ -20,6 +20,19 @@ public class FcmMessage {
                 .setToken(targetToken)
                 .build();
     }
+    public static Message makeMessage(String targetToken, String title, String body, String url) {
+        Notification notification = Notification
+                .builder()
+                .setTitle(title)
+                .setBody(body)
+                .build();
+        return Message
+                .builder()
+                .putData("url",url)
+                .setNotification(notification)
+                .setToken(targetToken)
+                .build();
+    }
 
     public static MulticastMessage makeMessages(List<String> targetTokens,String title, String body) {
         Notification notification = Notification.builder()
