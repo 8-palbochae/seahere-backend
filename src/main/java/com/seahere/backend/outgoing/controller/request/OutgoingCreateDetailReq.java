@@ -18,6 +18,6 @@ public class OutgoingCreateDetailReq {
     public OutgoingCreateDetailReq(Long inventoryId, Float quantity, BigDecimal price) {
         this.inventoryId = inventoryId;
         this.quantity = quantity;
-        this.price = price;
+        this.price = price != null ? price : BigDecimal.valueOf(0);
     }
 }
