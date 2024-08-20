@@ -13,5 +13,6 @@ public interface UserService {
     Long signupOauth(OAuthSignupReq oauthSignupReq);
     Boolean validateEmail(String email);
     void approveEmployee(String ceoEmail, String employeeEmail);
+    void deleteEmployee(Long userId);
     UserInfoRes getUser(Long userId);
 }

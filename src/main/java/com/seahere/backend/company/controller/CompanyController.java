@@ -1,12 +1,15 @@
 package com.seahere.backend.company.controller;
 
+import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.company.controller.request.CompanyCreateReq;
 import com.seahere.backend.company.controller.request.CompanySearch;
 import com.seahere.backend.company.controller.response.CompanyResponse;
+import com.seahere.backend.company.controller.response.SettingCompanyResponse;
 import com.seahere.backend.company.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,5 +42,12 @@ public class CompanyController {
     public ResponseEntity<CompanyResponse> getBestCompany(){
         CompanyResponse mostOutgoingCompany = companyService.getMostOutgoingCompany();
         return ResponseEntity.ok(mostOutgoingCompany);
+    }
+
+    @GetMapping("/teams")
+    public ResponseEntity<SettingCompanyResponse> getCompany(@AuthenticationPrincipal CustomUserDetails userDetails){
+        log.info("요청 오는지 확인");
+        SettingCompanyResponse response = companyService.getCompanyAndEmployee(userDetails.getUser().getCompanyId());
+        return ResponseEntity.ok(response);
     }
 }

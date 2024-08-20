@@ -3,6 +3,7 @@ package com.seahere.backend.company.service;
 import com.seahere.backend.company.controller.request.CompanyCreateReq;
 import com.seahere.backend.company.controller.request.CompanySearch;
 import com.seahere.backend.company.controller.response.CompanyResponse;
+import com.seahere.backend.company.controller.response.SettingCompanyResponse;
 
 import java.util.List;
 
@@ -16,4 +17,5 @@ public interface CompanyService {
     List<CompanyResponse> getList(CompanySearch companySearch);
 
     CompanyResponse getMostOutgoingCompany();
+    SettingCompanyResponse getCompanyAndEmployee(Long id);
 }

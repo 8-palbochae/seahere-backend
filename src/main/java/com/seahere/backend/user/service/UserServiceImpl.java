@@ -7,6 +7,7 @@ import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.user.controller.response.UserInfoRes;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.domain.UserStatus;
+import com.seahere.backend.user.exception.AdminDeleteException;
 import com.seahere.backend.user.exception.BrokerPermissionException;
 import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
@@ -15,6 +16,7 @@ import com.seahere.backend.user.request.CeoSignupReq;
 import com.seahere.backend.user.request.CustomerSignupReq;
 import com.seahere.backend.user.request.OAuthSignupReq;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
@@ -101,7 +104,6 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(UserNotFound::new);
         employee.editStatus(UserStatus.APPROVED);
         employee.updateCompany(ceo.getCompany());
-
         userRepository.save(employee);
     }
 
@@ -110,5 +112,16 @@ public class UserServiceImpl implements UserService{
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
         return UserInfoRes.from(user);
+    }
+
+    @Override
+    public void deleteEmployee(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        if(userEntity.isAdmin()){
+            log.info("admin 삭제시도 예외");
+            throw new AdminDeleteException();
+        }
+        userEntity.editStatus(UserStatus.PENDING);
+        userEntity.updateCompany(null);
     }
 }

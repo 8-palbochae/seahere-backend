@@ -108,4 +108,8 @@ public class UserEntity {
     public void editStatus(UserStatus status){
         this.status = status;
     }
+
+    public boolean isAdmin(){
+        return this.role.equals(Role.ADMIN);
+    }
 }

@@ -3,9 +3,7 @@ package com.seahere.backend.user.controller;
 import com.seahere.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
 
@@ -20,5 +18,10 @@ public class TeamController {
         userService.approveEmployee(loginEmail,employeeEmail);
 
         return ResponseEntity.ok(null);
+    }
+
+    @DeleteMapping("/teams/{userId}")
+    public void deleteEmployee(@PathVariable("userId")Long userId){
+        userService.deleteEmployee(userId);
     }
 }
