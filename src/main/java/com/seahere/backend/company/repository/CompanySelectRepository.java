@@ -7,6 +7,8 @@ import com.seahere.backend.company.controller.response.CompanyFollowResponse;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.entity.QCompanyEntity;
 import com.seahere.backend.follow.entity.QFollowEntity;
+import com.seahere.backend.company.controller.request.CompanySearch;
+import com.seahere.backend.inventory.entity.QInventoryEntity;
 import com.seahere.backend.outgoing.entity.QOutgoingEntity;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +31,27 @@ public class CompanySelectRepository {
                 .fetch();
     }
 
-    public CompanyEntity findCompanyWithBestOutgoing() {
+    public List<CompanyEntity> findTradeCompanyList(CompanySearch companySearch, Long companyId) {
+        QCompanyEntity company = QCompanyEntity.companyEntity;
+        QInventoryEntity inventory = QInventoryEntity.inventoryEntity;
+
+        return jpaQueryFactory.selectDistinct(company) // 중복된 회사 제거
+                .from(company)
+                .join(inventory).on(company.id.eq(inventory.company.id)) // Company와 Inventory 테이블 조인
+                .where(
+                        company.id.ne(companyId), // 본인 회사 제외
+                        inventory.quantity.gt(0), // 재고가 있는 회사만 필터링
+                        company.companyName.containsIgnoreCase(companySearch.getSearchWord()) // 검색어 필터링 (옵션)
+                )
+                .limit(companySearch.getSize())
+                .offset(companySearch.getOffset())
+                .orderBy(company.id.desc())
+                .fetch();
+    }
+
+
+
+    public CompanyEntity  findCompanyWithBestOutgoing() {
         QOutgoingEntity outgoing = QOutgoingEntity.outgoingEntity;
         return jpaQueryFactory
                 .select(outgoing.company)

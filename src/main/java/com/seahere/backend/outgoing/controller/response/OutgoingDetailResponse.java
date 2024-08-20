@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Getter
@@ -26,6 +27,8 @@ public class OutgoingDetailResponse {
     private int price;
 
     public static OutgoingDetailResponse from(OutgoingDetailDto outgoingDetailDto){
+        BigDecimal priceValue = outgoingDetailDto.getPrice() != null ? outgoingDetailDto.getPrice() : BigDecimal.ZERO;
+
         return OutgoingDetailResponse.builder()
                 .productImg(outgoingDetailDto.getImgSrc())
                 .outgoingId(outgoingDetailDto.getOutgoingId())
@@ -33,7 +36,7 @@ public class OutgoingDetailResponse {
                 .outgoingQuantity(outgoingDetailDto.getOutgoingQuantity())
                 .beforeCount(outgoingDetailDto.getInventoryQuantity())
                 .afterCount(outgoingDetailDto.getInventoryQuantity() - outgoingDetailDto.getOutgoingQuantity())
-                .price(outgoingDetailDto.getPrice().intValue())
+                .price(priceValue.intValue())
                 .productName(outgoingDetailDto.getProductName())
                 .naturalStatus(outgoingDetailDto.getNaturalStatus())
                 .country(outgoingDetailDto.getCountry())

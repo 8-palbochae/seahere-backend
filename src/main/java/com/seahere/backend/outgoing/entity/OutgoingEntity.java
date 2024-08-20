@@ -29,6 +29,8 @@ public class OutgoingEntity {
 
     private LocalDate outgoingDate;
 
+    private String tradeType;
+
     @Enumerated(EnumType.STRING)
     private OutgoingState outgoingState;
 
@@ -39,12 +41,13 @@ public class OutgoingEntity {
     private UserEntity customer;
 
     @Builder
-    public OutgoingEntity(CompanyEntity company,UserEntity customer, LocalDate outgoingDate, OutgoingState outgoingState, boolean partialOutgoing) {
+    public OutgoingEntity(CompanyEntity company,UserEntity customer, LocalDate outgoingDate, OutgoingState outgoingState, boolean partialOutgoing, String tradeType) {
         this.company = company;
         this.customer = customer;
         this.outgoingDate = outgoingDate;
         this.outgoingState = outgoingState;
         this.partialOutgoing = partialOutgoing;
+        this.tradeType = tradeType;
     }
 
     public void addOutgoingDetail(OutgoingDetailEntity outgoingDetail){

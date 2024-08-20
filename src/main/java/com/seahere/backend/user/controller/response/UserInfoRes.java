@@ -14,15 +14,17 @@ public class UserInfoRes {
     private Address address;
     private String telNumber;
     private String email;
+    private String profileImage;
     private CompanyResponse company;
 
     @Builder
-    public UserInfoRes(Long userId, String userName, Address address, String telNumber, String email, CompanyResponse company) {
+    public UserInfoRes(Long userId, String userName, Address address, String telNumber, String email, String profileImage, CompanyResponse company) {
         this.userId = userId;
         this.userName = userName;
         this.address = address;
         this.telNumber = telNumber;
         this.email = email;
+        this.profileImage = profileImage;
         this.company = company;
     }
 
@@ -34,6 +36,7 @@ public class UserInfoRes {
                     .userName(user.getUsername())
                     .email(user.getEmail())
                     .telNumber(user.getTelNumber())
+                    .profileImage(user.getProfileImage())
                     .company(CompanyResponse.from(user.getCompany()))
                     .build();
         }
@@ -43,6 +46,7 @@ public class UserInfoRes {
                 .address(user.getAddress())
                 .userName(user.getUsername())
                 .email(user.getEmail())
+                .profileImage(user.getProfileImage())
                 .telNumber(user.getTelNumber())
                 .build();
     }
