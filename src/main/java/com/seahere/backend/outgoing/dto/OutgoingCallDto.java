@@ -15,6 +15,7 @@ public class OutgoingCallDto {
 
     private Long outgoingId;
     private Long companyId;
+    private String companyName;
     private String customerName;
     private LocalDate outgoingDate;
     private OutgoingState state;
@@ -24,15 +25,21 @@ public class OutgoingCallDto {
 
 
     public static OutgoingCallDto from(OutgoingEntity outgoingEntity) {
-        return OutgoingCallDto.builder()
+        OutgoingCallDtoBuilder outgoingCallDto = OutgoingCallDto.builder()
                 .companyId(outgoingEntity.getCompany().getId())
-                .customerName(outgoingEntity.getCustomer().getUsername())
-                .outgoingDate(outgoingEntity.getOutgoingDate())
+                .companyName(outgoingEntity.getCompany().getCompanyName());
+                    if(outgoingEntity.getTradeType().equals("b2b")){
+                        outgoingCallDto.customerName(outgoingEntity.getCustomer().getCompany().getCompanyName());
+                    }else{
+                    outgoingCallDto.customerName(outgoingEntity.getCustomer().getUsername());
+                    }
+                outgoingCallDto.outgoingDate(outgoingEntity.getOutgoingDate())
                 .state(outgoingEntity.getOutgoingState())
                 .status(outgoingEntity.getOutgoingState().printState())
                 .partialOutgoing(outgoingEntity.isPartialOutgoing())
                 .title(calcTitle(outgoingEntity.getOutgoingDetails()))
-                .outgoingId(outgoingEntity.getOutgoingId()).build();
+                .outgoingId(outgoingEntity.getOutgoingId());
+                return outgoingCallDto.build();
     }
 
     private static String calcTitle(List<OutgoingDetailEntity> details){
