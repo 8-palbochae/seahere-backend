@@ -59,7 +59,7 @@ public class AlarmController {
     @GetMapping("/alarm/histories")
     public ResponseEntity<AlarmHistoryResponse> alarmHistories(@AuthenticationPrincipal CustomUserDetails userDetails, @RequestParam("page")int page,
                                                                @RequestParam(name = "size", defaultValue = "10")int size){
-        log.info("size = {} page = {}", size,page);
+
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createTime"));
         Slice<AlarmHistoryEntity> histories = alarmService.findByUserId(userDetails.getUser().getUserId(), pageRequest);
         return ResponseEntity.ok(new AlarmHistoryResponse(histories));

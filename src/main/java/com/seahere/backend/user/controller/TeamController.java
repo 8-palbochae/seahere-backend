@@ -19,7 +19,6 @@ public class TeamController {
 
     @PatchMapping("/teams")
     public ResponseEntity<Void> memberApprove(@RequestBody EmployeeAddRequest employeeEmail, @AuthenticationPrincipal CustomUserDetails userDetails){
-        log.info("employeeEmail = {}, principal = {}", employeeEmail, userDetails.getUser().getEmail());
         String loginEmail = userDetails.getUser().getEmail();
         userService.approveEmployee(loginEmail,employeeEmail.getEmployeeEmail());
 

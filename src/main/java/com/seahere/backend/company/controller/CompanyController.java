@@ -46,7 +46,7 @@ public class CompanyController {
 
     @GetMapping("/teams")
     public ResponseEntity<SettingCompanyResponse> getCompany(@AuthenticationPrincipal CustomUserDetails userDetails){
-        log.info("요청 오는지 확인");
+
         SettingCompanyResponse response = companyService.getCompanyAndEmployee(userDetails.getUser().getCompanyId());
         return ResponseEntity.ok(response);
     }
