@@ -4,18 +4,13 @@ import com.google.firebase.auth.UserInfo;
 import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.user.controller.response.UserInfoRes;
 import com.seahere.backend.user.exception.DuplicateEmailException;
-import com.seahere.backend.user.request.BrokerSignupReq;
-import com.seahere.backend.user.request.CeoSignupReq;
-import com.seahere.backend.user.request.CustomerSignupReq;
-import com.seahere.backend.user.request.OAuthSignupReq;
+import com.seahere.backend.user.request.*;
 import com.seahere.backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -78,5 +73,11 @@ public class UserController {
     public ResponseEntity<UserInfoRes> getMyInfo(@AuthenticationPrincipal CustomUserDetails userDetails){
         UserInfoRes user = userService.getUser(userDetails.getUser().getUserId());
         return ResponseEntity.ok(user);
+    }
+
+    @PatchMapping("/users")
+    public ResponseEntity<Void> editMyInfo(@RequestBody UserEditReq userEditReq, @AuthenticationPrincipal CustomUserDetails userDetails){
+        userService.editUser(userDetails.getUser().getUserId(), userEditReq);
+        return ResponseEntity.ok(null);
     }
 }

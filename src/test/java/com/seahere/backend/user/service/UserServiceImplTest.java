@@ -9,10 +9,7 @@ import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.domain.UserStatus;
 import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
-import com.seahere.backend.user.request.BrokerSignupReq;
-import com.seahere.backend.user.request.CeoSignupReq;
-import com.seahere.backend.user.request.CustomerSignupReq;
-import com.seahere.backend.user.request.OAuthSignupReq;
+import com.seahere.backend.user.request.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -345,6 +342,122 @@ class UserServiceImplTest{
         assertEquals(result.getStatus(),UserStatus.APPROVED);
         assertEquals(result.getCompany().getCompanyName(),company.getCompanyName());
         assertEquals(result.getCompany().getRegistrationNumber(),company.getRegistrationNumber());
+    }
+
+    @Test
+    @DisplayName("사용자 비밀번호는 수정 가능하다")
+    void editUserPassword() throws Exception {
+        //given
+        Address address = Address.builder()
+                .postCode("12345")
+                .mainAddress("메인 주소")
+                .subAddress("상세 주소")
+                .build();
+
+        UserEntity customer = UserEntity.builder()
+                .role(Role.CUSTOMER)
+                .socialType(null)
+                .socialId(null)
+                .status(UserStatus.APPROVED)
+                .email("test@test.com")
+                .telNumber("01012341234")
+                .leaves(false)
+                .password("1234")
+                .profileImage(null)
+                .build();
+        userRepository.save(customer);
+
+        UserEditReq userEditReq = UserEditReq.builder()
+                .password("5678")
+                .build();
+
+        //when
+        userService.editUser(customer.getId(),userEditReq);
+
+        UserEntity result = userRepository.findById(customer.getId())
+                .orElseThrow(UserNotFound::new);
+        //then
+        assertTrue(encoder.matches("5678", result.getPassword()));
+    }
+
+    @Test
+    @DisplayName("사용자 주소는 수정 가능하다")
+    void editUserAddress() throws Exception {
+        //given
+        Address address = Address.builder()
+                .postCode("12345")
+                .mainAddress("메인 주소")
+                .subAddress("상세 주소")
+                .build();
+
+        UserEntity customer = UserEntity.builder()
+                .role(Role.CUSTOMER)
+                .socialType(null)
+                .socialId(null)
+                .status(UserStatus.APPROVED)
+                .email("test@test.com")
+                .telNumber("01012341234")
+                .leaves(false)
+                .password("1234")
+                .profileImage(null)
+                .build();
+        userRepository.save(customer);
+
+        Address editAddress = Address.builder()
+                .postCode("123")
+                .mainAddress("수정 주소")
+                .subAddress("수정 상세 주소")
+                .build();
+
+        UserEditReq userEditReq = UserEditReq.builder()
+                .address(editAddress)
+                .build();
+
+        //when
+        userService.editUser(customer.getId(),userEditReq);
+
+        UserEntity result = userRepository.findById(customer.getId())
+                .orElseThrow(UserNotFound::new);
+        //then
+        assertEquals(result.getAddress().getPostCode(),editAddress.getPostCode());
+        assertEquals(result.getAddress().getMainAddress(),editAddress.getMainAddress());
+        assertEquals(result.getAddress().getSubAddress(),editAddress.getSubAddress());
+    }
+
+    @Test
+    @DisplayName("사용자 전화번호는 수정 가능하다")
+    void editUserTelNumber() throws Exception {
+        //given
+        Address address = Address.builder()
+                .postCode("12345")
+                .mainAddress("메인 주소")
+                .subAddress("상세 주소")
+                .build();
+
+        UserEntity customer = UserEntity.builder()
+                .role(Role.CUSTOMER)
+                .socialType(null)
+                .socialId(null)
+                .status(UserStatus.APPROVED)
+                .email("test@test.com")
+                .telNumber("01012341234")
+                .leaves(false)
+                .password("1234")
+                .profileImage(null)
+                .build();
+        userRepository.save(customer);
+
+        UserEditReq userEditReq = UserEditReq.builder()
+                .telNumber("01056785678")
+                .build();
+
+        //when
+        userService.editUser(customer.getId(),userEditReq);
+
+        UserEntity result = userRepository.findById(customer.getId())
+                .orElseThrow(UserNotFound::new);
+        //then
+        assertEquals(result.getTelNumber(),userEditReq.getTelNumber());
     }
 }
 

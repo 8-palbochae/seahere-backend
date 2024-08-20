@@ -21,11 +21,6 @@ public class CustomClientBranchFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String refererHeader = request.getHeader("Referer");
 
-        if(refererHeader == null ){
-            oAuth2LoginSuccessHandler.editResponseServer("https://localhost:3000/");
-            oAuth2LoginFailureHandler.editResponseServer("https://localhost:3000/");
-        }
-
         if (refererHeader != null) {
             oAuth2LoginSuccessHandler.editResponseServer(refererHeader);
             oAuth2LoginFailureHandler.editResponseServer(refererHeader);// setResponseServer 메서드 호출
