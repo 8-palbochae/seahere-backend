@@ -115,4 +115,8 @@ public class UserEntity {
         this.address = (userEdit != null && userEdit.getAddress() != null) ? userEdit.getAddress() : this.address;
         this.password = (userEdit != null && userEdit.getPassword() != null) ? userEdit.getPassword() : this.password;
     }
+
+    public boolean isAdmin(){
+        return this.role.equals(Role.ADMIN);
+    }
 }

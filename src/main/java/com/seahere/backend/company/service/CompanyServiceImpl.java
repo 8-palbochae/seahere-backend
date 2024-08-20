@@ -1,5 +1,6 @@
 package com.seahere.backend.company.service;
 
+import com.seahere.backend.user.controller.response.SettingCompanyResponse;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
 import com.seahere.backend.company.repository.CompanyRepository;
@@ -104,4 +105,10 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
 
+
+    @Override
+    public SettingCompanyResponse getCompanyAndEmployee(Long id) {
+        CompanyEntity company = companyRepository.findById(id).orElseThrow(CompanyNotFound::new);
+        return SettingCompanyResponse.from(company);
+    }
 }

@@ -18,12 +18,15 @@ import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +53,7 @@ public class AlarmServiceImpl implements AlarmService{
         alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
                         .userId(event.getUserId())
                         .title(event.getTitle())
+                        .createTime(LocalDateTime.now())
                         .body(event.getBody())
                 .build());
     }
@@ -65,6 +69,7 @@ public class AlarmServiceImpl implements AlarmService{
                 alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
                         .userId(user.getUser().getId())
                         .title(event.getTitle())
+                        .createTime(LocalDateTime.now())
                         .body(event.getBody())
                         .build());
             } catch (FirebaseMessagingException e) {
@@ -90,6 +95,7 @@ public class AlarmServiceImpl implements AlarmService{
                         .userId(user.getUser().getId())
                         .title(event.getTitle())
                         .body(event.getBody())
+                        .createTime(LocalDateTime.now())
                         .build());
             } catch (FirebaseMessagingException e) {
                 log.error("Failed to send message to user: " + user.getUser().getId(), e);
@@ -141,5 +147,9 @@ public class AlarmServiceImpl implements AlarmService{
             return input.substring(0, keywordIndex).trim();
         }
         return input;
+    }
+    @Override
+    public Slice<AlarmHistoryEntity> findByUserId(Long userId, Pageable pageable){
+        return alarmHistoryJpaRepository.findByUserId(userId, pageable);
     }
 }

@@ -84,7 +84,4 @@ public class CompanyController {
         CompanyFollowResponse mostOutgoingCompany = companyService.getMostOutgoingCompanyForCustomer(customUserDetails.getUser().getUserId());
         return ResponseEntity.ok(mostOutgoingCompany);
     }
-
-
-
 }
