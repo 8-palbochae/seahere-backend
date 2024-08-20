@@ -17,7 +17,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class FollowEntity {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "follow_id")
     private Long followId;
 
@@ -26,6 +26,6 @@ public class FollowEntity {
     private CompanyEntity company;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private UserEntity user;
 }

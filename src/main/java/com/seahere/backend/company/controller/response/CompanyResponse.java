@@ -22,7 +22,11 @@ public class CompanyResponse {
         this.profileImage = profileImage;
     }
 
-    public static CompanyResponse from(CompanyEntity company){
+    public static CompanyResponse from(CompanyEntity company) {
+        if (company == null) {
+            return null;
+        }
+
         return CompanyResponse.builder()
                 .id(company.getId())
                 .registrationNumber(company.getRegistrationNumber())
