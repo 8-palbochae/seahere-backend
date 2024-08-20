@@ -22,4 +22,5 @@ public interface CompanyService {
     CompanyFollowResponse getMostOutgoingCompanyForCustomer(Long customerId);
 
     List<CompanyFollowResponse> getFollowListForCustomer(Long customerId, CompanySearch companySearch);
+
 }
