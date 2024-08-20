@@ -61,7 +61,7 @@ public class CompanyController {
             List<CompanyFollowResponse> companyResponses = companyService.getFollowListForCustomer(customUserDetails.getUser().getUserId(), companySearch);
             return ResponseEntity.ok(companyResponses);
         } catch (Exception e) {
-            e.printStackTrace();  // Log the exception
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while processing the request.");
         }
     }

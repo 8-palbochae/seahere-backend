@@ -111,7 +111,7 @@ public class CompanySelectRepository {
                     .orderBy(company.id.desc())
                     .fetch();
         } catch (Exception e) {
-            e.printStackTrace();  // Log the exception
+            e.printStackTrace();
             throw new RuntimeException("Error fetching company follow list");
         }
     }
