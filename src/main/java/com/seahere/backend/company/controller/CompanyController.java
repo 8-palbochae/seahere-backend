@@ -34,6 +34,12 @@ public class CompanyController {
         return ResponseEntity.ok(companyResponses);
     }
 
+    @GetMapping("/trade/companies")
+    public ResponseEntity<List<CompanyResponse>> getTradeList(@ModelAttribute CompanySearch companySearch,  @AuthenticationPrincipal CustomUserDetails userDetails) {
+        List<CompanyResponse> companyResponses = companyService.getTradeCompany(companySearch,userDetails.getUser().getCompanyId());
+        return ResponseEntity.ok(companyResponses);
+    }
+
     @GetMapping("/{companyId}")
     public ResponseEntity<CompanyResponse> getCompany(@PathVariable Long companyId) {
         CompanyResponse companyResponse = companyService.getCompanyById(companyId);

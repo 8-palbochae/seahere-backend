@@ -1,6 +1,7 @@
 package com.seahere.backend.history.controller.response;
 
 import com.seahere.backend.outgoing.controller.response.OutgoingDetailResponse;
+import com.seahere.backend.outgoing.dto.OutgoingCallDto;
 import com.seahere.backend.outgoing.dto.OutgoingDetailDto;
 import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import com.seahere.backend.outgoing.entity.OutgoingEntity;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class HistoryOutgoingResponse {
     private Long outgoingId;
     private Long companyId;
+    private String companyName;
     private String customerName;
     private LocalDate outgoingDate;
     private OutgoingState state;
@@ -27,16 +29,23 @@ public class HistoryOutgoingResponse {
     private List<HistoryOutgoingDetailResponse> details;
 
     public static HistoryOutgoingResponse from(OutgoingEntity outgoingEntity) {
-        return HistoryOutgoingResponse.builder()
+
+        HistoryOutgoingResponseBuilder historyOutgoingResponse = HistoryOutgoingResponse.builder()
                 .companyId(outgoingEntity.getCompany().getId())
-                .customerName(outgoingEntity.getCustomer().getUsername())
-                .outgoingDate(outgoingEntity.getOutgoingDate())
+                .companyName(outgoingEntity.getCompany().getCompanyName());
+                if(outgoingEntity.getTradeType().equals("b2b")){
+                    historyOutgoingResponse.customerName(outgoingEntity.getCustomer().getCompany().getCompanyName());
+                }else{
+                    historyOutgoingResponse.customerName(outgoingEntity.getCustomer().getUsername());
+                }
+            historyOutgoingResponse.outgoingDate(outgoingEntity.getOutgoingDate())
                 .state(outgoingEntity.getOutgoingState())
                 .status(outgoingEntity.getOutgoingState().printState())
                 .partialOutgoing(outgoingEntity.isPartialOutgoing())
                 .title(calcTitle(outgoingEntity.getOutgoingDetails()))
                 .details(outgoingEntity.getOutgoingDetails().stream().map(HistoryOutgoingDetailResponse::from).collect(Collectors.toList()))
-                .outgoingId(outgoingEntity.getOutgoingId()).build();
+                .outgoingId(outgoingEntity.getOutgoingId());
+                return historyOutgoingResponse.build();
     }
 
     private static String calcTitle(List<OutgoingDetailEntity> details){

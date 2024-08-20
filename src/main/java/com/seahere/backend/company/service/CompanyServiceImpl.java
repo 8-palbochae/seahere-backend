@@ -24,6 +24,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public CompanyResponse getCompanyById(Long id) {
         CompanyEntity company = companyRepository.findById(id).orElseThrow(CompanyNotFound::new);
+
         return CompanyResponse.from(company);
     }
 
@@ -36,6 +37,7 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyResponse getCompanyByRegNumber(String registrationNumber) {
         CompanyEntity company = companyRepository.findByRegistrationNumber(registrationNumber)
                 .orElseThrow(CompanyNotFound::new);
+
         return CompanyResponse.from(company);
     }
 
@@ -52,6 +54,7 @@ public class CompanyServiceImpl implements CompanyService {
     public Long save(CompanyCreateReq companyCreateReq) {
         CompanyEntity company = CompanyEntity.from(companyCreateReq);
         companyRepository.save(company);
+
         return company.getId();
     }
 
@@ -86,6 +89,13 @@ public class CompanyServiceImpl implements CompanyService {
     public CompanyResponse getMostOutgoingCompany() {
         CompanyEntity bestCompany = companySelectRepository.findCompanyWithBestOutgoing();
         return CompanyResponse.from(bestCompany);
+    }
+    @Override
+    public List<CompanyResponse> getTradeCompany(CompanySearch companySearch, Long companyId) {
+        return companySelectRepository.findTradeCompanyList(companySearch, companyId)
+                .stream()
+                .map(CompanyResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Override
