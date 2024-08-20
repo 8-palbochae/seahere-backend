@@ -1,6 +1,5 @@
 package com.seahere.backend.product.dto;
 
-
 import com.seahere.backend.product.entity.ProductEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

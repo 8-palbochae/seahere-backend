@@ -54,6 +54,12 @@ public class InventoryReqController {
         return ResponseEntity.ok(brokerInventoryList);
     }
 
+    @GetMapping("/trades/{companyId}")
+    public ResponseEntity<List<InventoryTradeRes>> findInventoryTrades(@PathVariable Long companyId, @ModelAttribute CustomerInventorySearch customerInventorySearch){
+        List<InventoryTradeRes> brokerTradeList = inventoryService.findTradeList(companyId, customerInventorySearch);
+        return ResponseEntity.ok(brokerTradeList);
+    }
+
     @GetMapping("/product-search-inventories")
     public ResponseEntity<List<IncomingSearchResponse>> getInventory(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         List<ProductDto> products = inventoryService.getAllDistinctProductNamesByCompanyId(customUserDetails.getUser().getCompanyId());

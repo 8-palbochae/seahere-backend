@@ -1,6 +1,7 @@
-package com.seahere.backend.company.controller.response;
+package com.seahere.backend.user.controller.response;
 
 import com.seahere.backend.common.entity.Address;
+import com.seahere.backend.company.controller.response.EmployeeResponse;
 import com.seahere.backend.company.entity.CompanyEntity;
 import lombok.Builder;
 import lombok.Getter;

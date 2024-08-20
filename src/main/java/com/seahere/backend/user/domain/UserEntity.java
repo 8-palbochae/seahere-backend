@@ -4,6 +4,7 @@ import com.seahere.backend.common.entity.Address;
 import com.seahere.backend.common.entity.Role;
 import com.seahere.backend.common.entity.SocialType;
 import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.user.request.UserEditReq;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -107,6 +108,12 @@ public class UserEntity {
 
     public void editStatus(UserStatus status){
         this.status = status;
+    }
+
+    public void editInfo(UserEditReq userEdit){
+        this.telNumber = (userEdit != null && userEdit.getTelNumber() != null) ? userEdit.getTelNumber() : this.telNumber;
+        this.address = (userEdit != null && userEdit.getAddress() != null) ? userEdit.getAddress() : this.address;
+        this.password = (userEdit != null && userEdit.getPassword() != null) ? userEdit.getPassword() : this.password;
     }
 
     public boolean isAdmin(){

@@ -12,12 +12,14 @@ import java.util.List;
 public class OutgoingCreateReq {
     private Long companyId;
     private boolean partialOutgoing;
+    private String tradeType;
     private List<OutgoingCreateDetailReq> details;
 
     @Builder
-    public OutgoingCreateReq(Long companyId, boolean partialOutgoing, List<OutgoingCreateDetailReq> details) {
+    public OutgoingCreateReq(Long companyId, boolean partialOutgoing, String tradeType, List<OutgoingCreateDetailReq> details) {
         this.companyId = companyId;
         this.partialOutgoing = partialOutgoing;
+        this.tradeType = tradeType;
         this.details = details;
     }
 }

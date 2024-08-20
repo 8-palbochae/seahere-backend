@@ -66,6 +66,7 @@ public class OutgoingService {
         OutgoingEntity outgoing = OutgoingEntity.builder()
                 .company(company)
                 .partialOutgoing(outgoingCreateReq.isPartialOutgoing())
+                .tradeType(outgoingCreateReq.getTradeType())
                 .outgoingState(OutgoingState.PENDING)
                 .customer(customer)
                 .outgoingDate(LocalDate.now())

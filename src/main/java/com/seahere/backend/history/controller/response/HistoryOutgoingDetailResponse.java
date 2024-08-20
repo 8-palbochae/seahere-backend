@@ -4,6 +4,8 @@ import com.seahere.backend.outgoing.entity.OutgoingDetailEntity;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.math.BigDecimal;
+
 @Builder
 @Getter
 public class HistoryOutgoingDetailResponse {
@@ -18,10 +20,11 @@ public class HistoryOutgoingDetailResponse {
     private String naturalStatus;
     private boolean isDelete;
     public static HistoryOutgoingDetailResponse from(OutgoingDetailEntity outgoingDetail){
+        BigDecimal priceValue = outgoingDetail.getPrice() != null ? outgoingDetail.getPrice() : BigDecimal.ZERO;
         return HistoryOutgoingDetailResponse.builder()
                 .productImg(outgoingDetail.getProduct().getProductImg())
                 .outgoingId(outgoingDetail.getOutgoing().getOutgoingId())
-                .price(outgoingDetail.getPrice().intValue())
+                .price(priceValue.intValue())
                 .category(outgoingDetail.getCategory())
                 .country(outgoingDetail.getCountry())
                 .naturalStatus(outgoingDetail.getNaturalStatus())

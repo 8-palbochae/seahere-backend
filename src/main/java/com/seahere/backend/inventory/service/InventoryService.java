@@ -9,6 +9,7 @@ import com.seahere.backend.inventory.controller.request.InventoryRequest;
 import com.seahere.backend.inventory.controller.response.CustomerInventoryRes;
 import com.seahere.backend.inventory.controller.response.InventoryDetailResponse;
 import com.seahere.backend.inventory.controller.response.InventoryResponse;
+import com.seahere.backend.inventory.controller.response.InventoryTradeRes;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.exception.InventoryNotFoundException;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
@@ -61,6 +62,14 @@ public class InventoryService {
         return inventoryRepository.findByCompanyIdWithDetail(companyId, customerInventorySearch)
                 .stream()
                 .map(CustomerInventoryRes::from)
+                .collect(Collectors.toList());
+    }
+
+    //트레이드
+    public List<InventoryTradeRes> findTradeList(Long companyId, CustomerInventorySearch customerInventorySearch){
+        return inventoryRepository.findTradeInventory(companyId,customerInventorySearch)
+                .stream()
+                .map(InventoryTradeRes::from)
                 .collect(Collectors.toList());
     }
 
