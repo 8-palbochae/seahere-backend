@@ -2,10 +2,6 @@ package com.seahere.backend.adjust.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.seahere.backend.adjust.entity.AdjustEntity;
-import com.seahere.backend.adjust.entity.QAdjustEntity;
-import com.seahere.backend.company.entity.QCompanyEntity;
-import com.seahere.backend.inventory.entity.QInventoryEntity;
-import com.seahere.backend.product.entity.QProductEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

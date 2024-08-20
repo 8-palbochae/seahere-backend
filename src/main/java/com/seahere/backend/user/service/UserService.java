@@ -1,10 +1,7 @@
 package com.seahere.backend.user.service;
 
 import com.seahere.backend.user.controller.response.UserInfoRes;
-import com.seahere.backend.user.request.BrokerSignupReq;
-import com.seahere.backend.user.request.CeoSignupReq;
-import com.seahere.backend.user.request.CustomerSignupReq;
-import com.seahere.backend.user.request.OAuthSignupReq;
+import com.seahere.backend.user.request.*;
 
 public interface UserService {
     Long signupCustomer(CustomerSignupReq customerSignupReq);
@@ -14,4 +11,6 @@ public interface UserService {
     Boolean validateEmail(String email);
     void approveEmployee(String ceoEmail, String employeeEmail);
     UserInfoRes getUser(Long userId);
+
+    void editUser(Long userId, UserEditReq userEdit);
 }

@@ -3,10 +3,12 @@ package com.seahere.backend.company.controller;
 import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.company.controller.request.CompanyCreateReq;
 import com.seahere.backend.company.controller.request.CompanySearch;
+import com.seahere.backend.company.controller.response.CompanyFollowResponse;
 import com.seahere.backend.company.controller.response.CompanyResponse;
 import com.seahere.backend.company.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +18,17 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/companies")
 public class CompanyController {
     private final CompanyService companyService;
 
-    @PostMapping("/companies")
-    public ResponseEntity<Long> companyAdd(@RequestBody CompanyCreateReq companyCreateReq){
+    @PostMapping
+    public ResponseEntity<Long> companyAdd(@RequestBody CompanyCreateReq companyCreateReq) {
         Long savedId = companyService.save(companyCreateReq);
         return ResponseEntity.ok(savedId);
     }
 
-    @GetMapping("/companies")
+    @GetMapping
     public ResponseEntity<List<CompanyResponse>> getList(@ModelAttribute CompanySearch companySearch) {
         List<CompanyResponse> companyResponses = companyService.getList(companySearch);
         return ResponseEntity.ok(companyResponses);
@@ -37,15 +40,51 @@ public class CompanyController {
         return ResponseEntity.ok(companyResponses);
     }
 
-    @GetMapping("/companies/{companyId}")
-    public ResponseEntity<CompanyResponse> getCompany(@PathVariable Long companyId){
+    @GetMapping("/{companyId}")
+    public ResponseEntity<CompanyResponse> getCompany(@PathVariable Long companyId) {
         CompanyResponse companyResponse = companyService.getCompanyById(companyId);
         return ResponseEntity.ok(companyResponse);
     }
 
-    @GetMapping("/companies/best")
-    public ResponseEntity<CompanyResponse> getBestCompany(){
+    @GetMapping("/best")
+    public ResponseEntity<CompanyResponse> getBestCompany() {
         CompanyResponse mostOutgoingCompany = companyService.getMostOutgoingCompany();
         return ResponseEntity.ok(mostOutgoingCompany);
     }
+
+    @GetMapping("/c")
+    public ResponseEntity<List<CompanyFollowResponse>> getListForCustomer(@ModelAttribute CompanySearch companySearch,
+                                                                          @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        List<CompanyFollowResponse> companyResponses = companyService.getListForCustomer(customUserDetails.getUser().getUserId(), companySearch);
+        return ResponseEntity.ok(companyResponses);
+    }
+
+    @GetMapping("/c/follow")
+    public ResponseEntity<?> getFollowListForCustomer(
+            @ModelAttribute CompanySearch companySearch,
+            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        try {
+            List<CompanyFollowResponse> companyResponses = companyService.getFollowListForCustomer(customUserDetails.getUser().getUserId(), companySearch);
+            return ResponseEntity.ok(companyResponses);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while processing the request.");
+        }
+    }
+
+    @GetMapping("/c/{companyId}")
+    public ResponseEntity<CompanyFollowResponse> getCompanyForCustomer(@PathVariable Long companyId,
+                                                                       @AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        CompanyFollowResponse companyResponse = companyService.getCompanyByIdForCustomer(customUserDetails.getUser().getUserId(), companyId);
+        return ResponseEntity.ok(companyResponse);
+    }
+
+    @GetMapping("/c/best")
+    public ResponseEntity<CompanyFollowResponse> getBestCompanyForCustomer(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
+        CompanyFollowResponse mostOutgoingCompany = companyService.getMostOutgoingCompanyForCustomer(customUserDetails.getUser().getUserId());
+        return ResponseEntity.ok(mostOutgoingCompany);
+    }
+
+
+
 }

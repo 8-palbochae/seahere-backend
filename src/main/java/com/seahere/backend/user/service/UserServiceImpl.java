@@ -10,10 +10,7 @@ import com.seahere.backend.user.domain.UserStatus;
 import com.seahere.backend.user.exception.BrokerPermissionException;
 import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
-import com.seahere.backend.user.request.BrokerSignupReq;
-import com.seahere.backend.user.request.CeoSignupReq;
-import com.seahere.backend.user.request.CustomerSignupReq;
-import com.seahere.backend.user.request.OAuthSignupReq;
+import com.seahere.backend.user.request.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -110,5 +107,16 @@ public class UserServiceImpl implements UserService{
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(UserNotFound::new);
         return UserInfoRes.from(user);
+    }
+
+    @Override
+    public void editUser(Long userId, UserEditReq userEdit) {
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(UserNotFound::new);
+        if(userEdit.getPassword() != null){
+            String encoded = passwordEncoder.encode(userEdit.getPassword());
+            userEdit.encode(encoded);
+        }
+        user.editInfo(userEdit);
     }
 }
