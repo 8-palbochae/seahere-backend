@@ -101,6 +101,7 @@ public class UserEntity {
     public void updateCompany(CompanyEntity company){
         this.company = company;
     }
+    public void updateProfileImage(String profileImage) { this.profileImage = profileImage; }
 
     public void editRole(Role role){
         this.role  = role;
