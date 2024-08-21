@@ -138,6 +138,10 @@ public class OutgoingService {
                     .orElseThrow(InventoryNotFoundException::new);
              if(detail.isLackInventory(inventory.getQuantity())) throw new LackInventoryException();
              inventory.minusQuantity(detail.getQuantity());
+
+             if(inventory.getQuantity() <= inventory.getInventoryDetail().getWarningQuantity()){
+                 eventPublisher.publishEvent(new AlarmToCompanyEvent(company.getId(),"안전 재고 부족",inventory.getProduct().getProductName() + "가 안전재고보다 수량이 부족합니다."));
+             }
         }
         return outgoingCall;
     }
