@@ -35,11 +35,14 @@ public class S3Controller {
     @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteFile(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         UserEntity user = s3Service.getUserById(customUserDetails.getUser().getUserId());
-        String fileName = user.getProfileImage();
-        s3Service.deleteFile(fileName);
-        user.updateProfileImage(null);
-        s3Service.saveUser(user);
-        return ResponseEntity.noContent().build();
+        if(user.getProfileImage()!= null){
+            String fileName = user.getProfileImage();
+            s3Service.deleteFile(fileName);
+            user.updateProfileImage(null);
+            s3Service.saveUser(user);
+            return ResponseEntity.noContent().build();
+        } else return ResponseEntity.noContent().build();
+
     }
 
     @GetMapping("/profile-image-url")
