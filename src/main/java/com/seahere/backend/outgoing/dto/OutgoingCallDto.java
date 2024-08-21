@@ -28,7 +28,7 @@ public class OutgoingCallDto {
         OutgoingCallDtoBuilder outgoingCallDto = OutgoingCallDto.builder()
                 .companyId(outgoingEntity.getCompany().getId())
                 .companyName(outgoingEntity.getCompany().getCompanyName());
-                    if(outgoingEntity.getTradeType().equals("b2b")){
+                    if(outgoingEntity.getTradeType().equals("b2b") && outgoingEntity.getCustomer().getCompany() != null){
                         outgoingCallDto.customerName(outgoingEntity.getCustomer().getCompany().getCompanyName());
                     }else{
                     outgoingCallDto.customerName(outgoingEntity.getCustomer().getUsername());
