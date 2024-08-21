@@ -87,8 +87,9 @@ public class AlarmServiceImpl implements AlarmService{
         String fish = extractFish(event.getBody(), "세일중입니다.");
         String url = baseUrl+"/alarm/log?fish="+fish;
         log.info("baseUrl = {}", url);
-        List<AlarmTokenEntity> all = alarmJapRepository.findAll();
+        List<AlarmTokenEntity> all = alarmRepository.findByCompanyFlowerUser(event.getCompanyId());
         for (AlarmTokenEntity user : all) {
+            log.info("회원정보 = {}",user.getUser().getId());
             try {
                 sendMessage(user.getToken(), event.getTitle(), event.getBody(),url);
                 alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()

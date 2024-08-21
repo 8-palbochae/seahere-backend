@@ -4,6 +4,7 @@ import com.seahere.backend.common.entity.Address;
 import com.seahere.backend.common.entity.Role;
 import com.seahere.backend.common.entity.SocialType;
 import com.seahere.backend.company.entity.CompanyEntity;
+import com.seahere.backend.follow.entity.FollowEntity;
 import com.seahere.backend.user.request.UserEditReq;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -12,6 +13,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -53,6 +56,9 @@ public class UserEntity {
     private String profileImage;
 
     private String refreshToken;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<FollowEntity> followList = new ArrayList<>();
 
     @Builder
     public UserEntity(Long id, CompanyEntity company, String username, String email, String password, Address address, String telNumber, Boolean leaves, Role role, SocialType socialType, String socialId, UserStatus status, String profileImage, String refreshToken) {
