@@ -53,10 +53,13 @@ public class SecurityConfig implements WebMvcConfigurer {
             .and()
                  .authorizeRequests()
                  .antMatchers("/h2-console/**").permitAll()
+                 .antMatchers("/swagger-ui/**").permitAll()
                  .antMatchers(HttpMethod.POST, "/login").permitAll()
                  .antMatchers(HttpMethod.POST, "/ocr").permitAll()
                  .antMatchers(HttpMethod.POST,"/companies").permitAll()
                  .antMatchers(HttpMethod.POST,"/users/**").permitAll()
+                 .antMatchers("/v3/api-docs").permitAll() // Swagger UI 접근 허용
+                 .antMatchers("/swagger/**").permitAll()
                  .antMatchers("/authentication/protected").permitAll()// 모든 메서드 허용
                  .anyRequest().authenticated()
                  .and()
@@ -78,6 +81,7 @@ public class SecurityConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "https://localhost:3000",
+                        "http://localhost:3000",
                         "http://localhost:5173",
                         "https://10.10.10.37:3000",
                         "http://10.10.10.170:5173",
