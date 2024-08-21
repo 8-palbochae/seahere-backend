@@ -31,7 +31,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom{
                 .where(QUserEntity.userEntity.socialType.eq(socialType)
                         .and(QUserEntity.userEntity.socialId.eq(SocialId)))
                 .fetchOne();
-
         return Optional.ofNullable(user);
     }
 }

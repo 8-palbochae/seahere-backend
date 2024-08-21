@@ -65,7 +65,6 @@ public class UserController {
 
         response.put("available", isAvailable);
         response.put("message", isAvailable ? "이메일을 사용할 수 있습니다." : "이메일이 이미 사용 중입니다.");
-
         return ResponseEntity.ok(response);
     }
 
