@@ -19,7 +19,7 @@ public interface InventoryJpaRepository extends JpaRepository<InventoryEntity, L
             @Param("naturalStatus") String naturalStatus,
             @Param("country") String country);
 
-    @Query("SELECT i FROM InventoryEntity i WHERE i.category = :category AND i.product.productName = :productName AND i.company.id = :companyId AND i.naturalStatus = :naturalStatus AND i.country = :country")
+    @Query("SELECT i FROM InventoryEntity i LEFT JOIN FETCH i.inventoryDetail WHERE i.category = :category AND i.product.productName = :productName AND i.company.id = :companyId AND i.naturalStatus = :naturalStatus AND i.country = :country")
     Optional<InventoryEntity> findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(
             @Param("category") String category,
             @Param("productName") String productName,

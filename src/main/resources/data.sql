@@ -70,7 +70,7 @@ INSERT INTO incoming(incoming_id,category,country,country_detail,incoming_date,i
 
 
 INSERT INTO outgoing (outgoing_id, company_id, outgoing_date, outgoing_state, partial_outgoing, user_id, trade_type) VALUES
-                                                                                                             (1, 1, '2024-07-27', 'COMPLETE', true,1,'b2c'),
+                                                                                                             (1, 1, '2024-07-27', 'PENDING', true,1,'b2c'),
                                                                                                              (2, 101, '2024-07-28', 'COMPLETE', false,2,'b2c'),
                                                                                                              (3, 102, '2024-07-29', 'COMPLETE', true,2,'b2b'),
                                                                                                              (4, 103, '2024-07-30', 'COMPLETE', false,2,'b2b'),
