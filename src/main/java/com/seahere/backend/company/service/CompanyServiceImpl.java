@@ -1,5 +1,6 @@
 package com.seahere.backend.company.service;
 
+import com.seahere.backend.company.exception.DuplicateCompanyException;
 import com.seahere.backend.user.controller.response.SettingCompanyResponse;
 import com.seahere.backend.company.entity.CompanyEntity;
 import com.seahere.backend.company.exception.CompanyNotFound;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -111,4 +113,16 @@ public class CompanyServiceImpl implements CompanyService {
         CompanyEntity company = companyRepository.findById(id).orElseThrow(CompanyNotFound::new);
         return SettingCompanyResponse.from(company);
     }
+
+    @Override
+    public Boolean duplicateRegNumber(String registrationNumber) {
+        Optional<CompanyEntity> company = companyRepository.findByRegistrationNumber(registrationNumber);
+        if(company.isPresent()){
+            throw new DuplicateCompanyException();
+        }
+        else{
+            return true;
+        }
+    }
+
 }

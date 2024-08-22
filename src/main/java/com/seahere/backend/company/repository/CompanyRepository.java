@@ -10,5 +10,4 @@ import java.util.Optional;
 public interface CompanyRepository extends JpaRepository<CompanyEntity,Long> {
     Optional<CompanyEntity> findByRegistrationNumber(String registrationNumber);
     List<CompanyEntity> findByCompanyName(String companyName);
-
 }

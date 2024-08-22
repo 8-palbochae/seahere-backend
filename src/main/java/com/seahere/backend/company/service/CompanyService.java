@@ -25,4 +25,6 @@ public interface CompanyService {
 
     List<CompanyFollowResponse> getFollowListForCustomer(Long customerId, CompanySearch companySearch);
     SettingCompanyResponse getCompanyAndEmployee(Long id);
+
+    Boolean duplicateRegNumber(String registrationNumber);
 }
