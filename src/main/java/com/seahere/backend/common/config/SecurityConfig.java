@@ -5,17 +5,20 @@ import com.seahere.backend.auth.filter.CustomClientBranchFilter;
 import com.seahere.backend.auth.jwt.filter.JwtAuthenticationProcessingFilter;
 import com.seahere.backend.auth.jwt.service.JwtService;
 import com.seahere.backend.auth.login.filter.CustomJsonUsernamePasswordAuthenticationFilter;
+import com.seahere.backend.auth.login.handler.CustomLogoutSuccessHandler;
 import com.seahere.backend.auth.login.handler.LoginFailureHandler;
 import com.seahere.backend.auth.login.handler.LoginSuccessHandler;
 import com.seahere.backend.auth.login.service.LoginService;
 import com.seahere.backend.auth.oauth.handler.OAuth2LoginFailureHandler;
 import com.seahere.backend.auth.oauth.handler.OAuth2LoginSuccessHandler;
 import com.seahere.backend.auth.oauth.service.CustomOAuth2UserService;
+import com.seahere.backend.redis.respository.TokenRepository;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
@@ -42,6 +45,9 @@ public class SecurityConfig implements WebMvcConfigurer {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final TokenRepository tokenRepository;
+    private final CustomLogoutSuccessHandler customLogoutSuccessHandler;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, ServletRegistrationBean h2Console) throws Exception {
          http
@@ -53,20 +59,28 @@ public class SecurityConfig implements WebMvcConfigurer {
             .and()
                  .authorizeRequests()
                  .antMatchers("/h2-console/**").permitAll()
+                 .antMatchers("/swagger-ui/**").permitAll()
                  .antMatchers(HttpMethod.POST, "/login").permitAll()
                  .antMatchers(HttpMethod.POST, "/ocr").permitAll()
                  .antMatchers(HttpMethod.POST,"/companies").permitAll()
                  .antMatchers(HttpMethod.POST,"/users/**").permitAll()
+                 .antMatchers("/v3/api-docs").permitAll() // Swagger UI 접근 허용
+                 .antMatchers("/swagger/**").permitAll()
                  .antMatchers("/authentication/protected").permitAll()// 모든 메서드 허용
                  .anyRequest().authenticated()
                  .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-            .and()
+                 .and()
+                 .logout()
+                 .logoutUrl("/logout")  // 로그아웃 요청을 받을 URL
+                .logoutSuccessHandler(logoutSuccessHandler())  // 커스텀 로그아웃 성공 핸들러 설정
+                .deleteCookies("JSESSIONID")  // 쿠키 삭제
+                .invalidateHttpSession(true)  // 세션 무효화
+                .and()
             .oauth2Login()
             .successHandler(oAuth2LoginSuccessHandler)
             .failureHandler(oAuth2LoginFailureHandler)
             .userInfoEndpoint().userService(customOAuth2UserService);
-
          http.addFilterBefore(customClientFilter(), OAuth2AuthorizationRequestRedirectFilter.class);
          http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
          http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
@@ -77,6 +91,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins(
+                        "https://localhost:3000",
                         "http://localhost:3000",
                         "http://localhost:5173",
                         "https://10.10.10.37:3000",
@@ -107,12 +122,17 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public LoginSuccessHandler loginSuccessHandler() {
-        return new LoginSuccessHandler(jwtService, userRepository);
+        return new LoginSuccessHandler(jwtService, userRepository,tokenRepository);
     }
 
     @Bean
     public LoginFailureHandler loginFailureHandler() {
         return new LoginFailureHandler();
+    }
+
+    @Bean
+    public CustomLogoutSuccessHandler logoutSuccessHandler() {
+        return new CustomLogoutSuccessHandler(tokenRepository);
     }
 
     @Bean
@@ -133,7 +153,7 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
+        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository,tokenRepository    );
         return jwtAuthenticationFilter;
     }
 }
