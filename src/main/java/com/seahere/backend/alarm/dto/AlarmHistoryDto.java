@@ -14,6 +14,7 @@ public class AlarmHistoryDto {
     String title;
     String body;
     LocalDateTime createTime;
+    Long saleCompanyId;
 
     public static AlarmHistoryDto from(AlarmHistoryEntity alarmHistoryEntity){
         return AlarmHistoryDto.builder()
@@ -21,6 +22,7 @@ public class AlarmHistoryDto {
                 .title(alarmHistoryEntity.getTitle())
                 .body(alarmHistoryEntity.getBody())
                 .createTime(alarmHistoryEntity.getCreateTime())
+                .saleCompanyId(alarmHistoryEntity.getSaleCompanyId())
                 .build();
     }
 }
