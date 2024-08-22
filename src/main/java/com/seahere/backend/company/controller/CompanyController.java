@@ -5,6 +5,7 @@ import com.seahere.backend.company.controller.request.CompanyCreateReq;
 import com.seahere.backend.company.controller.request.CompanySearch;
 import com.seahere.backend.company.controller.response.CompanyFollowResponse;
 import com.seahere.backend.company.controller.response.CompanyResponse;
+import com.seahere.backend.company.exception.DuplicateCompanyException;
 import com.seahere.backend.company.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -85,5 +88,10 @@ public class CompanyController {
         return ResponseEntity.ok(mostOutgoingCompany);
     }
 
+   @PostMapping("/duplicate")
+   public ResponseEntity<Void> checkDuplicateCompany(@RequestBody Map<String,String> registrationNumber) {
+        companyService.duplicateRegNumber(registrationNumber.get("registrationNumber"));
+        return ResponseEntity.ok(null);
+    }
 
 }
