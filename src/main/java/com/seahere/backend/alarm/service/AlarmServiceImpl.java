@@ -81,8 +81,6 @@ public class AlarmServiceImpl implements AlarmService{
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     public void pushAlarmToFollower(AlarmToFollowerEvent event){
-        log.info("이벤트 구독확인 ");
-        //todo 회사를 팔로워한 유저와 token entity join해서 가져오기
         String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         String fish = extractFish(event.getBody(), "세일중입니다.");
         String url = baseUrl+"/alarm/log?fish="+fish;
@@ -97,6 +95,7 @@ public class AlarmServiceImpl implements AlarmService{
                         .title(event.getTitle())
                         .body(event.getBody())
                         .createTime(LocalDateTime.now())
+                        .SaleCompanyId(event.getCompanyId())
                         .build());
             } catch (FirebaseMessagingException e) {
                 log.error("Failed to send message to user: " + user.getUser().getId(), e);
