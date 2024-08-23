@@ -63,6 +63,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                  .antMatchers(HttpMethod.POST, "/login").permitAll()
                  .antMatchers(HttpMethod.POST, "/ocr").permitAll()
                  .antMatchers(HttpMethod.POST,"/companies").permitAll()
+                 .antMatchers(HttpMethod.POST,"/companies/duplicate").permitAll()
                  .antMatchers(HttpMethod.POST,"/users/**").permitAll()
                  .antMatchers("/v3/api-docs").permitAll() // Swagger UI 접근 허용
                  .antMatchers("/swagger/**").permitAll()

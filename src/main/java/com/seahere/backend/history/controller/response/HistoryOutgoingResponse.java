@@ -33,7 +33,7 @@ public class HistoryOutgoingResponse {
         HistoryOutgoingResponseBuilder historyOutgoingResponse = HistoryOutgoingResponse.builder()
                 .companyId(outgoingEntity.getCompany().getId())
                 .companyName(outgoingEntity.getCompany().getCompanyName());
-                if(outgoingEntity.getTradeType().equals("b2b")){
+                if(outgoingEntity.getTradeType().equals("b2b") && outgoingEntity.getCustomer().getCompany() != null){
                     historyOutgoingResponse.customerName(outgoingEntity.getCustomer().getCompany().getCompanyName());
                 }else{
                     historyOutgoingResponse.customerName(outgoingEntity.getCustomer().getUsername());
