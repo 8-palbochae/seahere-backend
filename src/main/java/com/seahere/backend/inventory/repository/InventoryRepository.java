@@ -101,7 +101,7 @@ public class InventoryRepository {
                 .orderBy(QInventoryEntity.inventoryEntity.product.productName.asc(),QInventoryEntity.inventoryEntity.inventoryId.asc())
                 .fetch();
     }
-    //트레이드
+
     public List<InventoryEntity> findTradeInventory(Long companyId, CustomerInventorySearch customerInventorySearch) {
         return queryFactory.selectFrom(QInventoryEntity.inventoryEntity)
                 .leftJoin(QInventoryEntity.inventoryEntity.product, QProductEntity.productEntity).fetchJoin()
