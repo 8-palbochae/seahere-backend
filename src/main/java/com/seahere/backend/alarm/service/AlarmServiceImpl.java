@@ -13,8 +13,11 @@ import com.seahere.backend.alarm.repository.AlarmCustomerLogJpaRepository;
 import com.seahere.backend.alarm.repository.AlarmHistoryJpaRepository;
 import com.seahere.backend.alarm.repository.AlarmJapRepository;
 import com.seahere.backend.alarm.repository.AlarmRepository;
+import com.seahere.backend.redis.entity.FCMToken;
+import com.seahere.backend.redis.respository.FCMTokenRepository;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.exception.UserNotFound;
+import com.seahere.backend.redis.exception.RedisFCMNotFound;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +37,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class AlarmServiceImpl implements AlarmService{
+public class AlarmServiceImpl implements AlarmService {
 
     private final FirebaseMessaging firebaseMessaging;
     private final AlarmHistoryJpaRepository alarmHistoryJpaRepository;
@@ -42,36 +45,59 @@ public class AlarmServiceImpl implements AlarmService{
     private final UserRepository userRepository;
     private final AlarmRepository alarmRepository;
     private final AlarmCustomerLogJpaRepository alarmCustomerLogJpaRepository;
+    private final FCMTokenRepository fcmTokenRepository;
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
     public void pushAlarmToCustomer(AlarmToCustomerEvent event) throws FirebaseMessagingException {
-        log.info("이벤트 구독확인 ");
-        UserEntity user = userRepository.findById(event.getUserId()).orElseThrow(UserNotFound::new);
-        AlarmTokenEntity token = alarmJapRepository.findByUser(user).orElseThrow(TokenNotFoundException::new);
-        sendMessage(token.getToken(),event.getTitle(),event.getBody());
+        log.info("이벤트 구독 확인, 사용자 ID: {}", event.getUserId());
+
+        String token;
+        try {
+            FCMToken redisToken = fcmTokenRepository.findById(event.getUserId())
+                    .orElseThrow(RedisFCMNotFound::new);
+            token = redisToken.getFCMToken();
+        } catch (RedisFCMNotFound e) {
+            UserEntity user = userRepository.findById(event.getUserId()).orElseThrow(UserNotFound::new);
+            AlarmTokenEntity alarmToken = alarmJapRepository.findByUser(user)
+                    .orElseThrow(TokenNotFoundException::new);
+            token = alarmToken.getToken();
+            FCMToken newRedisToken = FCMToken.builder()
+                    .id(user.getId())
+                    .email(user.getEmail())
+                    .FCMToken(token)
+                    .build();
+            fcmTokenRepository.save(newRedisToken);
+        }
+
+        sendMessage(token, event.getTitle(), event.getBody());
         alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
-                        .userId(event.getUserId())
-                        .title(event.getTitle())
-                        .createTime(LocalDateTime.now())
-                        .body(event.getBody())
+                .userId(event.getUserId())
+                .title(event.getTitle())
+                .createTime(LocalDateTime.now())
+                .body(event.getBody())
                 .build());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
-    public void pushAlarmToCompanyUser(AlarmToCompanyEvent event){
-        log.info("이벤트 구독확인 ");
+    public void pushAlarmToCompanyUser(AlarmToCompanyEvent event) {
+        log.info("이벤트 구독 확인, 회사 ID: {}", event.getCompanyId());
+
         List<AlarmTokenEntity> users = alarmRepository.findByCompanyUser(event.getCompanyId());
         for (AlarmTokenEntity user : users) {
             try {
-                sendMessage(user.getToken(), event.getTitle(), event.getBody());
+                String token = getOrUpdateFCMToken(user.getUser().getId(), user.getUser().getEmail(), user.getToken());
+
+                sendMessage(token, event.getTitle(), event.getBody());
+
                 alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
                         .userId(user.getUser().getId())
                         .title(event.getTitle())
                         .createTime(LocalDateTime.now())
                         .body(event.getBody())
                         .build());
+
             } catch (FirebaseMessagingException e) {
                 log.error("Failed to send message to user: " + user.getUser().getId(), e);
             }
@@ -80,23 +106,27 @@ public class AlarmServiceImpl implements AlarmService{
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener
-    public void pushAlarmToFollower(AlarmToFollowerEvent event){
+    public void pushAlarmToFollower(AlarmToFollowerEvent event) {
+        log.info("이벤트 구독 확인, 회사 ID: {}", event.getCompanyId());
+
         String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
         String fish = extractFish(event.getBody(), "세일중입니다.");
-        String url = baseUrl+"/alarm/log?fish="+fish;
-        log.info("baseUrl = {}", url);
+        String url = baseUrl + "/alarm/log?fish=" + fish;
+
         List<AlarmTokenEntity> all = alarmRepository.findByCompanyFlowerUser(event.getCompanyId());
         for (AlarmTokenEntity user : all) {
-            log.info("회원정보 = {}",user.getUser().getId());
             try {
-                sendMessage(user.getToken(), event.getTitle(), event.getBody(),url);
+                String token = getOrUpdateFCMToken(user.getUser().getId(), user.getUser().getEmail(), user.getToken());
+
+                sendMessage(token, event.getTitle(), event.getBody(), url);
+
                 alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
                         .userId(user.getUser().getId())
                         .title(event.getTitle())
                         .body(event.getBody())
                         .createTime(LocalDateTime.now())
-                        .SaleCompanyId(event.getCompanyId())
                         .build());
+
             } catch (FirebaseMessagingException e) {
                 log.error("Failed to send message to user: " + user.getUser().getId(), e);
             }
@@ -110,7 +140,7 @@ public class AlarmServiceImpl implements AlarmService{
 
     @Override
     public void sendMessage(String token, String title, String message, String url) throws FirebaseMessagingException {
-        firebaseMessaging.send(FcmMessage.makeMessage(token, title, message,url));
+        firebaseMessaging.send(FcmMessage.makeMessage(token, title, message, url));
     }
 
     @Override
@@ -119,25 +149,25 @@ public class AlarmServiceImpl implements AlarmService{
     }
 
     @Override
-    public void saveToken(Long userId, String token){
+    public void saveToken(Long userId, String token) {
         UserEntity user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         Optional<AlarmTokenEntity> alarmTokenOptional = alarmJapRepository.findByUser(user);
-        if(alarmTokenOptional.isPresent()){
+        if (alarmTokenOptional.isPresent()) {
             AlarmTokenEntity alarmToken = alarmTokenOptional.get();
             alarmToken.tokenUpdate(token);
             return;
         }
         alarmJapRepository.save(AlarmTokenEntity.builder()
-                        .user(user)
-                        .token(token)
+                .user(user)
+                .token(token)
                 .build());
     }
 
-    public void saveAlarmClickLog(String fishLog, Long userId){
+    public void saveAlarmClickLog(String fishLog, Long userId) {
         UserEntity customer = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         alarmCustomerLogJpaRepository.save(AlarmCustomerLogEntity.builder()
-                        .customer(customer)
-                        .log(fishLog)
+                .customer(customer)
+                .log(fishLog)
                 .build());
     }
 
@@ -148,8 +178,25 @@ public class AlarmServiceImpl implements AlarmService{
         }
         return input;
     }
+
+    private String getOrUpdateFCMToken(Long userId, String userEmail, String defaultToken) {
+        try {
+            FCMToken redisToken = fcmTokenRepository.findById(userId)
+                    .orElseThrow(RedisFCMNotFound::new);
+            return redisToken.getFCMToken();
+        } catch (RedisFCMNotFound e) {
+            FCMToken newRedisToken = FCMToken.builder()
+                    .id(userId)
+                    .email(userEmail)
+                    .FCMToken(defaultToken)
+                    .build();
+            fcmTokenRepository.save(newRedisToken);
+            return defaultToken;
+        }
+    }
+
     @Override
-    public Slice<AlarmHistoryEntity> findByUserId(Long userId, Pageable pageable){
+    public Slice<AlarmHistoryEntity> findByUserId(Long userId, Pageable pageable) {
         return alarmHistoryJpaRepository.findByUserId(userId, pageable);
     }
 }
