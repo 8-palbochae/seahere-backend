@@ -40,7 +40,7 @@ public class Fcmconfig {
                 throw e;
             }
         }
-        return FirebaseApp.getInstance(); // Return existing instance if already initialized
+        return FirebaseApp.getInstance();
     }
 
     @Bean

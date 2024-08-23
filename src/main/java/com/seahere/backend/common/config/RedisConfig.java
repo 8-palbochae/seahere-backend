@@ -25,7 +25,7 @@ public class RedisConfig {
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         RedisStandaloneConfiguration redisStandaloneConfig = new RedisStandaloneConfiguration(host, port);
-        redisStandaloneConfig.setPassword(password); // 비밀번호 설정
+        redisStandaloneConfig.setPassword(password);
 
         LettuceClientConfiguration lettuceClientConfig = LettuceClientConfiguration.builder().build();
 
