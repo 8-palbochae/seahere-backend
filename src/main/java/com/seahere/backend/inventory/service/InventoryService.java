@@ -65,7 +65,7 @@ public class InventoryService {
                 .collect(Collectors.toList());
     }
 
-    //트레이드
+
     public List<InventoryTradeRes> findTradeList(Long companyId, CustomerInventorySearch customerInventorySearch){
         return inventoryRepository.findTradeInventory(companyId,customerInventorySearch)
                 .stream()

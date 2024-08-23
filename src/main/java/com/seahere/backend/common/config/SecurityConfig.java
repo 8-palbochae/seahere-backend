@@ -65,18 +65,18 @@ public class SecurityConfig implements WebMvcConfigurer {
                  .antMatchers(HttpMethod.POST,"/companies").permitAll()
                  .antMatchers(HttpMethod.POST,"/companies/duplicate").permitAll()
                  .antMatchers(HttpMethod.POST,"/users/**").permitAll()
-                 .antMatchers("/v3/api-docs").permitAll() // Swagger UI 접근 허용
+                 .antMatchers("/v3/api-docs").permitAll()
                  .antMatchers("/swagger/**").permitAll()
-                 .antMatchers("/authentication/protected").permitAll()// 모든 메서드 허용
+                 .antMatchers("/authentication/protected").permitAll()
                  .anyRequest().authenticated()
                  .and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                  .and()
                  .logout()
-                 .logoutUrl("/logout")  // 로그아웃 요청을 받을 URL
-                .logoutSuccessHandler(logoutSuccessHandler())  // 커스텀 로그아웃 성공 핸들러 설정
-                .deleteCookies("JSESSIONID")  // 쿠키 삭제
-                .invalidateHttpSession(true)  // 세션 무효화
+                 .logoutUrl("/logout")
+                .logoutSuccessHandler(logoutSuccessHandler())
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
                 .and()
             .oauth2Login()
             .successHandler(oAuth2LoginSuccessHandler)

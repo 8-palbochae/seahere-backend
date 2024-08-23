@@ -35,13 +35,13 @@ public class CompanySelectRepository {
         QCompanyEntity company = QCompanyEntity.companyEntity;
         QInventoryEntity inventory = QInventoryEntity.inventoryEntity;
 
-        return jpaQueryFactory.selectDistinct(company) // 중복된 회사 제거
+        return jpaQueryFactory.selectDistinct(company)
                 .from(company)
-                .join(inventory).on(company.id.eq(inventory.company.id)) // Company와 Inventory 테이블 조인
+                .join(inventory).on(company.id.eq(inventory.company.id))
                 .where(
-                        company.id.ne(companyId), // 본인 회사 제외
-                        inventory.quantity.gt(0), // 재고가 있는 회사만 필터링
-                        company.companyName.containsIgnoreCase(companySearch.getSearchWord()) // 검색어 필터링 (옵션)
+                        company.id.ne(companyId),
+                        inventory.quantity.gt(0),
+                        company.companyName.containsIgnoreCase(companySearch.getSearchWord())
                 )
                 .limit(companySearch.getSize())
                 .offset(companySearch.getOffset())
