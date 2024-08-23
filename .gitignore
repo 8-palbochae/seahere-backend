@@ -6,11 +6,12 @@ build/
 !**/src/test/**/build/
 !**/src/test/**/generated/
 
+#FCM
 certification.json
-
+#https
 src/main/resources/keystore.p12
 
-
+###STS###
 .apt_generated
 .classpath
 .factorypath
@@ -22,7 +23,7 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-
+### IntelliJ IDEA ###
 .idea
 *.iws
 *.iml
@@ -31,22 +32,23 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
-
+### NetBeans ###
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 
-
+### VS Code ###
 .vscode/
 /src/main/resources/application-oauth.yml
 /src/main/resources/application-jwt.yml
 
-
+### Query DSL ###
 /src/main/generated/
 
+### OcrConfig ###
 /src/main/resources/OcrConfig.properties
 
-
+### S3 ###
 /src/main/resources/application-private.properties
