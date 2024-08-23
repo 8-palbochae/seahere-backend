@@ -1,35 +1,20 @@
 package com.seahere.backend.incoming.service;
 
-import com.seahere.backend.common.entity.Role;
-import com.seahere.backend.company.entity.CompanyEntity;
-import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
-import com.seahere.backend.inventory.repository.InventoryRepository;
-import com.seahere.backend.product.entity.ProductEntity;
-import com.seahere.backend.product.repository.ProductRepository;
-import com.seahere.backend.user.domain.UserEntity;
-import com.seahere.backend.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Slf4j
@@ -37,18 +22,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class IncomingServiceImplTest {
 
     @Autowired
-    private CompanyRepository companyRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
     private IncomingService incomingService;
     @Autowired
-    private ProductRepository productRepository;
-    @Autowired
     private InventoryJpaRepository inventoryJpaRepository;
-    @Autowired
-    private EntityManager em;
-
     @Test
     @DisplayName("입고할때 동시성 확인")
     void save() throws InterruptedException {
