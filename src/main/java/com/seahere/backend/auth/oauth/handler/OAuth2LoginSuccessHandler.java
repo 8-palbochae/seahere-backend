@@ -3,6 +3,8 @@ package com.seahere.backend.auth.oauth.handler;
 import com.seahere.backend.auth.jwt.service.JwtService;
 import com.seahere.backend.auth.oauth.CustomOAuth2User;
 import com.seahere.backend.common.entity.Role;
+import com.seahere.backend.redis.entity.Token;
+import com.seahere.backend.redis.respository.TokenRepository;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
@@ -41,6 +43,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private String responseServer;
     private final JwtService jwtService;
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -75,6 +78,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         String accessToken = jwtService.createAccessToken(oAuth2User.getUser().getEmail());
         String refreshToken = jwtService.createRefreshToken();
+
+        Token token = Token.builder()
+                .email(oAuth2User.getUser().getEmail())
+                .refreshToken(refreshToken)
+                .build();
+        tokenRepository.save(token);
+
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");

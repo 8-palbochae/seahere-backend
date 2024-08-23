@@ -22,7 +22,7 @@ public class AlarmHistoryEntity {
     private String title;
     private String body;
     private LocalDateTime createTime;
-
+    private Long SaleCompanyId;
 
 
 }

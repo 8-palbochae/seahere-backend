@@ -6,6 +6,8 @@ import com.seahere.backend.auth.jwt.util.PasswordUtil;
 import com.seahere.backend.auth.login.CustomUserDetails;
 import com.seahere.backend.common.dto.UserLogin;
 import com.seahere.backend.common.exception.SeaHereException;
+import com.seahere.backend.redis.entity.Token;
+import com.seahere.backend.redis.respository.TokenRepository;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +35,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
-
+    private final TokenRepository tokenRepository;
     private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
 
     @Override
@@ -77,11 +79,19 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     }
 
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-        userRepository.findByRefreshToken(refreshToken)
-                .ifPresent(user -> {
-                    jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
-                            refreshToken);
-                });
+        Optional<Token> token = tokenRepository.findByRefreshToken(refreshToken);
+        if(token.isPresent()){
+            Token redisToken = token.get();
+            jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(redisToken.getEmail()),
+                    refreshToken);
+        }
+        else{
+            userRepository.findByRefreshToken(refreshToken)
+                    .ifPresent(user -> {
+                        jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getEmail()),
+                                refreshToken);
+                    });
+        }
 
         log.info("ACCESS 토큰 재발급 성공");
     }
