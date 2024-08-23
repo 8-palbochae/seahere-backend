@@ -66,7 +66,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
                 jwtService.sendAccessAndRefreshToken(response, accessToken, null);
             } else {
-                loginSuccess(response, oAuth2User); // 로그인에 성공한 경우 access, refresh 토큰 생성
+                loginSuccess(response, oAuth2User);
             }
         } catch (Exception e) {
             throw e;
@@ -74,7 +74,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     }
 
-    // TODO : 소셜 로그인 시에도 무조건 토큰 생성하지 말고 JWT 인증 필터처럼 RefreshToken 유/무에 따라 다르게 처리해보기
+
     private void loginSuccess(HttpServletResponse response, CustomOAuth2User oAuth2User) throws IOException {
         String accessToken = jwtService.createAccessToken(oAuth2User.getUser().getEmail());
         String refreshToken = jwtService.createRefreshToken();
@@ -88,14 +88,14 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         Cookie accessTokenCookie = new Cookie("accessToken", accessToken);
         accessTokenCookie.setHttpOnly(true);
         accessTokenCookie.setPath("/");
-        accessTokenCookie.setMaxAge(60 * 60); // 1 hour
+        accessTokenCookie.setMaxAge(60 * 60);
         response.addCookie(accessTokenCookie);
 
-        // Refresh Token을 HttpOnly 쿠키에 저장
+
         Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
-        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7); // 1 week
+        refreshTokenCookie.setMaxAge(60 * 60 * 24 * 7);
         response.addCookie(refreshTokenCookie);
 
         jwtService.updateRefreshToken(oAuth2User.getUser().getEmail(), refreshToken);

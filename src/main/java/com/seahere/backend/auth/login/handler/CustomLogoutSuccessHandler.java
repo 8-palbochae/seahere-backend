@@ -34,9 +34,9 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
             Token token = tokenRepository.findByEmail(email)
                     .orElseThrow(RedisRefreshNotFound::new);
 
-            tokenRepository.delete(token); // 적절한 메서드를 사용하여 토큰 삭제
+            tokenRepository.delete(token);
 
-            // 로그아웃 성공 응답
+
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().flush();
         } else {

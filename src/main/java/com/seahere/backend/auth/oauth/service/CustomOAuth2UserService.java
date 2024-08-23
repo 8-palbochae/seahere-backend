@@ -46,12 +46,12 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         String registrationId = userRequest.getClientRegistration().getRegistrationId();
         SocialType socialType = getSocialType(registrationId);
         String userNameAttributeName = userRequest.getClientRegistration()
-                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName(); // OAuth2 로그인 시 키(PK)가 되는 값
-        Map<String, Object> attributes = oAuth2User.getAttributes(); // 소셜 로그인에서 API가 제공하는 userInfo의 Json 값(유저 정보들)
+                .getProviderDetails().getUserInfoEndpoint().getUserNameAttributeName();
+        Map<String, Object> attributes = oAuth2User.getAttributes();
 
         OAuthAttributes extractAttributes = OAuthAttributes.of(socialType, userNameAttributeName, attributes);
 
-        UserEntity createdUser = getUser(extractAttributes, socialType); // getUser() 메소드로 User 객체 생성 후 반환
+        UserEntity createdUser = getUser(extractAttributes, socialType);
         CompanyEntity company = createdUser.getCompany();
         UserLogin userLogin = UserLogin.from(createdUser,company);
         return new CustomOAuth2User(
