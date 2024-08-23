@@ -43,7 +43,7 @@ public class InventoryControllerTest {
                 .companyId(101L)
                 .username("testUser")
                 .password("testPass")
-                .role(Role.EMPLOYEE) // Role Enum 값을 EMPLOYEE로 설정
+                .role(Role.EMPLOYEE)
                 .build();
         return new CustomUserDetails(userLogin);
     }
