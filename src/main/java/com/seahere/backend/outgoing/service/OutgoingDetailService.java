@@ -41,7 +41,6 @@ public class OutgoingDetailService {
 
     public List<OutgoingDetailDto> findByOutgoingAndStateIsAcitve(Long outgoingId){
         return outgoingDetailRepository.findByOutgoingAndStateActive(outgoingId);
-//        return outgoingDetailJpaRepository.findByOutgoingAndState(outgoing, OutgoingDetailState.ACTIVE);
     }
 
     @Transactional
