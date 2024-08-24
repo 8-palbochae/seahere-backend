@@ -12,17 +12,17 @@ public class RedisLockRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public Boolean lock(Long key){
+    public Boolean lock(Long key, String type){
         return redisTemplate
                 .opsForValue()
-                .setIfAbsent(generateKey(key), "lock", Duration.ofMillis(3_000));
+                .setIfAbsent(generateKey(key,type), "lock", Duration.ofMillis(3_000));
     }
 
-    public Boolean unLock(Long key){
-        return redisTemplate.delete(generateKey(key));
+    public Boolean unLock(Long key, String type){
+        return redisTemplate.delete(generateKey(key,type));
     }
 
-    private String generateKey(Long key) {
-        return key.toString();
+    private String generateKey(Long key,String type) {
+        return key.toString() + type;
     }
 }
