@@ -31,7 +31,6 @@ public class IncomingServiceImpl implements IncomingService{
     private final IncomingJpaRepository incomingJpaRepository;
     private final InventoryService inventoryService;
 
-//    @Transactional(timeout = 60)
     @Override
     public void save(Long companyId, Long userId, IncomingDataRequest incomingDataRequest) {
         ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).orElse(null);

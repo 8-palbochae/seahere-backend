@@ -91,7 +91,6 @@ public class InventoryService {
                     incomingDataRequest.getCountry()
             ).orElseThrow(InventoryNotFoundException::new);
             inventoryEntity.addQuantity(incomingDataRequest.getQuantity());
-            log.info("있을때 = {}",inventoryEntity.getQuantity());
             return inventoryEntity;
         } else {
             InventoryRequest inventoryRequest = InventoryRequest.builder()
@@ -110,7 +109,6 @@ public class InventoryService {
                     .orElseThrow(CompanyNotFound::new);
             inventoryEntity.assignCompany(company);
             inventoryJpaRepository.save(inventoryEntity);
-            log.info("없을때 = {}",inventoryEntity.getQuantity());
             return inventoryEntity;
         }
     }
