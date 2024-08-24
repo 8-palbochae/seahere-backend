@@ -1,3 +1,4 @@
+delete from product;
 delete from outgoing_detail;
 delete from outgoing;
 delete from inventory_detail;

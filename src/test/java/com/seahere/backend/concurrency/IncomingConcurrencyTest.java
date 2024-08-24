@@ -1,25 +1,17 @@
-package com.seahere.backend.incoming.service;
+package com.seahere.backend.concurrency;
 
-import com.seahere.backend.company.entity.CompanyEntity;
-import com.seahere.backend.company.repository.CompanyRepository;
 import com.seahere.backend.incoming.controller.request.IncomingDataRequest;
 import com.seahere.backend.incoming.entity.IncomingEntity;
 import com.seahere.backend.incoming.repository.IncomingJpaRepository;
+import com.seahere.backend.incoming.service.IncomingService;
 import com.seahere.backend.inventory.entity.InventoryEntity;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
-import com.seahere.backend.product.entity.ProductEntity;
-import com.seahere.backend.product.repository.ProductRepository;
 import com.seahere.backend.redis.service.IncomingLockFacadeService;
-import com.seahere.backend.user.domain.UserEntity;
-import com.seahere.backend.user.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Commit;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.util.List;
@@ -33,9 +25,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SpringBootTest
 @Slf4j
-@Sql(value = "/sql/incoming-service-test.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(value = "/sql/incoming-concurrency-test.sql",executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @Sql(scripts = "/sql/clear.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-class IncomingServiceImplTest {
+class IncomingConcurrencyTest {
 
     @Autowired
     private IncomingService incomingService;
