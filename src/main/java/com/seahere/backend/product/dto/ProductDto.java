@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.util.Map;
+
 @AllArgsConstructor
 @Getter
 @ToString
@@ -23,6 +25,15 @@ public class ProductDto {
                 .productName(productEntity.getProductName())
                 .qr(productEntity.getQr())
                 .productImg(productEntity.getProductImg())
+                .build();
+    }
+    // 새로운 Map<String, Object>에서 변환하는 메서드
+    public static ProductDto from(Map<String, Object> map) {
+        return ProductDto.builder()
+                .productId(((Number) map.get("productId")).longValue()) // Long으로 캐스팅
+                .productName((String) map.get("productName"))
+                .qr((String) map.get("qr"))
+                .productImg((String) map.get("productImg"))
                 .build();
     }
 }

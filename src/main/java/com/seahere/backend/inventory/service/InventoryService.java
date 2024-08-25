@@ -17,7 +17,7 @@ import com.seahere.backend.inventory.repository.InventoryRepository;
 import com.seahere.backend.product.dto.ProductDto;
 import com.seahere.backend.product.entity.ProductEntity;
 import com.seahere.backend.product.exception.ProductNotFoundException;
-import com.seahere.backend.product.repository.ProductRepository;
+import com.seahere.backend.product.repository.ProductJpaRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
 public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final InventoryJpaRepository inventoryJpaRepository;
-    private final ProductRepository productRepository;
+    private final ProductJpaRepository productJpaRepository;
     private final CompanyRepository companyRepository;
 
     public Slice<InventoryResponse> findPagedInventoryByCompanyId(Long companyId, Pageable pageable, String search) {
@@ -47,7 +47,7 @@ public class InventoryService {
     }
 
     private boolean isInventory(Long companyId, IncomingDataRequest incomingDataRequest) {
-        ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId())
+        ProductEntity productEntity = productJpaRepository.findById(incomingDataRequest.getProductId())
                 .orElseThrow(ProductNotFoundException::new);
         return inventoryJpaRepository.findByCategoryAndProductNameAndCompanyIdAndNaturalStatusAndCountry(
                 incomingDataRequest.getCategory(),
@@ -79,7 +79,7 @@ public class InventoryService {
     }
 
     public InventoryEntity inventoryUpdateEnroll(Long companyId, IncomingDataRequest incomingDataRequest) {
-        ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId())
+        ProductEntity productEntity = productJpaRepository.findById(incomingDataRequest.getProductId())
                 .orElseThrow(ProductNotFoundException::new);
 
         if (isInventory(companyId, incomingDataRequest)) {

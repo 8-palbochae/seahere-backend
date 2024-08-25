@@ -10,7 +10,7 @@ import com.seahere.backend.incoming.exception.IncomingNotFound;
 import com.seahere.backend.incoming.repository.IncomingJpaRepository;
 import com.seahere.backend.inventory.service.InventoryService;
 import com.seahere.backend.product.entity.ProductEntity;
-import com.seahere.backend.product.repository.ProductRepository;
+import com.seahere.backend.product.repository.ProductJpaRepository;
 import com.seahere.backend.user.domain.UserEntity;
 import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class IncomingServiceImpl implements IncomingService{
 
-    private final ProductRepository productRepository;
+    private final ProductJpaRepository productJpaRepository;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
     private final IncomingJpaRepository incomingJpaRepository;
@@ -33,7 +33,7 @@ public class IncomingServiceImpl implements IncomingService{
 
     @Override
     public void save(Long companyId, Long userId, IncomingDataRequest incomingDataRequest) {
-        ProductEntity productEntity = productRepository.findById(incomingDataRequest.getProductId()).orElse(null);
+        ProductEntity productEntity = productJpaRepository.findById(incomingDataRequest.getProductId()).orElse(null);
         CompanyEntity companyEntity = companyRepository.findById(companyId).orElseThrow(CompanyNotFound::new);
         UserEntity userEntity = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         IncomingEntity incomingEntity = incomingDataRequest.toEntity(productEntity);

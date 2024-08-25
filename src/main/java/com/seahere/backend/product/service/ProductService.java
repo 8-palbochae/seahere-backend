@@ -1,5 +1,6 @@
 package com.seahere.backend.product.service;
 
+import com.seahere.backend.product.dto.ProductDto;
 import com.seahere.backend.product.entity.ProductEntity;
 
 import java.util.List;
@@ -9,4 +10,6 @@ public interface ProductService {
     List<ProductEntity> getAllProducts();
 
     Optional<ProductEntity> getProduct(Long productId);
+    List<ProductDto> searchProductsWithFuzzy(String query);
+
 }
