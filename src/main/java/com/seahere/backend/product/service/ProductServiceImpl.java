@@ -37,8 +37,6 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public List<ProductDto> searchProductsWithFuzzy(String query) {
         try {
-            // ProductElsRepository를 사용하여 엘라스틱서치에서 검색 수행
-            log.info("query = {}",query);
             List<ProductDocument> productEntities = productElasticsearchRepository.findByProductName(query);
             return productEntities.stream()
                     .map(entity -> ProductDto.builder()

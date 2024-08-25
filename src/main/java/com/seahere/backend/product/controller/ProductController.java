@@ -46,9 +46,7 @@ public class ProductController {
 
     @GetMapping("/product-search-fuzzy")
     public ResponseEntity<List<ProductDto>> searchProductsFuzzy(@RequestParam("query") String query) {
-        log.info("확인");
         List<ProductDto> products = productService.searchProductsWithFuzzy(query);
-        log.info("확인2");
         return ResponseEntity.ok(products);
     }
 

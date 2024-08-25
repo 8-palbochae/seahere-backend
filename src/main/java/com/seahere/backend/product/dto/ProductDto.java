@@ -27,10 +27,10 @@ public class ProductDto {
                 .productImg(productEntity.getProductImg())
                 .build();
     }
-    // 새로운 Map<String, Object>에서 변환하는 메서드
+
     public static ProductDto from(Map<String, Object> map) {
         return ProductDto.builder()
-                .productId(((Number) map.get("productId")).longValue()) // Long으로 캐스팅
+                .productId(((Number) map.get("productId")).longValue())
                 .productName((String) map.get("productName"))
                 .qr((String) map.get("qr"))
                 .productImg((String) map.get("productImg"))
