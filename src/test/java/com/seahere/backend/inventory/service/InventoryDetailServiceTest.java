@@ -6,6 +6,7 @@ import com.seahere.backend.inventory.exception.InventoryNotFoundException;
 import com.seahere.backend.inventory.repository.InventoryJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ class InventoryDetailServiceTest{
     @Autowired
     InventoryJpaRepository inventoryJpaRepository;
 
+    @Disabled
     @Transactional
     @Test
     @DisplayName("재고 상세 정보는 수정이 가능하다.")

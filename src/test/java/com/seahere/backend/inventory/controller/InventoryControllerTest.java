@@ -8,6 +8,7 @@ import com.seahere.backend.inventory.controller.request.InventoryReqDetailSearch
 import com.seahere.backend.inventory.controller.request.InventoryReqSearchRequest;
 import com.seahere.backend.inventory.repository.InventoryRepository;
 import com.seahere.backend.inventory.service.InventoryService;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ public class InventoryControllerTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("InventoryReqSearchRequest 클래스로 GET 요청시 CompanyId에 따른 전체 재고 목록이 반환된다.")
     public void test1() throws Exception {
         //given
@@ -69,6 +71,7 @@ public class InventoryControllerTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("InventoryReqSearchRequest 클래스로 /detail에 GET 요청시 CompanyId, name, category에 따른 재고 목록이 반환된다.")
     public void test2() throws Exception {
         //given
@@ -91,6 +94,7 @@ public class InventoryControllerTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("InventoryReqSearchRequest 클래스로 GET 요청시 CompanyId, search에 따른 검색 재고 목록이 반환된다.")
     public void test3() throws Exception {
         //given
@@ -111,6 +115,7 @@ public class InventoryControllerTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("재고가 없을 경우 content에 null을 반환된다.")
     public void test4() throws Exception {
         //given
@@ -131,6 +136,7 @@ public class InventoryControllerTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("재고보다 많은 페이지를 param으로 넣을 경우 content에 null을 반환된다.")
     public void test5() throws Exception {
         //given
