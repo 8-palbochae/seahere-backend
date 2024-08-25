@@ -15,6 +15,7 @@ import com.seahere.backend.outgoing.entity.OutgoingEntity;
 import com.seahere.backend.outgoing.entity.OutgoingState;
 import com.seahere.backend.outgoing.service.OutgoingDetailService;
 import com.seahere.backend.outgoing.service.OutgoingService;
+import com.seahere.backend.redis.service.OutgoingLockFacadeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.coyote.Response;
@@ -37,6 +38,7 @@ public class OutgoingReqController {
 
     private final OutgoingService outgoingService;
     private final OutgoingDetailService outgoingDetailService;
+    private final OutgoingLockFacadeService outgoingLockFacadeService;
 
     @PostMapping("")
     public ResponseEntity<Void> outgoingCreate(@RequestBody OutgoingCreateReq outgoingCreateReq, @AuthenticationPrincipal CustomUserDetails userDetails){
@@ -84,9 +86,10 @@ public class OutgoingReqController {
     }
 
     @PatchMapping("/{outgoingId}")
-    public ResponseEntity<OutgoingCallDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody OutgoingStateChangeRequest request){
+    public ResponseEntity<OutgoingCallDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody OutgoingStateChangeRequest request,@AuthenticationPrincipal CustomUserDetails userDetails) throws InterruptedException {
+
         OutgoingState state = OutgoingState.from(request.getState());
-        OutgoingCallDto outgoing = OutgoingCallDto.from(outgoingService.changeOutgoingState(outgoingId,state));
+        OutgoingCallDto outgoing = OutgoingCallDto.from(outgoingLockFacadeService.changeOutgoingState(userDetails.getUser().getCompanyId(), outgoingId,state));
         return ResponseEntity.ok(outgoing);
     }
 

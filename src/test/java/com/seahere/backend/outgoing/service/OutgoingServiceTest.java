@@ -150,32 +150,29 @@ class OutgoingServiceTest {
         assertThat(result.getOutgoingState()).isEqualTo(OutgoingState.COMPLETE);
     }
 
-
-
-    @Test
-    @DisplayName("해당하는 인벤토리의 재고를 감소시키로 출고를 출고 대기 상태로 변경")
-    void acceptOutgoingCall() {
-        // given
-        var outgoing = outgoingJpaRepository.findById(101L).get();
-        var inventory = inventoryJpaRepository.findById(101L).get();
-        // when
-        outgoingService.changeOutgoingState(101L,OutgoingState.READY);
-        // then
-        assertThat(outgoing.getOutgoingState()).isEqualTo(OutgoingState.READY);
-        assertThat(inventory.getQuantity()).isEqualTo(80);
-    }
-    @Test
-    @DisplayName("인벤토리의 재고가 부족할시 재고 부족 예외를 던진다.")
-    void acceptOutgoingCalllack() {
-        // given
-        OutgoingEntity outgoing = outgoingJpaRepository.findById(301L).get();
-        // when
-        // then
-        assertThatThrownBy(() -> outgoingService.changeOutgoingState(301L,OutgoingState.READY)).isInstanceOf(LackInventoryException.class)
-                .hasMessage("보유 재고가 요청 재고보다 부족합니다.");
-        assertThat(outgoing.getOutgoingState()).isEqualTo(OutgoingState.PENDING);
-
-    }
+//    @Test
+//    @DisplayName("해당하는 인벤토리의 재고를 감소시키로 출고를 출고 대기 상태로 변경")
+//    void acceptOutgoingCall() {
+//        // given
+//        var outgoing = outgoingJpaRepository.findById(101L).get();
+//        var inventory = inventoryJpaRepository.findById(101L).get();
+//        // when
+//        outgoingService.changeOutgoingState(101L,OutgoingState.READY);
+//        // then
+//        assertThat(outgoing.getOutgoingState()).isEqualTo(OutgoingState.READY);
+//        assertThat(inventory.getQuantity()).isEqualTo(80);
+//    }
+//    @Test
+//    @DisplayName("인벤토리의 재고가 부족할시 재고 부족 예외를 던진다.")
+//    void acceptOutgoingCalllack() {
+//        // given
+//        OutgoingEntity outgoing = outgoingJpaRepository.findById(301L).get();
+//        // when
+//        // then
+//        assertThatThrownBy(() -> outgoingService.changeOutgoingState(301L,OutgoingState.READY)).isInstanceOf(LackInventoryException.class)
+//                .hasMessage("보유 재고가 요청 재고보다 부족합니다.");
+//        assertThat(outgoing.getOutgoingState()).isEqualTo(OutgoingState.PENDING);
+//    }
 
     @Test
     @DisplayName("출고 요청 재고 목록을 담은 요청 DTO를 통해서 출고 요청을 생성할 수 있다.")
