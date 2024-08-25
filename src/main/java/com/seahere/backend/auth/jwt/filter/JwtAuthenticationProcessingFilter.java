@@ -105,7 +105,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
             if (email != null) {
                 userRepository.findWithCompanyByEmail(email).ifPresent(user -> {
-                    saveAuthentication(user); // 인증 정보 저장
+                    saveAuthentication(user);
                 });
             }
         }

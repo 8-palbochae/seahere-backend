@@ -10,7 +10,7 @@ import javax.persistence.Id;
 
 @Getter
 @NoArgsConstructor
-@RedisHash(value = "refreshToken", timeToLive = 1209600000)   //단위는 초단위. 60초 뒤 데이터 삭제. 테스트를 위해 짧게 60초로 설정.
+@RedisHash(value = "refreshToken", timeToLive = 1209600000)
 public class Token{
     @Id
     private Long id;

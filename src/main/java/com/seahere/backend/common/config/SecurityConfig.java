@@ -50,44 +50,46 @@ public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, ServletRegistrationBean h2Console) throws Exception {
-         http
-            .csrf().disable()
-            .formLogin().disable()
-            .httpBasic().disable()
-            .cors().and()
-            .headers().frameOptions().disable()
-            .and()
-                 .authorizeRequests()
-                 .antMatchers("/h2-console/**").permitAll()
-                 .antMatchers("/swagger-ui/**").permitAll()
-                 .antMatchers(HttpMethod.POST, "/login").permitAll()
-                 .antMatchers(HttpMethod.POST, "/ocr").permitAll()
-                 .antMatchers(HttpMethod.POST,"/companies").permitAll()
-                 .antMatchers(HttpMethod.POST,"/companies/duplicate").permitAll()
-                 .antMatchers(HttpMethod.POST,"/users/**").permitAll()
-                 .antMatchers("/v3/api-docs").permitAll() // Swagger UI 접근 허용
-                 .antMatchers("/swagger/**").permitAll()
-                 .antMatchers("/authentication/protected").permitAll()// 모든 메서드 허용
-                 .anyRequest().authenticated()
-                 .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                 .and()
-                 .logout()
-                 .logoutUrl("/logout")  // 로그아웃 요청을 받을 URL
-                .logoutSuccessHandler(logoutSuccessHandler())  // 커스텀 로그아웃 성공 핸들러 설정
-                .deleteCookies("JSESSIONID")  // 쿠키 삭제
-                .invalidateHttpSession(true)  // 세션 무효화
+        http
+                .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .cors().and()
+                .headers().frameOptions().disable()
                 .and()
-            .oauth2Login()
-            .successHandler(oAuth2LoginSuccessHandler)
-            .failureHandler(oAuth2LoginFailureHandler)
-            .userInfoEndpoint().userService(customOAuth2UserService);
-         http.addFilterBefore(customClientFilter(), OAuth2AuthorizationRequestRedirectFilter.class);
-         http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
-         http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
+                .authorizeRequests()
+                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/swagger-ui/**").permitAll()
+                .antMatchers("/health").permitAll()
+                .antMatchers(HttpMethod.POST, "/login").permitAll()
+                .antMatchers(HttpMethod.POST, "/ocr").permitAll()
+                .antMatchers(HttpMethod.POST,"/companies").permitAll()
+                .antMatchers(HttpMethod.POST,"/companies/duplicate").permitAll()
+                .antMatchers(HttpMethod.POST,"/users/**").permitAll()
+                .antMatchers("/v3/api-docs").permitAll()
+                .antMatchers("/swagger/**").permitAll()
+                .antMatchers("/authentication/protected").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .logout()
+                .logoutUrl("/logout")
+                .logoutSuccessHandler(logoutSuccessHandler())
+                .deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
+                .and()
+                .oauth2Login()
+                .successHandler(oAuth2LoginSuccessHandler)
+                .failureHandler(oAuth2LoginFailureHandler)
+                .userInfoEndpoint().userService(customOAuth2UserService);
+        http.addFilterBefore(customClientFilter(), OAuth2AuthorizationRequestRedirectFilter.class);
+        http.addFilterAfter(customJsonUsernamePasswordAuthenticationFilter(), LogoutFilter.class);
+        http.addFilterBefore(jwtAuthenticationProcessingFilter(), CustomJsonUsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -95,11 +97,24 @@ public class SecurityConfig implements WebMvcConfigurer {
                         "https://localhost:3000",
                         "http://localhost:3000",
                         "http://localhost:5173",
+                        "http://localhost:81",
                         "https://10.10.10.37:3000",
                         "http://10.10.10.170:5173",
-                        "http://172.18.117.115:3000",
-                        "https://10.10.10.24:3000",
-                        "http://10.10.10.24:5173"
+                        "http://15.168.190.86:81",
+                        "http://15.168.190.86:80",
+                        "http://172.31.0.1:80",
+                        "http://172.31.0.1:81",
+                        "http://172.31.0.5:80",
+                        "http://172.31.0.5:81",
+                        "http://172.31.0.5:81",
+                        "http://172.31.0.6",
+                        "http://172.31.0.7",
+                        "http://172.31.0.4:3000",
+                        "http://172.31.0.6:5173",
+                        "http://192.168.200.130:81",
+                        "http://192.168.200.130:80",
+                        "https://broker.seahere.org",
+                        "https://customer.seahere.org"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                 .allowedHeaders("*")

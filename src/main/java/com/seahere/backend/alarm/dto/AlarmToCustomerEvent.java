@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class AlarmToCustomerEvent {
-
     private Long userId;
     private String title;
     private String body;

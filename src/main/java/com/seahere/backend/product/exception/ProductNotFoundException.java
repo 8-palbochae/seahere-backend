@@ -11,6 +11,6 @@ public class ProductNotFoundException extends SeaHereException {
 
     @Override
     public int getStatusCode() {
-        return 404; // Not Found
+        return 404;
     }
 }

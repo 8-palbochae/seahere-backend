@@ -75,9 +75,7 @@ class OutgoingDetailServiceTest {
 
 
                         tuple("광어", 20f, 100f)
-//                        tuple("넙치", 20f, 160f),
-//                        tuple("갈치", 20f, 170f),
-//                        tuple("고등어",20f, 0f)
+
                 );
     }
 
@@ -89,11 +87,7 @@ class OutgoingDetailServiceTest {
         outgoingDetailService.updateByOutgoingDetailStateToActive(201L);
         OutgoingEntity outgoing = outgoingJpaRepository.findById(201L).get();
         //then
-        /*assertThat(outgoing.getOutgoingDetails()).extracting("state").containsExactly(OutgoingDetailState.ACTIVE,
-                OutgoingDetailState.ACTIVE,
-                OutgoingDetailState.ACTIVE,
-                OutgoingDetailState.ACTIVE,
-                OutgoingDetailState.ACTIVE);*/
+
         assertThat(outgoing.getOutgoingDetails()).isEmpty();
     }
 

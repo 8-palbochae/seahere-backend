@@ -117,7 +117,6 @@ public class SalesRepositoryImpl implements SalesRepository {
                         .and(outgoing.outgoingDate.between(startDate,endDate)))
                 .groupBy(product.productName, product.productImg)
                 .orderBy(outgoingDetail.price.sum().desc())
-//                .limit(5)
                 .fetch();
     }
 

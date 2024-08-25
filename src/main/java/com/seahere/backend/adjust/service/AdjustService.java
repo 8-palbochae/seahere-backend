@@ -22,7 +22,7 @@ public class AdjustService {
         try {
             log.info("Adjust request: {}", adjustRequest);
 
-            // 추가된 null 체크
+
             if (adjustRequest.getInventoryId() == null) {
                 log.error("Inventory ID must not be null");
                 throw new IllegalArgumentException("Inventory ID must not be null");
