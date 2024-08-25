@@ -26,18 +26,8 @@ public class IncomingController {
 
 
     @PostMapping("/incoming")
-    public ResponseEntity saveIncomingData(@RequestBody IncomingDataRequest incomingDataRequest,@AuthenticationPrincipal CustomUserDetails userDetails){
-
-        try{
-            incomingLockFacadeService.save(userDetails.getUser().getCompanyId(), userDetails.getUser().getUserId(), incomingDataRequest);
-        }catch (InterruptedException e){
-            throw new SeaHereException("InterruptedException 예외 발생") {
-                @Override
-                public int getStatusCode() {
-                    return 500;
-                }
-            };
-        }
+    public ResponseEntity saveIncomingData(@RequestBody IncomingDataRequest incomingDataRequest,@AuthenticationPrincipal CustomUserDetails userDetails) throws InterruptedException {
+        incomingLockFacadeService.save(userDetails.getUser().getCompanyId(), userDetails.getUser().getUserId(), incomingDataRequest);
         return  new ResponseEntity<>(HttpStatus.OK);
     }
     @PatchMapping("/incoming")

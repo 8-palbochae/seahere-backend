@@ -80,10 +80,10 @@ public class OutgoingConcurrencyTest {
             Long id = (long) i;
             executorService.submit(() -> {
                 try{
-                    outgoingLockFacadeService.changeOutgoingState(id, OutgoingState.READY);
+                    outgoingLockFacadeService.changeOutgoingState(1L,id, OutgoingState.READY);
                     successCount.incrementAndGet();
                 }catch (RuntimeException e){
-                    log.info("e");
+                    e.printStackTrace();
                 }catch (Exception e){
                     failCount.incrementAndGet();
                 }

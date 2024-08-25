@@ -129,7 +129,7 @@ public class OutgoingService {
         return OutgoingRes.from(recentlyOutgoing);
     }
 
-    public OutgoingEntity acceptOutgoingCall(Long outgoingId){
+    private OutgoingEntity acceptOutgoingCall(Long outgoingId){
         OutgoingEntity outgoingCall = outgoingJpaRepository.findByIdFetchCompany(outgoingId).orElseThrow(OutgoingNotFoundException::new);
         CompanyEntity company = outgoingCall.getCompany();
         List<OutgoingDetailEntity> details = outgoingCall.getOutgoingDetails().stream().filter(OutgoingDetailEntity::isNotDelete).collect(Collectors.toList());

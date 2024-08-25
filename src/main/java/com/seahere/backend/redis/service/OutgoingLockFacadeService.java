@@ -18,14 +18,14 @@ public class OutgoingLockFacadeService {
     private final RedisLockRepository redisLockRepository;
     private final OutgoingService outgoingService;
 
-    public OutgoingEntity changeOutgoingState(Long outgoingId, OutgoingState state) throws InterruptedException {
-        while(!redisLockRepository.lock(outgoingId,TYPE)){
+    public OutgoingEntity changeOutgoingState(Long companyId,Long outgoingId, OutgoingState state) throws InterruptedException {
+        while(!redisLockRepository.lock(companyId,TYPE)){
             Thread.sleep(100);
         }
         try{
             return outgoingService.changeOutgoingState(outgoingId, state);
         }finally {
-            redisLockRepository.unLock(outgoingId,TYPE);
+            redisLockRepository.unLock(companyId,TYPE);
         }
     }
 }
