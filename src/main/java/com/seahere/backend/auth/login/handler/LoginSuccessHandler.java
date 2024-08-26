@@ -16,6 +16,7 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationSu
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -51,6 +52,10 @@ public class LoginSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
                 .email(email)
                 .refreshToken(refreshToken)
                 .build();
+        Optional<Token> tokenOptional = tokenRepository.findByEmail(email);
+        if(tokenOptional.isPresent()) {
+            tokenRepository.delete(tokenOptional.get());
+        }
         tokenRepository.save(token);
     }
 
