@@ -69,9 +69,9 @@ public class SalesRepositoryImpl implements SalesRepository {
 
         return queryFactory
                 .select(Projections.constructor(SalesWeekDto.class,
-                        outgoing.outgoingDate.stringValue(),
-                        weekNumberTemplate,
-                        outgoingDetail.price.sum().intValue()
+                        outgoing.outgoingDate.as("incomingDate"),
+                        weekNumberTemplate.as("week"),
+                        outgoingDetail.price.sum().intValue().as("incomingPrice")
                 ))
                 .from(outgoingDetail)
                 .join(outgoingDetail.outgoing, outgoing)
