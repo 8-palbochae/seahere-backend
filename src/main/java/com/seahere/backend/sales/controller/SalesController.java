@@ -62,6 +62,7 @@ public class SalesController {
 
     @PostMapping("/outgoing/week")
     public ResponseEntity<List<SalesWeekRes>> findOutgoingWeek(@RequestBody PeriodRequest outgoingWeekRequest, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
         List<SalesWeekDto> result = salesService.findOutgoingWeek(
                 outgoingWeekRequest.getStartDate(),
                 outgoingWeekRequest.getEndDate(),
