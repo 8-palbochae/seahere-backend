@@ -55,14 +55,14 @@ public class CompanyController {
         return ResponseEntity.ok(mostOutgoingCompany);
     }
 
-    @GetMapping("/c")
+    @GetMapping("/customer")
     public ResponseEntity<List<CompanyFollowResponse>> getListForCustomer(@ModelAttribute CompanySearch companySearch,
                                                                           @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         List<CompanyFollowResponse> companyResponses = companyService.getListForCustomer(customUserDetails.getUser().getUserId(), companySearch);
         return ResponseEntity.ok(companyResponses);
     }
 
-    @GetMapping("/c/follow")
+    @GetMapping("/customer/follow")
     public ResponseEntity<?> getFollowListForCustomer(
             @ModelAttribute CompanySearch companySearch,
             @AuthenticationPrincipal CustomUserDetails customUserDetails) {
@@ -75,14 +75,14 @@ public class CompanyController {
         }
     }
 
-    @GetMapping("/c/{companyId}")
+    @GetMapping("/customer/{companyId}")
     public ResponseEntity<CompanyFollowResponse> getCompanyForCustomer(@PathVariable Long companyId,
                                                                        @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         CompanyFollowResponse companyResponse = companyService.getCompanyByIdForCustomer(customUserDetails.getUser().getUserId(), companyId);
         return ResponseEntity.ok(companyResponse);
     }
 
-    @GetMapping("/c/best")
+    @GetMapping("/customer/best")
     public ResponseEntity<CompanyFollowResponse> getBestCompanyForCustomer(@AuthenticationPrincipal CustomUserDetails customUserDetails) {
         CompanyFollowResponse mostOutgoingCompany = companyService.getMostOutgoingCompanyForCustomer(customUserDetails.getUser().getUserId());
         return ResponseEntity.ok(mostOutgoingCompany);
