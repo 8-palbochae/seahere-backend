@@ -51,25 +51,10 @@ public class AlarmServiceImpl implements AlarmService {
     @TransactionalEventListener
     public void pushAlarmToCustomer(AlarmToCustomerEvent event) throws FirebaseMessagingException {
         log.info("이벤트 구독 확인, 사용자 ID: {}", event.getUserId());
-
-        String token;
-        try {
-            FCMToken redisToken = fcmTokenRepository.findById(event.getUserId())
-                    .orElseThrow(RedisFCMNotFound::new);
-            token = redisToken.getFCMToken();
-        } catch (RedisFCMNotFound e) {
-            UserEntity user = userRepository.findById(event.getUserId()).orElseThrow(UserNotFound::new);
-            AlarmTokenEntity alarmToken = alarmJapRepository.findByUser(user)
-                    .orElseThrow(TokenNotFoundException::new);
-            token = alarmToken.getToken();
-            FCMToken newRedisToken = FCMToken.builder()
-                    .id(user.getId())
-                    .email(user.getEmail())
-                    .FCMToken(token)
-                    .build();
-            fcmTokenRepository.save(newRedisToken);
-        }
-
+        UserEntity user = userRepository.findById(event.getUserId()).orElseThrow(UserNotFound::new);
+        AlarmTokenEntity alarmToken = alarmJapRepository.findByUser(user)
+                .orElseThrow(TokenNotFoundException::new);
+        String token = alarmToken.getToken();
         sendMessage(token, event.getTitle(), event.getBody());
         alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
                 .userId(event.getUserId())
@@ -87,8 +72,7 @@ public class AlarmServiceImpl implements AlarmService {
         List<AlarmTokenEntity> users = alarmRepository.findByCompanyUser(event.getCompanyId());
         for (AlarmTokenEntity user : users) {
             try {
-                String token = getOrUpdateFCMToken(user.getUser().getId(), user.getUser().getEmail(), user.getToken());
-
+                String token = user.getToken();
                 sendMessage(token, event.getTitle(), event.getBody());
 
                 alarmHistoryJpaRepository.save(AlarmHistoryEntity.builder()
@@ -116,7 +100,7 @@ public class AlarmServiceImpl implements AlarmService {
         List<AlarmTokenEntity> all = alarmRepository.findByCompanyFlowerUser(event.getCompanyId());
         for (AlarmTokenEntity user : all) {
             try {
-                String token = getOrUpdateFCMToken(user.getUser().getId(), user.getUser().getEmail(), user.getToken());
+                String token = user.getToken();
 
                 sendMessage(token, event.getTitle(), event.getBody(), url);
 
@@ -177,22 +161,6 @@ public class AlarmServiceImpl implements AlarmService {
             return input.substring(0, keywordIndex).trim();
         }
         return input;
-    }
-
-    private String getOrUpdateFCMToken(Long userId, String userEmail, String defaultToken) {
-        try {
-            FCMToken redisToken = fcmTokenRepository.findById(userId)
-                    .orElseThrow(RedisFCMNotFound::new);
-            return redisToken.getFCMToken();
-        } catch (RedisFCMNotFound e) {
-            FCMToken newRedisToken = FCMToken.builder()
-                    .id(userId)
-                    .email(userEmail)
-                    .FCMToken(defaultToken)
-                    .build();
-            fcmTokenRepository.save(newRedisToken);
-            return defaultToken;
-        }
     }
 
     @Override

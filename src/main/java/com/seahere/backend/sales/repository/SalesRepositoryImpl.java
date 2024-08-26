@@ -69,15 +69,16 @@ public class SalesRepositoryImpl implements SalesRepository {
 
         return queryFactory
                 .select(Projections.constructor(SalesWeekDto.class,
-                        outgoing.outgoingDate.stringValue(),
-                        weekNumberTemplate,
-                        outgoingDetail.price.sum().intValue()
+                        outgoing.outgoingDate.as("incomingDate"),
+                        weekNumberTemplate.as("week"),
+                        outgoingDetail.price.sum().intValue().as("incomingPrice")
                 ))
                 .from(outgoingDetail)
                 .join(outgoingDetail.outgoing, outgoing)
                 .where(outgoing.company.id.eq(companyId)
                         .and(outgoing.outgoingDate.between(startDate, endDate))
                         .and(outgoing.outgoingState.eq(OutgoingState.COMPLETE))
+                        .and(outgoing.tradeType.eq("b2c"))
                 )
                 .groupBy(outgoing.outgoingDate, weekNumberTemplate)
                 .orderBy(outgoing.outgoingDate.asc(), weekNumberTemplate.asc())
@@ -96,6 +97,7 @@ public class SalesRepositoryImpl implements SalesRepository {
                 .where(outgoing.company.id.eq(companyId)
                         .and(outgoing.outgoingDate.between(startDate, endDate))
                         .and(outgoing.outgoingState.eq(OutgoingState.COMPLETE))
+                        .and(outgoing.tradeType.eq("b2c"))
                 )
                 .groupBy(Expressions.numberTemplate(Integer.class, "MONTH({0})", outgoing.outgoingDate))
                 .orderBy(Expressions.numberTemplate(Integer.class, "MONTH({0})", outgoing.outgoingDate).asc())
@@ -114,7 +116,9 @@ public class SalesRepositoryImpl implements SalesRepository {
                 .join(outgoingDetail.product, product)
                 .join(outgoingDetail.outgoing, outgoing)
                 .where(outgoing.outgoingState.eq(OutgoingState.valueOf("COMPLETE"))
-                        .and(outgoing.outgoingDate.between(startDate,endDate)))
+                        .and(outgoing.outgoingDate.between(startDate,endDate))
+                        .and(outgoing.tradeType.eq("b2c"))
+                )
                 .groupBy(product.productName, product.productImg)
                 .orderBy(outgoingDetail.price.sum().desc())
                 .fetch();
