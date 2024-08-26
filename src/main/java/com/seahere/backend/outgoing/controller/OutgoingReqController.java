@@ -1,50 +1,105 @@
 package com.seahere.backend.outgoing.controller;
 
-import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDetailsDto;
-import com.seahere.backend.outgoing.controller.response.OutgoingReqMockDto;
+import com.seahere.backend.auth.login.CustomUserDetails;
+import com.seahere.backend.outgoing.controller.request.OutgoingCreateReq;
+import com.seahere.backend.outgoing.controller.request.OutgoingReqSearchRequest;
+import com.seahere.backend.outgoing.controller.request.OutgoingSearchReq;
+import com.seahere.backend.outgoing.controller.request.OutgoingStateChangeRequest;
+import com.seahere.backend.outgoing.controller.response.CustomerOutgoingDetailRes;
+import com.seahere.backend.outgoing.controller.response.OutgoingCallListResponse;
+import com.seahere.backend.outgoing.controller.response.OutgoingDetailResponse;
+import com.seahere.backend.outgoing.controller.response.OutgoingRes;
+import com.seahere.backend.outgoing.controller.response.OutgoingTodayRes;
+import com.seahere.backend.outgoing.dto.OutgoingCallDto;
+import com.seahere.backend.outgoing.entity.OutgoingEntity;
+import com.seahere.backend.outgoing.entity.OutgoingState;
+import com.seahere.backend.outgoing.service.OutgoingDetailService;
+import com.seahere.backend.outgoing.service.OutgoingService;
+import com.seahere.backend.redis.service.OutgoingLockFacadeService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.bytebuddy.asm.Advice;
-import org.springframework.format.annotation.DateTimeFormat;
+import org.apache.coyote.Response;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
+import javax.swing.plaf.IconUIResource;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
+@RequestMapping("/outgoings")
+@RequiredArgsConstructor
 public class OutgoingReqController {
 
-    @GetMapping("/outgoings")
-    public ResponseEntity<List> outgoingReqList(@RequestParam(value = "search" ,defaultValue = "") String search,
-                                                @RequestParam(value = "startDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                @RequestParam("endDate")@DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate){
-        log.info("search = {}, startDate = {}, endDate = {}",search,startDate,endDate);
-        List<OutgoingReqMockDto> mockList = new ArrayList<>();
-        mockList.add(new OutgoingReqMockDto(1L,"스파로스","광어외3...","요청"));
-        mockList.add(new OutgoingReqMockDto(2L,"kdt","우럭외3...","요청"));
-        mockList.add(new OutgoingReqMockDto(3L,"부산시","고등어외3...","요청"));
-        mockList.add(new OutgoingReqMockDto(4L,"신세계","갈치외3...","요청"));
-        mockList.add(new OutgoingReqMockDto(5L,"아이앤씨","다시마외3...","요청"));
-        mockList.add(new OutgoingReqMockDto(6L,"아이앤씨","다시마외3...","요청"));
-        mockList.add(new OutgoingReqMockDto(7L,"아이앤씨","다시마외3...","요청"));
-        mockList.add(new OutgoingReqMockDto(8L,"아이앤씨","다시마외3...","요청"));
-        mockList = mockList.stream().filter(item -> item.getCustomerName().contains(search)).collect(Collectors.toList());
-        return ResponseEntity.ok(mockList);
-    }
-    @GetMapping("/outgoings/{outgoingId}")
-    public ResponseEntity<List> outgoingReqDetailList(@PathVariable("outgoingId") Long outgoingId){
-        List<OutgoingReqMockDetailsDto> mockDetailList = new ArrayList<>();
-        mockDetailList.add(new OutgoingReqMockDetailsDto(1L, 1L,"", "광어",20,100,80,100000));
-        mockDetailList.add(new OutgoingReqMockDetailsDto(1L, 2L,"", "넙치",30,100,70,100000));
-        mockDetailList.add(new OutgoingReqMockDetailsDto(1L, 3L,"", "고등어",40,100,60,200000));
-        mockDetailList.add(new OutgoingReqMockDetailsDto(1L, 4L,"", "갈치",50,100,50,300000));
-        return ResponseEntity.ok(mockDetailList);
+    private final OutgoingService outgoingService;
+    private final OutgoingDetailService outgoingDetailService;
+    private final OutgoingLockFacadeService outgoingLockFacadeService;
+
+    @PostMapping("")
+    public ResponseEntity<Void> outgoingCreate(@RequestBody OutgoingCreateReq outgoingCreateReq, @AuthenticationPrincipal CustomUserDetails userDetails){
+        outgoingService.save(outgoingCreateReq,userDetails.getUser().getUserId());
+        return ResponseEntity.ok(null);
     }
 
+    @GetMapping()
+    public ResponseEntity<OutgoingCallListResponse> outgoingReqList(OutgoingReqSearchRequest request, @AuthenticationPrincipal CustomUserDetails userDetails){
+        log.info("size = {} page = {}",request.getSize(),request.getPage());
+        PageRequest pageRequest = PageRequest.of(request.getPage(), request.getSize(), Sort.by(Sort.Direction.DESC, "outgoingId"));
+        Slice<OutgoingEntity> results = outgoingService.findByOutgoingStateIsPending(userDetails.getUser().getCompanyId(), pageRequest
+                , request.getStartDate(), request.getEndDate(), request.getSearch());
+        OutgoingCallListResponse outgoingCallListResponse = new OutgoingCallListResponse(results);
+        return ResponseEntity.ok(outgoingCallListResponse);
+    }
+
+    @GetMapping("/customer")
+    public ResponseEntity<List<OutgoingRes>> outgoingReqList(OutgoingSearchReq outgoingSearchReq, @AuthenticationPrincipal CustomUserDetails userDetails){
+        List<OutgoingRes> outgoingResList = outgoingService.getList(outgoingSearchReq, userDetails.getUser().getUserId());
+        return ResponseEntity.ok(outgoingResList);
+    }
+
+    @GetMapping("/customer/{outgoingId}")
+    public ResponseEntity<List<CustomerOutgoingDetailRes>> getOutgoingDetail(@PathVariable("outgoingId") Long outgoingId) {
+        List<CustomerOutgoingDetailRes> customerOutgoingList = outgoingDetailService.getCustomerOutgoingList(outgoingId);
+        return ResponseEntity.ok(customerOutgoingList);
+    }
+
+        @GetMapping("/{outgoingId}")
+    public List<OutgoingDetailResponse> outgoingReqDetailList(@PathVariable("outgoingId") Long outgoingId){
+        return outgoingDetailService.findByOutgoingAndStateIsAcitve(outgoingId).stream().map(OutgoingDetailResponse::from).collect(Collectors.toList());
+    }
+
+    @GetMapping("/customer/today")
+    public ResponseEntity<OutgoingTodayRes> customerTodayInfoGet( @AuthenticationPrincipal CustomUserDetails userDetails){
+        OutgoingTodayRes todayInfo = outgoingService.getTodayInfo(userDetails.getUser().getUserId());
+        return ResponseEntity.ok(todayInfo);
+    }
+
+    @GetMapping("/recent")
+    public ResponseEntity<OutgoingRes> recentlyOutgoingGet(@AuthenticationPrincipal CustomUserDetails userDetails){
+        OutgoingRes recentlyOutgoing = outgoingService.getRecentlyOutgoing(userDetails.getUser().getUserId());
+        return ResponseEntity.ok(recentlyOutgoing);
+    }
+
+    @PatchMapping("/{outgoingId}")
+    public ResponseEntity<OutgoingCallDto> outgoingStateChange(@PathVariable("outgoingId") Long outgoingId, @RequestBody OutgoingStateChangeRequest request,@AuthenticationPrincipal CustomUserDetails userDetails) throws InterruptedException {
+
+        OutgoingState state = OutgoingState.from(request.getState());
+        OutgoingCallDto outgoing = OutgoingCallDto.from(outgoingLockFacadeService.changeOutgoingState(userDetails.getUser().getCompanyId(), outgoingId,state));
+        return ResponseEntity.ok(outgoing);
+    }
+
+    @PutMapping("/{outgoingId}")
+    public void outgoingDetailRecovery(@PathVariable("outgoingId")Long outgoingId){
+        outgoingDetailService.updateByOutgoingDetailStateToActive(outgoingId);
+    }
+
+    @DeleteMapping("/details/{outgoingDetailId}")
+    public void outgoingDetailDelete(@PathVariable("outgoingDetailId")Long detailId){
+        outgoingDetailService.deleteOutgoingDetail(detailId);
+    }
 }

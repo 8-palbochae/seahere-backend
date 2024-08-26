@@ -6,7 +6,12 @@ build/
 !**/src/test/**/build/
 !**/src/test/**/generated/
 
-### STS ###
+#FCM
+certification.json
+#https
+src/main/resources/keystore.p12
+
+###STS###
 .apt_generated
 .classpath
 .factorypath
@@ -41,3 +46,9 @@ out/
 
 ### Query DSL ###
 /src/main/generated/
+
+### OcrConfig ###
+/src/main/resources/OcrConfig.properties
+
+### S3 ###
+/src/main/resources/application-private.properties

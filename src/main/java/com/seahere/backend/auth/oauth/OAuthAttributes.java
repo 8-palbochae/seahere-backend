@@ -6,6 +6,7 @@ import com.seahere.backend.auth.oauth.userinfo.OAuth2UserInfo;
 import com.seahere.backend.common.entity.Role;
 import com.seahere.backend.common.entity.SocialType;
 import com.seahere.backend.user.domain.UserEntity;
+import com.seahere.backend.user.domain.UserStatus;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -51,8 +52,9 @@ public class OAuthAttributes {
                 .socialType(socialType)
                 .email(oauth2UserInfo.getEmail())
                 .socialId(oauth2UserInfo.getId())
-                .profileImage(oauth2UserInfo.getImageUrl())
+                .leaves(false)
                 .role(Role.GUEST)
+                .status(UserStatus.PENDING)
                 .build();
     }
 }

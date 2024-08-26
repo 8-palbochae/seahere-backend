@@ -2,6 +2,11 @@ package com.seahere.backend.auth.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.seahere.backend.alarm.exception.TokenNotFoundException;
+import com.seahere.backend.auth.jwt.exception.ValidateTokenException;
+import com.seahere.backend.redis.entity.Token;
+import com.seahere.backend.redis.respository.TokenRepository;
+import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +48,7 @@ public class JwtService {
     private static final String BEARER = "Bearer ";
 
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
     public String createAccessToken(String email) {
         Date now = new Date();
@@ -65,7 +71,6 @@ public class JwtService {
         response.setStatus(HttpServletResponse.SC_OK);
 
         response.setHeader(accessHeader, accessToken);
-        log.info("재발급된 Access Token : {}", accessToken);
     }
 
     public void sendAccessAndRefreshToken(HttpServletResponse response, String accessToken, String refreshToken) {
@@ -73,7 +78,6 @@ public class JwtService {
 
         setAccessTokenHeader(response, accessToken);
         setRefreshTokenHeader(response, refreshToken);
-        log.info("Access Token, Refresh Token 헤더 설정 완료");
     }
 
     public Optional<String> extractRefreshToken(HttpServletRequest request) {
@@ -90,14 +94,12 @@ public class JwtService {
 
     public Optional<String> extractEmail(String accessToken) {
         try {
-            // 토큰 유효성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
-                    .build() // 반환된 빌더로 JWT verifier 생성
-                    .verify(accessToken) // accessToken을 검증하고 유효하지 않다면 예외 발생
-                    .getClaim(EMAIL_CLAIM) // claim(Emial) 가져오기
+                    .build()
+                    .verify(accessToken)
+                    .getClaim(EMAIL_CLAIM)
                     .asString());
         } catch (Exception e) {
-            log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
         }
     }
@@ -114,7 +116,7 @@ public class JwtService {
         userRepository.findByEmail(email)
                 .ifPresentOrElse(
                         user -> user.updateRefreshToken(refreshToken),
-                        () -> new Exception("일치하는 회원이 없습니다.")
+                        UserNotFound::new
                 );
     }
 
@@ -123,8 +125,24 @@ public class JwtService {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(token);
             return true;
         } catch (Exception e) {
-            log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
         }
+    }
+
+    public boolean isAccessTokenValid(String accessToken) {
+        try {
+            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(accessToken);
+            return true;
+        } catch (Exception e) {
+            log.error("{}",e.getClass());
+            throw new ValidateTokenException();
+        }
+    }
+
+    public void deleteRedisRefreshToken(String email){
+        Token token = tokenRepository.findByEmail(email)
+                .orElseThrow(TokenNotFoundException::new);
+        tokenRepository.delete(token);
+
     }
 }

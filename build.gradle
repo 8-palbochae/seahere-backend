@@ -33,46 +33,62 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
+//AWS S3 지원(Spring Cloud AWS)
+	implementation platform("software.amazon.awssdk:bom:2.27.9")
+	implementation "software.amazon.awssdk:s3"
+	implementation "software.amazon.awssdk:auth"
+
+// JWT 관련 의존성
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
 	implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
 	implementation 'com.auth0:java-jwt:4.4.0'
 
-	compileOnly 'org.projectlombok:lombok'
+//데이터베이스 관련 의존성
 	runtimeOnly 'com.h2database:h2'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+// Lombok
+	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+
+//테스트 관련 의존성
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
-	// queryDSL 설정
+//Firebase 의존성
+	implementation 'com.google.firebase:firebase-admin:7.1.1'
+
+//QueryDSL
 	implementation "com.querydsl:querydsl-jpa"
 	implementation "com.querydsl:querydsl-core"
 	implementation "com.querydsl:querydsl-collections"
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa" // querydsl JPAAnnotationProcessor 사용 지정
-	annotationProcessor "jakarta.annotation:jakarta.annotation-api" // java.lang.NoClassDefFoundError (javax.annotation.Generated) 대응 코드
-	annotationProcessor "jakarta.persistence:jakarta.persistence-api" // java.lang.NoClassDefFoundError (javax.annotation.Entity) 대응 코드
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jpa"
+	annotationProcessor "jakarta.annotation:jakarta.annotation-api"
+	annotationProcessor "jakarta.persistence:jakarta.persistence-api"
+
+//SpringDoc OpenAPI 의존성
+	implementation 'org.springdoc:springdoc-openapi-ui:1.8.0'
 }
 
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
-// Querydsl 설정부
+// Querydsl 설정
 def generated = 'src/main/generated'
 
-// querydsl QClass 파일 생성 위치를 지정
 tasks.withType(JavaCompile) {
 	options.getGeneratedSourceOutputDirectory().set(file(generated))
 }
 
-// java source set 에 querydsl QClass 위치 추가
 sourceSets {
 	main.java.srcDirs += [ generated ]
 }
 
-// gradle clean 시에 QClass 디렉토리 삭제
 clean {
 	delete file(generated)
 }
