@@ -2,7 +2,10 @@ package com.seahere.backend.auth.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.seahere.backend.alarm.exception.TokenNotFoundException;
 import com.seahere.backend.auth.jwt.exception.ValidateTokenException;
+import com.seahere.backend.redis.entity.Token;
+import com.seahere.backend.redis.respository.TokenRepository;
 import com.seahere.backend.user.exception.UserNotFound;
 import com.seahere.backend.user.repository.UserRepository;
 import lombok.Getter;
@@ -45,6 +48,7 @@ public class JwtService {
     private static final String BEARER = "Bearer ";
 
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
     public String createAccessToken(String email) {
         Date now = new Date();
@@ -133,5 +137,12 @@ public class JwtService {
             log.error("{}",e.getClass());
             throw new ValidateTokenException();
         }
+    }
+
+    public void deleteRedisRefreshToken(String email){
+        Token token = tokenRepository.findByEmail(email)
+                .orElseThrow(TokenNotFoundException::new);
+        tokenRepository.delete(token);
+
     }
 }
