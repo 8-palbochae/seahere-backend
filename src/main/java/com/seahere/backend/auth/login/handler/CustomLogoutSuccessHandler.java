@@ -24,24 +24,9 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         this.tokenRepository = tokenRepository;
     }
 
-    @Transactional
     @Override
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
-            CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
-            String email = userDetails.getUser().getEmail();
-            Token token = tokenRepository.findByEmail(email)
-                    .orElseThrow(RedisRefreshNotFound::new);
-
-            tokenRepository.delete(token);
-
-
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().flush();
-        } else {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().flush();
-        }
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.getWriter().flush();
     }
 }

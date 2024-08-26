@@ -31,8 +31,8 @@ import java.util.Optional;
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
-    private static final String NO_CHECK_URL = "/login";
-
+    private static final String NO_CHECK_URL = "/api/login";
+    private static final String LOGOUT_URL = "/api/logout";
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
@@ -47,6 +47,16 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
             }
 
             Optional<String> extractRefreshToken = jwtService.extractRefreshToken(request);
+
+            if(request.getRequestURI().equals(LOGOUT_URL)){
+                Optional<String> optionalAccessToken = jwtService.extractAccessToken(request);
+                if (optionalAccessToken.filter(jwtService::isAccessTokenValid).isPresent()) {
+                    String accessToken = optionalAccessToken.get();
+                    String email = jwtService.extractEmail(accessToken).orElse(null);
+                    jwtService.deleteRedisRefreshToken(email);
+                }
+            }
+
             if(extractRefreshToken.isPresent()) {
                 boolean valid = jwtService.isTokenValid(extractRefreshToken.get());
                 if(!valid) {
