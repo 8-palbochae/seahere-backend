@@ -4,10 +4,12 @@ import com.seahere.backend.common.entity.Address;
 import com.seahere.backend.company.entity.CompanyEntity;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @ToString
 @Getter
+@NoArgsConstructor
 public class CompanyFollowResponse {
     private Long id;
     private String registrationNumber;
