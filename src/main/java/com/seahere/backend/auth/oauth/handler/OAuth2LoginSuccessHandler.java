@@ -56,13 +56,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 UserEntity findUser = userRepository.findByEmail(oAuth2User.getUser().getEmail())
                         .orElseThrow(UserNotFound::new);
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
-
-                if(responseServer.contains(CUSTOMER_PORT)){
-                    response.sendRedirect(responseServer + CUSTOMER_REDIRECT + "?guest=" + findUser.getId());
-                }
-                else{
-                    response.sendRedirect(responseServer + BROKER_REDIRECT + "?guest=" + findUser.getId());
-                }
+                response.sendRedirect("https://broker.seahere.org/signup/broker-choice?guest=" + findUser.getId());
 
                 jwtService.sendAccessAndRefreshToken(response, accessToken, null);
             } else {
